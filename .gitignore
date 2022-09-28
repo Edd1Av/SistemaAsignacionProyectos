@@ -331,3 +331,4 @@ Rest/*
 
 WEB/StaticFiles/Archivos/*
 !WEB/StaticFiles/Archivos/.gitkeep
+/WEB/ClientApp/.angular/cache
