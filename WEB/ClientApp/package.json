@@ -5,8 +5,8 @@
     "ng": "ng",
     "prestart": "node aspnetcore-https",
     "start": "run-script-os",
-    "start:windows": "ng serve --port 44476 --ssl --ssl-cert %APPDATA%\\ASP.NET\\https\\%npm_package_name%.pem --ssl-key %APPDATA%\\ASP.NET\\https\\%npm_package_name%.key",
-    "start:default": "ng serve --port 44476 --ssl --ssl-cert $HOME/.aspnet/https/${npm_package_name}.pem --ssl-key $HOME/.aspnet/https/${npm_package_name}.key",
+    "start:windows": "ng serve --port 44476",
+    "start:default": "ng serve --port 44476",
     "build": "ng build",
     "build:ssr": "ng run WEB:server:dev",
     "watch": "ng build --watch --configuration development",
@@ -15,10 +15,12 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "~13.1.1",
+    "@angular/cdk": "^13.3.9",
     "@angular/common": "~13.1.1",
     "@angular/compiler": "~13.1.1",
     "@angular/core": "~13.1.1",
     "@angular/forms": "~13.1.1",
+    "@angular/material": "^13.3.9",
     "@angular/platform-browser": "~13.1.1",
     "@angular/platform-browser-dynamic": "~13.1.1",
     "@angular/platform-server": "~13.1.1",
@@ -46,6 +48,5 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
     "typescript": "~4.4.4"
-  },
-  "optionalDependencies": {}
+  }
 }

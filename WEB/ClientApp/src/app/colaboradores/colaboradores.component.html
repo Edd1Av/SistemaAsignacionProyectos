@@ -1,0 +1,30 @@
+   <!-- <section>
+    <div>
+   <table mat-table [dataSource]="dataSource" class="cat-tbl-search">
+
+        <ng-container matColumnDef="nombre">
+          <th class="columna" style="width: 80%;" mat-header-cell matHeaderCellDef> Nombre </th>
+          <td style="min-width: 200px !important;" class='has_label_on_mobile' data-label='Nombre: '  mat-cellmatCellDef="let element"> {{element.nombre}} </td>
+        </ng-container>
+
+        <ng-container  matColumnDef="acciones">
+          <th class="columna" style="width: 20%;" mat-header-cell matHeaderCellDef> Acciones </th>
+          <td mat-cellmatCellDef="let element">
+            <div>
+              <input (click)="openDialog('edit', element)" matTooltip="Editar"
+              class="cat-tbl-icon-action" type="image" src="assets\img\Editar.svg" alt="Editar"/>
+              <input matTooltip="Eliminar" class="cat-tbl-icon-action" type="image" src="assets\img\Eliminar.svg"
+              alt="Eliminar" (click)="mostrarDialogo(element.id)"> 
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-rowmatRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons
+        aria-label="Select page of periodic elements">
+      </mat-paginator> 
+    </div>
+  </section>-->
