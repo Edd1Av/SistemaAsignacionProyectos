@@ -6,6 +6,15 @@ using WEB.Data;
 using WEB.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+string MiCors = "MiCors";
+builder.Services.AddCors(options => {
+    options.AddPolicy(name: MiCors, builder =>
+    {
+        builder.WithHeaders("*");
+        builder.WithOrigins("*");
+        builder.WithMethods("*");
+    });
+});
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -41,7 +50,7 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-
+app.UseCors(MiCors);
 app.UseAuthentication();
 app.UseIdentityServer();
 app.UseAuthorization();

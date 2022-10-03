@@ -15,15 +15,12 @@ import { AuthorizeInterceptor } from 'src/api-authorization/authorize.intercepto
 import { LayoutComponent } from './layout/layout/layout.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import {
-  MatTable,
-  MatTableDataSource,
-  MatTableModule,
-} from "@angular/material/table";
-import { MatDialog } from '@angular/material/dialog';
-import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
+import {MatTableModule,} from "@angular/material/table";
+import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import { DialogoConfirmacionComponent } from './dialogo-confirmacion/dialogo-confirmacion.component';
+import { MatDialogModule } from '@angular/material/dialog';
+
 
 @NgModule({
   declarations: [
@@ -45,11 +42,15 @@ import { DialogoConfirmacionComponent } from './dialogo-confirmacion/dialogo-con
     ReactiveFormsModule,
     MatFormFieldModule,
     MatIconModule,
+    MatDialogModule,
+    
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthorizeGuard] },
       { path: 'proyectos', loadChildren: () => import('./proyectos/proyectos.module').then(m => m.ProyectosModule) },
+      { path: 'colaboradores', loadChildren: () => import('./colaboradores/colaboradores.module').then(m => m.ColaboradoresModule) },
+      { path: '**', component: HomeComponent}
     ]),
     BrowserAnimationsModule
   ],

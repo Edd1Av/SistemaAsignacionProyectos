@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import {Icolaboradores} from 'src/app/interfaces/Icolaboradores';
+import {IColaborador} from 'src/app/interfaces/Icolaboradores';
 import {IResponse} from 'src/app/interfaces/iresponse';
 @Injectable({
   providedIn: 'root'
@@ -16,19 +16,19 @@ export class ColaboradoresService {
     this.urlBase = baseUrl;
   }
 
-  getColaboradorById(id: number): Observable<Icolaboradores> {
-    return this.http.get<Icolaboradores>(this.urlBase + "api/Colaboradores" + id);
+  getColaboradorById(id: number): Observable<IColaborador> {
+    return this.http.get<IColaborador>(this.urlBase + "api/Colaboradores" + id);
   }
 
-  getColaboradores(): Observable<Icolaboradores[]> {
-    return this.http.get<Icolaboradores[]>(this.urlBase + "api/Colaboradores");
+  getColaboradores(): Observable<IColaborador[]> {
+    return this.http.get<IColaborador[]>(this.urlBase + "api/Colaboradores");
   }
 
-  UpdateColaborador(Colaborador:Icolaboradores)  {
+  UpdateColaborador(Colaborador:IColaborador)  {
     return this.http.put<IResponse>(this.urlBase + "api/Colaboradores",Colaborador);
   }
 
-  SetColaborador(Colaborador:Icolaboradores)  {
+  SetColaborador(Colaborador:IColaborador)  {
       return this.http.post<IResponse>(this.urlBase + "api/Colaboradores",Colaborador);
     }
 
