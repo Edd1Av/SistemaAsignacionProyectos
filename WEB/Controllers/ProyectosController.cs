@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WEB.Data;
 using WEB.Models;
+using WEB.ViewModels;
 
 namespace WEB.Controllers
 {
@@ -25,7 +26,7 @@ namespace WEB.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Proyecto>>> GetProyectos()
         {
-            return await _context.Proyectos.ToListAsync();
+            return await _context.Proyectos.OrderBy(x=>x.Titulo).ToListAsync();
         }
 
         // GET: api/Proyectos/5
@@ -39,7 +40,7 @@ namespace WEB.Controllers
                 return NotFound();
             }
 
-            return proyecto;
+            return Ok(proyecto);
         }
 
         // PUT: api/Proyectos/5
@@ -47,9 +48,12 @@ namespace WEB.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProyecto(int id, Proyecto proyecto)
         {
+            Response response = new Response();
             if (id != proyecto.Id)
             {
-                return BadRequest();
+                response.success = false;
+                response.response = "Los ID no coinciden";
+                return BadRequest(response);
             }
 
             _context.Entry(proyecto).State = EntityState.Modified;
@@ -58,19 +62,24 @@ namespace WEB.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 if (!ProyectoExists(id))
                 {
-                    return NotFound();
+                    response.success = false;
+                    response.response = "No existe un proyecto con ese ID";
+                    return BadRequest(response);
                 }
                 else
                 {
-                    throw;
+                    response.success = false;
+                    response.response = "Error al editar el registro";
+                    return BadRequest(response);
                 }
             }
-
-            return NoContent();
+            response.success = true;
+            response.response = "Registro editado con éxito";
+            return Ok(response);
         }
 
         // POST: api/Proyectos
@@ -78,26 +87,50 @@ namespace WEB.Controllers
         [HttpPost]
         public async Task<ActionResult<Proyecto>> PostProyecto(Proyecto proyecto)
         {
-            _context.Proyectos.Add(proyecto);
-            await _context.SaveChangesAsync();
+            Response response = new Response();
+            try
+            {
+                _context.Proyectos.Add(proyecto);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                response.success = false;
+                response.response = $"Error al registrar {ex.Message}";
+                return BadRequest(response);
+            }
 
-            return CreatedAtAction("GetProyecto", new { id = proyecto.Id }, proyecto);
+            response.success = true;
+            response.response = "Registrado con éxito";
+            return Ok(response);
         }
 
         // DELETE: api/Proyectos/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProyecto(int id)
         {
+            Response response = new Response();
             var proyecto = await _context.Proyectos.FindAsync(id);
             if (proyecto == null)
             {
-                return NotFound();
+                response.success = false;
+                response.response = "El registro no existe";
+                return NotFound(response);
             }
-
-            _context.Proyectos.Remove(proyecto);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            try
+            {
+                _context.Proyectos.Remove(proyecto);
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                response.success = false;
+                response.response = $"Error al eliminar el registro {ex.Message}";
+                return BadRequest(response);
+            }
+            response.success = true;
+            response.response = "Registro eliminado con éxito";
+            return Ok(response);
         }
 
         private bool ProyectoExists(int id)

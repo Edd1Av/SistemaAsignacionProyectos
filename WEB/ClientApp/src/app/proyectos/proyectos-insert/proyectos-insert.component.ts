@@ -4,22 +4,22 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { tap } from 'rxjs/operators';
 import { IResponse } from 'src/app/interfaces/IResponse';
-import { ColaboradoresService } from 'src/app/services/colaboradores.service';
+import { ProyectosService } from 'src/app/services/proyectos.service';
 
 @Component({
-  selector: 'app-colaborador-insert',
-  templateUrl: './colaborador-insert.component.html',
-  styleUrls: ['./colaborador-insert.component.css']
+  selector: 'app-proyectos-insert',
+  templateUrl: './proyectos-insert.component.html',
+  styleUrls: ['./proyectos-insert.component.css']
 })
-export class ColaboradorInsertComponent implements OnInit {
+export class ProyectosInsertComponent implements OnInit {
 
   formGroup!: FormGroup;
  
   constructor(
     @Inject(MAT_DIALOG_DATA) private data:any,
-    private matDialogref: MatDialogRef<ColaboradorInsertComponent>,
+    private matDialogref: MatDialogRef<ProyectosInsertComponent>,
     private formBuilder: FormBuilder,
-    private _colaboradorService: ColaboradoresService,
+    private _proyectosService: ProyectosService,
     private _snackBar: MatSnackBar
   ) { }
 
@@ -30,11 +30,8 @@ export class ColaboradorInsertComponent implements OnInit {
 
   private buildForm() {
     this.formGroup = this.formBuilder.group({
-      nombres: new FormControl("", Validators.required),
-      apellidos: new FormControl("", Validators.required),
-      curp: new FormControl("", Validators.required),
-      rfc: new FormControl("", Validators.required),
-      id_odoo: new FormControl("", Validators.required),
+      titulo: new FormControl("", Validators.required),
+      clave: new FormControl("", Validators.required),
     });
   }
 
@@ -46,8 +43,8 @@ export class ColaboradorInsertComponent implements OnInit {
 
   onSubmit() {
     if(this.formGroup.valid){
-        this._colaboradorService
-          .SetColaborador(this.formGroup.value)
+        this._proyectosService
+          .SetProyecto(this.formGroup.value)
           .pipe(
             tap((result: IResponse) => {
               this.openSnackBar(result.response);
@@ -61,5 +58,6 @@ export class ColaboradorInsertComponent implements OnInit {
       this.openSnackBar("Introduzca los campos faltantes");
     }
   }
+
 
 }

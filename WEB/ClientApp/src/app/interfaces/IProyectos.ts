@@ -1,4 +1,4 @@
-export interface IProyectos{
+export interface IProyecto{
     Id:Number;
     Clave:String;
     Titulo:String;

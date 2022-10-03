@@ -20,11 +20,11 @@ namespace WEB.Data
             //modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
             //modelBuilder.Conventions.Remove<PluralizingEntitySetNameConvention>();
 
-            modelBuilder.Entity<Colaborador>().HasIndex(x => x.RFC);
-            modelBuilder.Entity<Colaborador>().HasIndex(x => x.CURP);
-            modelBuilder.Entity<Colaborador>().HasIndex(x => x.Id_Odoo);
+            modelBuilder.Entity<Colaborador>().HasIndex(x => x.RFC).IsUnique();
+            modelBuilder.Entity<Colaborador>().HasIndex(x => x.CURP).IsUnique();
+            modelBuilder.Entity<Colaborador>().HasIndex(x => x.Id_Odoo).IsUnique();
 
-            modelBuilder.Entity<Proyecto>().HasIndex(x => x.Clave);
+            modelBuilder.Entity<Proyecto>().HasIndex(x => x.Clave).IsUnique();
 
 
 
