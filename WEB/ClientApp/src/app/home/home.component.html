@@ -1,23 +1,46 @@
-<div class="row">
-  <div class="col-sm-6">
+<div class="row d-flex">
+  <div class="col-sm-3">
       <div class="card bg-light">
           <div class="card-body">
-              <h5 class="card-title">Colaboradores</h5>
-              <p class="card-text">---</p>
-              <a routerLink="/colaboradores" class="btn btn-warning btn-lg">Ver</a>
-              
+            <div class="cat-title">
+                <ul>
+                    <li>Colaboradores</li>
+                </ul>
+            </div>
+            <div class="text-end">
+                <a mat-fab color="" routerLink="/colaboradores"><mat-icon>bookmark</mat-icon></a>
+            </div>
           </div>
       </div>
   </div>
-  <div class="col-sm-6">
+  <div class="col-sm-3">
       <div class="card bg-light">
-          <div class="card-body">
-              <h5 class="card-title">Proyectos</h5>
-              <p class="card-text">---</p>
-              <a routerLink="/proyectos" class="btn btn-warning btn-lg">Ver</a>
+          <div class="card-body ">
+                <div class="cat-title">
+                    <ul>
+                        <li>Proyectos</li>
+                    </ul>
+                </div>
+                <div class="text-end">
+                    <a mat-fab color="" routerLink="/proyectos"><mat-icon>bookmark</mat-icon></a>
+                </div>
           </div>
       </div>
   </div>
+  <div class="col-sm-3">
+    <div class="card bg-light">
+        <div class="card-body ">
+              <div class="cat-title">
+                  <ul>
+                      <li>Asignaciones</li>
+                  </ul>
+              </div>
+              <div class="text-end">
+                  <a mat-fab color="" routerLink="/asignaciones"><mat-icon>bookmark</mat-icon></a>
+              </div>
+        </div>
+    </div>
+</div>
 </div>
 <br>
 <br>

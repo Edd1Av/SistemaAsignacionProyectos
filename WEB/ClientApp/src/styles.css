@@ -21,3 +21,81 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.cat-btn-create {
+  align-items: center;
+  background-color: #164d9a;
+  color: white;
+  /* width: 120px; */
+}
+
+.buscador-form-field {
+  display: block !important;
+  overflow: hidden;
+
+  font-size: 16px;
+}
+
+.cat-title {
+  font-size: 1.3rem;
+  color: black;
+  display: inline;
+  font-weight: bold;
+}
+
+.d-flex{
+  /* display: flex; */
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.d-flex > div{
+  margin: 15px;
+}
+
+.cat-title ul {
+  list-style: none;
+}
+
+/* .cat-title ul li::before {
+  content: "\25AA";
+  color: black;
+  padding-right: 5px;
+  font-size: 60px;
+  vertical-align: middle;
+  line-height: 10px;
+} */
+
+.btn-table{
+  border: none;
+  background: none;
+}
+
+.cat-tbl-search {
+  width: 100%;
+  padding: 0%;
+  border-left: 1px hidden;
+  border-bottom: 1px hidden;
+  border-right: 1px hidden;
+  text-align: center;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.cat-tbl-search th {
+  color: #fff;
+  background-color: black;
+  font-size: 0.8rem;
+  padding-left: 0px !important;
+  text-align: center !important;
+}
+
+/* .cat-tbl-search td {
+  
+  border: black 2px solid;
+  background-color: #d9e8f5; 
+  font-size: 0.8rem;
+  padding-left: 0px !important;
+  text-align: center !important;
+} */
+

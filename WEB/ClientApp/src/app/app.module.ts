@@ -20,6 +20,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import { DialogoConfirmacionComponent } from './dialogo-confirmacion/dialogo-confirmacion.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import {MatButtonModule} from '@angular/material/button';
+import { MatInputModule } from "@angular/material/input";
 
 
 @NgModule({
@@ -43,7 +45,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatFormFieldModule,
     MatIconModule,
     MatDialogModule,
-    
+    MatButtonModule,
+    MatInputModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },

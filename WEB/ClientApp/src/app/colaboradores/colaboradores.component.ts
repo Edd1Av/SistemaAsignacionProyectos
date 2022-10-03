@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { IColaborador } from '../interfaces/Icolaboradores';
+import { IColaborador } from '../interfaces/IColaboradores';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -8,6 +8,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { tap } from 'rxjs/operators';
 import { ColaboradoresService } from '../services/colaboradores.service';
 import { DialogoConfirmacionComponent } from '../dialogo-confirmacion/dialogo-confirmacion.component';
+import { ColaboradorUpdateComponent } from './colaborador-update/colaborador-update.component';
 import { ColaboradorInsertComponent } from './colaborador-insert/colaborador-insert.component';
 
 @Component({
@@ -31,6 +32,7 @@ export class ColaboradoresComponent implements OnInit {
   constructor(private colaboradorService: ColaboradoresService,
     private dialog: MatDialog,
     private formBuilder: FormBuilder,
+    private snackBar: MatSnackBar
     ) {
      
     }
@@ -38,7 +40,7 @@ export class ColaboradoresComponent implements OnInit {
     colaboradores: IColaborador[]=[];
     dataSource!: MatTableDataSource<IColaborador>;
     formGroup: any;
-    snackBar!: MatSnackBar;
+    
 
   ngOnInit(): void {
     this.actualizarHistorico();
@@ -80,16 +82,25 @@ export class ColaboradoresComponent implements OnInit {
     this.dataSource.filter = this.formGroup.get("buscador").value;
   }
 
-  openDialog(type:string, color:any): void {
-    let dialog = this.dialog.open(ColaboradorInsertComponent, {
-      width: "700px",
+  openDialogUpdate(colaborador:IColaborador): void {
+    let dialog = this.dialog.open(ColaboradorUpdateComponent, {
+      width: "800px",
       data: {
-        type: type,
-        color: color
+        colaborador: colaborador
       },
       disableClose: true,
     });
+    dialog.afterClosed().subscribe((result) => {
+      this.actualizarHistorico();
+      this.filtrarTabla();
+    });
+  }
 
+  openDialogInsert(): void {
+    let dialog = this.dialog.open(ColaboradorInsertComponent, {
+      width: "800px",
+      disableClose: true,
+    });
     dialog.afterClosed().subscribe((result) => {
       this.actualizarHistorico();
       this.filtrarTabla();
@@ -99,7 +110,7 @@ export class ColaboradoresComponent implements OnInit {
   mostrarDialogo(id:number): void {
     this.dialog
       .open(DialogoConfirmacionComponent, {
-        data: `¿Está seguro de eliminar este color?`,
+        data: `¿Está seguro de eliminar este colaborador?`,
       })
       .afterClosed()
       .subscribe((confirmado: Boolean) => {

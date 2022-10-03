@@ -29,4 +29,6 @@ textarea {
     background-size: cover !important;
     background-repeat: no-repeat !important;
     background-position: 50% 50%;
+    border-radius: 0px 0px 0.375rem 0.375rem !important;
 }
+

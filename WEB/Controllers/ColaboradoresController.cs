@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WEB.Data;
 using WEB.Models;
+using Newtonsoft.Json;
+using WEB.ViewModels;
 
 namespace WEB.Controllers
 {
@@ -25,7 +27,7 @@ namespace WEB.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Colaborador>>> GetColaboradores()
         {
-            return await _context.Colaboradores.ToListAsync();
+            return await _context.Colaboradores.OrderBy(x=>x.Id_Odoo).ToListAsync();
         }
 
         // GET: api/Colaboradores/5
@@ -39,7 +41,7 @@ namespace WEB.Controllers
                 return NotFound();
             }
 
-            return colaborador;
+            return Ok(colaborador);
         }
 
         // PUT: api/Colaboradores/5
@@ -47,9 +49,12 @@ namespace WEB.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutColaborador(int id, Colaborador colaborador)
         {
+            Response response = new Response();
             if (id != colaborador.Id)
             {
-                return BadRequest();
+                response.success = false;
+                response.response = "Los ID no coinciden";
+                return BadRequest(response);
             }
 
             _context.Entry(colaborador).State = EntityState.Modified;
@@ -58,19 +63,26 @@ namespace WEB.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 if (!ColaboradorExists(id))
                 {
-                    return NotFound();
+                   
+                    response.success = false;
+                    response.response = "No existe un colaborador con ese ID";
+                    return BadRequest(response);
                 }
                 else
                 {
-                    throw;
+                    response.success = false;
+                    response.response = "Error al editar el registro";
+                    return BadRequest(response);
                 }
             }
+            response.success = true;
+            response.response = "Registro editado con éxito";
+            return Ok(response);
 
-            return NoContent();
         }
 
         // POST: api/Colaboradores
@@ -78,26 +90,53 @@ namespace WEB.Controllers
         [HttpPost]
         public async Task<ActionResult<Colaborador>> PostColaborador(Colaborador colaborador)
         {
-            _context.Colaboradores.Add(colaborador);
-            await _context.SaveChangesAsync();
+            Response response = new Response();
+            try
+            {
+                _context.Colaboradores.Add(colaborador);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                response.success = false;
+                response.response = $"Error al registrar {ex.Message}";
+                return BadRequest(response);
+            }
+            
 
-            return CreatedAtAction("GetColaborador", new { id = colaborador.Id }, colaborador);
+
+            response.success = true;
+            response.response = "Registrado con éxito";
+            return Ok(response);
         }
 
         // DELETE: api/Colaboradores/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteColaborador(int id)
         {
+            Response response = new Response();
             var colaborador = await _context.Colaboradores.FindAsync(id);
             if (colaborador == null)
             {
-                return NotFound();
+                response.success = false;
+                response.response = "El registro no existe";
+                return NotFound(response);
+            }
+            try
+            {
+                _context.Colaboradores.Remove(colaborador);
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                response.success = false;
+                response.response = $"Error al eliminar el registro {ex.Message}";
+                return BadRequest(response);
             }
 
-            _context.Colaboradores.Remove(colaborador);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            response.success = true;
+            response.response = "Registro eliminado con éxito";
+            return Ok(response);
         }
 
         private bool ColaboradorExists(int id)

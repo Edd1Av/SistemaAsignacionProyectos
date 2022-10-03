@@ -2,16 +2,15 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { tap } from 'rxjs/operators';
-import { IResponse } from 'src/app/interfaces/IResponse';
 import { ColaboradoresService } from 'src/app/services/colaboradores.service';
+import { ColaboradorInsertComponent } from '../colaborador-insert/colaborador-insert.component';
 
 @Component({
-  selector: 'app-colaborador-insert',
-  templateUrl: './colaborador-insert.component.html',
-  styleUrls: ['./colaborador-insert.component.css']
+  selector: 'app-colaborador-update',
+  templateUrl: './colaborador-update.component.html',
+  styleUrls: ['./colaborador-update.component.css']
 })
-export class ColaboradorInsertComponent implements OnInit {
+export class ColaboradorUpdateComponent implements OnInit {
 
   formGroup!: FormGroup;
  
@@ -24,16 +23,19 @@ export class ColaboradorInsertComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    
+  console.log(this.data.colaborador.id_odoo, "ID ODOO")
   this.buildForm();
-  // if (this.data.type == this.EDIT) {
-  //   this.isEdit = true;
-  //   this.formGroup.controls.nombre.setValue(this.data.color.nombre);
-  // }
+  this.formGroup.controls.id.setValue(this.data.colaborador.id);
+  this.formGroup.controls.nombres.setValue(this.data.colaborador.nombres);
+  this.formGroup.controls.apellidos.setValue(this.data.colaborador.apellidos);
+  this.formGroup.controls.curp.setValue(this.data.colaborador.curp);
+  this.formGroup.controls.rfc.setValue(this.data.colaborador.rfc);
+  this.formGroup.controls.id_odoo.setValue(this.data.colaborador.id_Odoo);
   }
 
   private buildForm() {
     this.formGroup = this.formBuilder.group({
+      id: new FormControl("", Validators.required),
       nombres: new FormControl("", Validators.required),
       apellidos: new FormControl("", Validators.required),
       curp: new FormControl("", Validators.required),
@@ -60,35 +62,17 @@ export class ColaboradorInsertComponent implements OnInit {
 
   onSubmit() {
     if(this.formGroup.valid){
-        this._colaboradorService
-          .SetColaborador(this.formGroup.value)
-          .pipe(
-            tap((result: IResponse) => {
-              this.openSnackBar(result.response);
-              if (result.success) {
-                this.matDialogref.close();
-              }
-            })
-          )
-          .subscribe(); 
-      // else {
-      //   var colorSelected = {
-      //     nombre: this.formGroup.controls["nombre"].value,
-      //     id: this.data.color.id
-      //  };
-      //   this._colorService.updateColor(colorSelected).subscribe((result) => {
-      //     if (result.success) {
-      //       this.formGroup.reset();
-      //       this.initializeFormGroup();
-      //       this.matDialogref.close();
-      //     }
-      //     this.openSnackBar(result.response);
-      //     // this.GuardarActivo = true;
-      //   });
-      // }
+        
+        this._colaboradorService.UpdateColaborador( this.data.colaborador.id, this.formGroup.value).subscribe((result) => {
+          if (result.success) {
+            //this.formGroup.reset();
+            //this.initializeFormGroup();
+            this.matDialogref.close();
+          }
+          this.openSnackBar(result.response);
+        });
     }else{
       this.openSnackBar("Introduzca los campos faltantes");
     }
   }
-
 }
