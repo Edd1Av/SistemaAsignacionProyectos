@@ -16,7 +16,7 @@ export class ColaboradorUpdateComponent implements OnInit {
  
   constructor(
     @Inject(MAT_DIALOG_DATA) private data:any,
-    private matDialogref: MatDialogRef<ColaboradorInsertComponent>,
+    private matDialogref: MatDialogRef<ColaboradorUpdateComponent>,
     private formBuilder: FormBuilder,
     private _colaboradorService: ColaboradoresService,
     private _snackBar: MatSnackBar

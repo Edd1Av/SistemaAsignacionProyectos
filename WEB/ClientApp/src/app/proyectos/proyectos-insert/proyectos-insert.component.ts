@@ -47,6 +47,7 @@ export class ProyectosInsertComponent implements OnInit {
           .SetProyecto(this.formGroup.value)
           .pipe(
             tap((result: IResponse) => {
+              console.log(result);
               this.openSnackBar(result.response);
               if (result.success) {
                 this.matDialogref.close();

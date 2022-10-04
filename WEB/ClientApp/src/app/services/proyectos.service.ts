@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IResponse } from '../interfaces/IResponse';
 import { IProyecto } from '../interfaces/IProyectos';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,7 @@ export class ProyectosService {
   }
 
   UpdateProyecto(id:number, Proyecto:IProyecto)  {
-    return this.http.put<IResponse>(this.urlBase + "api/proyectos/"+id,Proyecto);
+    return this.http.put<IResponse>(this.urlBase + "api/proyectos/"+id, Proyecto);
   }
 
   SetProyecto(Proyecto:IProyecto)  {

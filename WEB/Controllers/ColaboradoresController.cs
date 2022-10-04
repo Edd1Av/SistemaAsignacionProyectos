@@ -54,7 +54,7 @@ namespace WEB.Controllers
             {
                 response.success = false;
                 response.response = "Los ID no coinciden";
-                return BadRequest(response);
+                return Ok(response);
             }
 
             _context.Entry(colaborador).State = EntityState.Modified;
@@ -70,13 +70,13 @@ namespace WEB.Controllers
                    
                     response.success = false;
                     response.response = "No existe un colaborador con ese ID";
-                    return BadRequest(response);
+                    return Ok(response);
                 }
                 else
                 {
                     response.success = false;
                     response.response = "Error al editar el registro";
-                    return BadRequest(response);
+                    return Ok(response);
                 }
             }
             response.success = true;
@@ -96,11 +96,11 @@ namespace WEB.Controllers
                 _context.Colaboradores.Add(colaborador);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 response.success = false;
-                response.response = $"Error al registrar {ex.Message}";
-                return BadRequest(response);
+                response.response = $"Error al registrar";
+                return Ok(response);
             }
             
 
@@ -120,18 +120,18 @@ namespace WEB.Controllers
             {
                 response.success = false;
                 response.response = "El registro no existe";
-                return NotFound(response);
+                return Ok(response);
             }
             try
             {
                 _context.Colaboradores.Remove(colaborador);
                 await _context.SaveChangesAsync();
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 response.success = false;
-                response.response = $"Error al eliminar el registro {ex.Message}";
-                return BadRequest(response);
+                response.response = $"Error al eliminar el registro";
+                return Ok(response);
             }
 
             response.success = true;

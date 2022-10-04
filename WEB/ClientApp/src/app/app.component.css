@@ -25,10 +25,15 @@ textarea {
 }
 
 .homeImg {
-    background-image: url("../assets/Black-Banner.png");
+    background-image: url("../assets/img/Black-Banner.png");
     background-size: cover !important;
     background-repeat: no-repeat !important;
     background-position: 50% 50%;
     border-radius: 0px 0px 0.375rem 0.375rem !important;
 }
+
+/* .bg-gradient{
+    background: rgb(2,0,36);
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+} */
 
