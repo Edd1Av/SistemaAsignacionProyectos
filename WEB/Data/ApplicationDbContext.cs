@@ -32,5 +32,6 @@ namespace WEB.Data
 
         public DbSet<Colaborador> Colaboradores { get; set; }
         public DbSet<Proyecto> Proyectos { get; set; }
+        public DbSet<WEB.Models.Asignacion> Asignacion { get; set; }
     }
 }
