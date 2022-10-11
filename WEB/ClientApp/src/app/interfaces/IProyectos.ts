@@ -1,5 +1,5 @@
 export interface IProyecto{
-    Id:Number;
-    Clave:String;
-    Titulo:String;
+    id:Number;
+    clave:String;
+    titulo:String;
 }

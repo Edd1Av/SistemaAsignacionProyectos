@@ -22,6 +22,7 @@ import { DialogoConfirmacionComponent } from './dialogo-confirmacion/dialogo-con
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
 import { MatInputModule } from "@angular/material/input";
+import { MatNativeDateModule } from '@angular/material/core';
 
 
 @NgModule({
@@ -47,11 +48,13 @@ import { MatInputModule } from "@angular/material/input";
     MatDialogModule,
     MatButtonModule,
     MatInputModule,
+    MatNativeDateModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthorizeGuard] },
       { path: 'proyectos', loadChildren: () => import('./proyectos/proyectos.module').then(m => m.ProyectosModule) },
+      { path: 'asignaciones', loadChildren: () => import('./asignaciones/asignaciones.module').then(m => m.AsignacionesModule) },
       { path: 'colaboradores', loadChildren: () => import('./colaboradores/colaboradores.module').then(m => m.ColaboradoresModule) },
       { path: '**', component: HomeComponent}
     ]),

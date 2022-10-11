@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { tap } from 'rxjs/operators';
-import { IResponse } from 'src/app/interfaces/IResponse';
+import { IResponse } from 'src/app/interfaces/iResponse';
 import { ColaboradoresService } from 'src/app/services/colaboradores.service';
 
 @Component({
@@ -33,8 +33,7 @@ export class ColaboradorInsertComponent implements OnInit {
       nombres: new FormControl("", Validators.required),
       apellidos: new FormControl("", Validators.required),
       curp: new FormControl("", Validators.required),
-      rfc: new FormControl("", Validators.required),
-      id_odoo: new FormControl("", Validators.required),
+      id_odoo: new FormControl("res_partner_contact_", Validators.required),
     });
   }
 

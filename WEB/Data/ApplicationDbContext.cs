@@ -20,7 +20,6 @@ namespace WEB.Data
             //modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
             //modelBuilder.Conventions.Remove<PluralizingEntitySetNameConvention>();
 
-            modelBuilder.Entity<Colaborador>().HasIndex(x => x.RFC).IsUnique();
             modelBuilder.Entity<Colaborador>().HasIndex(x => x.CURP).IsUnique();
             modelBuilder.Entity<Colaborador>().HasIndex(x => x.Id_Odoo).IsUnique();
 

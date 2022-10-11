@@ -29,7 +29,6 @@ export class ColaboradorUpdateComponent implements OnInit {
   this.formGroup.controls.nombres.setValue(this.data.colaborador.nombres);
   this.formGroup.controls.apellidos.setValue(this.data.colaborador.apellidos);
   this.formGroup.controls.curp.setValue(this.data.colaborador.curp);
-  this.formGroup.controls.rfc.setValue(this.data.colaborador.rfc);
   this.formGroup.controls.id_odoo.setValue(this.data.colaborador.id_Odoo);
   }
 
@@ -39,7 +38,6 @@ export class ColaboradorUpdateComponent implements OnInit {
       nombres: new FormControl("", Validators.required),
       apellidos: new FormControl("", Validators.required),
       curp: new FormControl("", Validators.required),
-      rfc: new FormControl("", Validators.required),
       id_odoo: new FormControl("", Validators.required),
     });
   }
@@ -49,7 +47,6 @@ export class ColaboradorUpdateComponent implements OnInit {
   //     nombre: "",
   //     apellidos:"",
   //     curp:"",
-  //     rfc:"",
   //     claveOdoo:"",
   //   });
   // }

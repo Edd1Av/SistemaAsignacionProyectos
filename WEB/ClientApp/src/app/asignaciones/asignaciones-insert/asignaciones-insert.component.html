@@ -1,0 +1,64 @@
+<div class="cat-title">
+    <ul style="padding-left: 0px;">
+      <li>Agregar Asignación</li>
+    </ul>
+  </div>
+  <mat-dialog-content class="">
+    <form class="form item" [formGroup]="formGroup">
+      <div fxLayout="row" fxLayout.sm="column">
+        <div fxFlex="50%" fxFlex.sm="100%">
+            <mat-form-field appearance="fill">
+                <mat-label>Fecha Inicio</mat-label>
+                <input matInput formControlName="fecha_inicio" [matDatepicker]="picker">
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+        </div>
+        <div fxFlex="50%" fxFlex.sm="100%">
+            <mat-form-field appearance="fill">
+                <mat-label>Fecha Inicio</mat-label>
+                <input matInput formControlName="fecha_final" [matDatepicker]="picker2">
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker2></mat-datepicker>
+              </mat-form-field>
+        </div>
+      </div>
+      <div fxLayout="row" fxLayout.sm="column">
+        <div fxFlex="50%" fxFlex.sm="100%">
+            <mat-form-field appearance="fill">
+                <mat-label>Colaborador</mat-label>
+                <mat-select formControlName="colaborador">
+                  <mat-option *ngFor="let colab of colaboradores" [value]="colab.id">
+                    {{colab.nombres}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+        </div>
+        <div fxFlex="50%" fxFlex.sm="100%">
+            <mat-form-field appearance="fill">
+                <mat-label>Proyectos</mat-label>
+                <mat-select>
+                  <mat-option *ngFor="let proyecto of Proyectos" [value]="proyecto.id">
+                    {{proyecto.titulo}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <button mat-fab color="warn"> 
+                <mat-icon>add</mat-icon>
+              </button>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="warn" mat-dialog-close>
+      Cancelar
+    </button>
+    <button mat-raised-button color="primary" (click)="onSubmit()">
+      <mat-icon>save</mat-icon>
+      Guardar
+    </button>
+  </mat-dialog-actions>
+

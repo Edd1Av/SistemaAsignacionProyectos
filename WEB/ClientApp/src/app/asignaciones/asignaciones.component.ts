@@ -1,65 +1,55 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { IColaborador } from '../interfaces/Icolaboradores';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { tap } from 'rxjs/operators';
-import { ColaboradoresService } from '../services/colaboradores.service';
 import { DialogoConfirmacionComponent } from '../dialogo-confirmacion/dialogo-confirmacion.component';
-import { ColaboradorUpdateComponent } from './colaborador-update/colaborador-update.component';
-import { ColaboradorInsertComponent } from './colaborador-insert/colaborador-insert.component';
+import { IAsignacion } from '../interfaces/iasignacion';
+import { AsignacionesService } from '../services/asignaciones.service';
+import { AsignacionesInsertComponent } from './asignaciones-insert/asignaciones-insert.component';
+import { AsignacionesUpdateComponent } from './asignaciones-update/asignaciones-update.component';
 
 @Component({
-  selector: 'app-colaboradores',
-  templateUrl: './colaboradores.component.html',
-  styleUrls: ['./colaboradores.component.css']
+  selector: 'app-asignaciones',
+  templateUrl: './asignaciones.component.html',
+  styleUrls: ['./asignaciones.component.css']
 })
-export class ColaboradoresComponent implements OnInit {
+export class AsignacionesComponent implements OnInit {
 
-    @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
   displayedColumns: string[] = [
-    "nombre",
-    "apellido",
-    "curp",
-    "claveOdoo",
+    "Colaborador",
+    "Fecha_Inicio",
+    "Fecha_Final",
+    "Proyectos",
     "acciones"
   ];
-  
- 
-  constructor(private colaboradorService: ColaboradoresService,
-    private dialog: MatDialog,
-    private formBuilder: FormBuilder,
-    private snackBar: MatSnackBar
-    ) {
-     
-    }
 
-    colaboradores: IColaborador[]=[];
-    dataSource!: MatTableDataSource<IColaborador>;
+  constructor(private AsignacionService: AsignacionesService, private dialog: MatDialog,
+    private formBuilder: FormBuilder,
+    private snackBar: MatSnackBar) 
+    { }
+
+    Asignaciones: IAsignacion[]=[];
+    dataSource!: MatTableDataSource<IAsignacion>;
     formGroup: any;
-    
 
   ngOnInit(): void {
     this.actualizarHistorico();
     this.buildForm();
     this.initializeFormGroup();
-
   }
 
-
   actualizarHistorico() {
-    this.colaboradorService
-      .getColaboradores()
+    this.AsignacionService
+      .getAsignaciones()
       .pipe(
         tap((result) => {
-          this.colaboradores = result;
-          this.dataSource = new MatTableDataSource<IColaborador>(this.colaboradores);
+          this.Asignaciones = result;
+          this.dataSource = new MatTableDataSource<IAsignacion>(this.Asignaciones);
           this.dataSource.paginator = this.paginator;
-          // this.dataSource.filterPredicate = (data, filter: string) => {
-          //   return (data.Apellidos.trim().toUpperCase().includes(filter.trim().toUpperCase()));
-          //  };
         })
       )
       .subscribe();
@@ -80,12 +70,12 @@ export class ColaboradoresComponent implements OnInit {
   filtrarTabla() {
     this.dataSource.filter = this.formGroup.get("buscador").value;
   }
-
-  openDialogUpdate(colaborador:IColaborador): void {
-    let dialog = this.dialog.open(ColaboradorUpdateComponent, {
+  
+  openDialogUpdate(asignacion:IAsignacion): void {
+    let dialog = this.dialog.open(AsignacionesUpdateComponent, {
       width: "800px",
       data: {
-        colaborador: colaborador
+        asignacion: asignacion
       },
       disableClose: true,
     });
@@ -96,7 +86,7 @@ export class ColaboradoresComponent implements OnInit {
   }
 
   openDialogInsert(): void {
-    let dialog = this.dialog.open(ColaboradorInsertComponent, {
+    let dialog = this.dialog.open(AsignacionesInsertComponent, {
       width: "800px",
       disableClose: true,
     });
@@ -109,12 +99,12 @@ export class ColaboradoresComponent implements OnInit {
   mostrarDialogo(id:number): void {
     this.dialog
       .open(DialogoConfirmacionComponent, {
-        data: `¿Está seguro de eliminar este colaborador?`,
+        data: `¿Está seguro de eliminar esta asignacion?`,
       })
       .afterClosed()
       .subscribe((confirmado: Boolean) => {
         if (confirmado) {
-          this.colaboradorService.DeleteColaborador(id).subscribe(
+          this.AsignacionService.DeleteAsignacion(id).subscribe(
             (rs) => {
               if (rs.success) {
                 this.actualizarHistorico();
@@ -136,5 +126,6 @@ export class ColaboradoresComponent implements OnInit {
       duration: 3000,
     });
   }
+
 
 }

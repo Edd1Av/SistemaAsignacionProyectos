@@ -17,9 +17,6 @@ namespace WEB.Models
         [StringLength(18)]
         public String CURP { get; set; }
         [Required]
-        [StringLength(13)]
-        public String RFC { get; set; }
-        [Required]
         [StringLength(50)]
         public String Id_Odoo { get; set; }
     }
