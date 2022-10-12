@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WEB.Data;
 using WEB.Models;
+using WEB.ViewModels;
 
 namespace WEB.Controllers
 {
@@ -77,12 +78,47 @@ namespace WEB.Controllers
         // POST: api/Asignaciones
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Asignacion>> PostAsignacion(Asignacion asignacion)
+        public async Task<ActionResult<Asignacion>> PostAsignacion(AsignacionPost postModel)
         {
-            _context.Asignacion.Add(asignacion);
-            await _context.SaveChangesAsync();
+            Response response = new Response();
+            try
+            {
+                var colaborador = new Colaborador();
+                colaborador = _context.Colaboradores.Where(x => x.Id == postModel.Id_Colaborador).FirstOrDefault();
 
-            return CreatedAtAction("GetAsignacion", new { id = asignacion.Id }, asignacion);
+                var asignacion = new Asignacion();
+                var distribucion = new List<Distribucion>();
+                asignacion.Fecha_Inicio = postModel.Fecha_Inicio;
+                asignacion.Fecha_Final = postModel.Fecha_Final;
+
+
+                foreach (var item in postModel.Proyectos)
+                {
+                    var proyecto = new Proyecto();
+                    proyecto= _context.Proyectos.Where(x => x.Id==item.Id).FirstOrDefault();
+
+                    distribucion.Add(new Distribucion()
+                    {
+                        Proyecto = proyecto,
+                        Porcentaje = item.Porcentaje
+                    }); ;
+                }
+
+                asignacion.Distribuciones = distribucion;
+
+                asignacion.Colaborador = colaborador;
+                _context.Asignacion.Add(asignacion);
+                await _context.SaveChangesAsync();
+            }catch(Exception ex)
+            {
+                response.success = false;
+                response.response = $"Error al registrar";
+                return Ok(response);
+            }
+
+            response.success = true;
+            response.response = "Registrado con éxito";
+            return Ok(response);
         }
 
         // DELETE: api/Asignaciones/5

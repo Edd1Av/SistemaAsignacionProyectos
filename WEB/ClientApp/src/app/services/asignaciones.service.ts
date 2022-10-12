@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IAsignacion } from '../interfaces/iasignacion';
+import { IAsignacionPost } from '../interfaces/iasignacion-post';
 import { IResponse } from '../interfaces/iResponse';
 
 @Injectable({
@@ -26,7 +27,7 @@ export class AsignacionesService {
     return this.http.put<IResponse>(this.urlBase + "api/Asignaciones/"+id, Asignacion);
   }
 
-  SetAsignacion(Asignacion:IAsignacion)  {
+  SetAsignacion(Asignacion:IAsignacionPost)  {
     console.log(Asignacion);
       return this.http.post<IResponse>(this.urlBase + "api/Asignaciones",Asignacion);
     }
