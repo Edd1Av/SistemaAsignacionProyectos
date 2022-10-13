@@ -10,11 +10,11 @@ namespace WEB.Models
         [Required]
         public int IdAsignacion { get; set; }
         [ForeignKey("IdAsignacion")]
-        public Asignacion Asignacion { get; set; }
+        public virtual Asignacion Asignacion { get; set; }
         [Required]
         public int IdProyecto { get; set; }
         [ForeignKey("IdProyecto")]
-        public Proyecto Proyecto { get; set; }
+        public virtual Proyecto Proyecto { get; set; }
         
         [Required]
         [MaxLength(3)]

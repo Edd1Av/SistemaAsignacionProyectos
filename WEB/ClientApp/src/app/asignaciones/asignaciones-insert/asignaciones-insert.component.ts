@@ -104,7 +104,7 @@ export class AsignacionesInsertComponent implements OnInit {
       fecha_inicio: new FormControl("", Validators.required),
       fecha_final: new FormControl("", Validators.required),
       colaborador: new FormControl("", Validators.required),
-      proyectos: new FormControl("", Validators.required),
+      proyectos: new FormControl(""),
     });
   }
 
@@ -128,7 +128,7 @@ export class AsignacionesInsertComponent implements OnInit {
     }
     if(this.formGroup.valid){
       let POST:IAsignacionPost={
-        idColaborador:this.formGroup.controls['colaborador'].value,
+        id_colaborador:this.formGroup.controls['colaborador'].value,
         fecha_inicio:this.formGroup.controls['fecha_inicio'].value,
         fecha_final:this.formGroup.controls['fecha_final'].value,
         proyectos:this.ProyectosAsignados

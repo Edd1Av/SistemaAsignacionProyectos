@@ -47,6 +47,8 @@ export class AsignacionesComponent implements OnInit {
       .getAsignaciones()
       .pipe(
         tap((result) => {
+          console.log();
+
           this.Asignaciones = result;
           this.dataSource = new MatTableDataSource<IAsignacion>(this.Asignaciones);
           this.dataSource.paginator = this.paginator;

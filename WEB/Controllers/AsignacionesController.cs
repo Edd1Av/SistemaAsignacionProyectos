@@ -24,23 +24,30 @@ namespace WEB.Controllers
 
         // GET: api/Asignaciones
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Asignacion>>> GetAsignacion()
+        public async Task<ActionResult<IEnumerable<AsignacionHistorico>>> GetAsignacion()
         {
-            var asignaciones = await _context.Asignacion.ToListAsync();
+            var asignaciones =  _context.Asignacion.Include(x=>x.Colaborador).Include(x=>x.Distribuciones).ToList();
             List <AsignacionHistorico> asignacionHistorico = new List<AsignacionHistorico>();
             foreach(var element in asignaciones)
             {
+                List<Proyecto> proyectos = new List<Proyecto>();
+                foreach(var item in element.Distribuciones)
+                {
+                    proyectos.Add(_context.Proyectos.Where(x => x.Id == item.IdProyecto).FirstOrDefault());
+                }
                 asignacionHistorico.Add(new AsignacionHistorico
                 {
                     Id = element.Id,
                     Colaborador = element.Colaborador,
                     Fecha_inicio = element.Fecha_Inicio,
                     Fecha_final = element.Fecha_Final,
+                    Fecha_inicio_s = element.Fecha_Inicio.ToShortDateString(),
+                    Fecha_final_s = element.Fecha_Final.ToShortDateString(),
                     Distribucion = element.Distribuciones,
-                    Proyectos = string.Join(",",element.Distribuciones.Select(x => x.Proyecto.Titulo).ToList())
+                    Proyectos = string.Join(",", proyectos.Select(x => x.Titulo).ToList())
                 }) ;
             }
-            return Ok();
+            return (asignacionHistorico);
         }
 
         // GET: api/Asignaciones/5
@@ -60,32 +67,49 @@ namespace WEB.Controllers
         // PUT: api/Asignaciones/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAsignacion(int id, Asignacion asignacion)
+        public async Task<IActionResult> PutAsignacion(int id, AsignacionPost postModel)
         {
-            if (id != asignacion.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(asignacion).State = EntityState.Modified;
-
+            Response response = new Response();
             try
             {
+
+                Asignacion asignacion = _context.Asignacion.Where(x => x.Id == id).FirstOrDefault();
+                var colaborador = new Colaborador();
+                colaborador = _context.Colaboradores.Where(x => x.Id == postModel.Id_Colaborador).FirstOrDefault();
+
+                var distribucion = new List<Distribucion>();
+                asignacion.Fecha_Inicio = postModel.Fecha_Inicio;
+                asignacion.Fecha_Final = postModel.Fecha_Final;
+
+
+                foreach (var item in postModel.Proyectos)
+                {
+                    var proyecto = new Proyecto();
+                    proyecto = _context.Proyectos.Where(x => x.Id == item.Id).FirstOrDefault();
+
+                    distribucion.Add(new Distribucion()
+                    {
+                        Proyecto = proyecto,
+                        Porcentaje = item.Porcentaje
+                    });
+                }
+
+                _context.Distribucion.RemoveRange(asignacion.Distribuciones);
+                asignacion.Distribuciones = distribucion;
+
+                _context.Entry(asignacion).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!AsignacionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                response.success = false;
+                response.response = $"Error al modificar";
+                return Ok(response);
             }
 
-            return NoContent();
+            response.success = true;
+            response.response = "Modificado con éxito";
+            return Ok(response);
         }
 
         // POST: api/Asignaciones
@@ -138,16 +162,32 @@ namespace WEB.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsignacion(int id)
         {
-            var asignacion = await _context.Asignacion.FindAsync(id);
-            if (asignacion == null)
+            Response response = new Response();
+            try
             {
-                return NotFound();
+
+                var asignacion = await _context.Asignacion.FindAsync(id);
+                if (asignacion == null)
+                {
+                    response.success = false;
+                    response.response = $"Error al eliminar";
+                    return Ok(response);
+                }
+
+                _context.Asignacion.Remove(asignacion);
+                await _context.SaveChangesAsync();
+
+                response.success = true;
+                response.response = "Eliminado con éxito";
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                response.success = false;
+                response.response = $"Error al eliminar";
+                return Ok(response);
             }
 
-            _context.Asignacion.Remove(asignacion);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
 
         private bool AsignacionExists(int id)

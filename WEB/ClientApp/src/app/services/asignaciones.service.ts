@@ -23,7 +23,7 @@ export class AsignacionesService {
     return this.http.get<IAsignacion[]>(this.urlBase + "api/Asignaciones");
   }
 
-  UpdateAsignacion(id:number, Asignacion:IAsignacion)  {
+  UpdateAsignacion(id:number, Asignacion:IAsignacionPost)  {
     return this.http.put<IResponse>(this.urlBase + "api/Asignaciones/"+id, Asignacion);
   }
 

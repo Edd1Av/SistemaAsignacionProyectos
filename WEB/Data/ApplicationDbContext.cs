@@ -11,7 +11,8 @@ namespace WEB.Data
         public ApplicationDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions)
             : base(options, operationalStoreOptions)
         {
-
+            this.ChangeTracker.LazyLoadingEnabled = true;
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

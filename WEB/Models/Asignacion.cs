@@ -15,9 +15,9 @@ namespace WEB.Models
 
         public int IdColaborador { get; set; }
         [ForeignKey("IdColaborador")]
-        public Colaborador Colaborador { get; set; }
+        public virtual Colaborador Colaborador { get; set; }
 
-        public List<Distribucion> Distribuciones { get; set; }
+        public virtual List<Distribucion> Distribuciones { get; set; }
         
         
     }

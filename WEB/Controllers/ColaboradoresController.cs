@@ -77,7 +77,7 @@ namespace WEB.Controllers
                 updateColaborador.Nombres = colaborador.Nombres.Trim();
                 updateColaborador.Apellidos = colaborador.Apellidos.Trim();
                 updateColaborador.CURP = colaborador.CURP.ToUpper().Trim();
-                updateColaborador.Id_Odoo = colaborador.Id_Odoo.ToUpper().Trim();
+                updateColaborador.Id_Odoo = colaborador.Id_Odoo.Trim();
 
 
                 _context.Entry(updateColaborador).State = EntityState.Modified;

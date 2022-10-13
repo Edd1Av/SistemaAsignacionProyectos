@@ -13,5 +13,6 @@ namespace WEB.Models
         [StringLength(200)]
         [Required]
         public string Titulo { get; set; }
+        
     }
 }
