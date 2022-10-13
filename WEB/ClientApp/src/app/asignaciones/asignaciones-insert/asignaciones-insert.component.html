@@ -10,7 +10,7 @@
             <mat-form-field appearance="fill">
                 <mat-label>Fecha Inicio</mat-label>
                 <input matInput formControlName="fecha_inicio" [matDatepicker]="picker">
-                <mat-hint>MM/DD/YYYY</mat-hint>
+                <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
@@ -19,7 +19,7 @@
             <mat-form-field appearance="fill">
                 <mat-label>Fecha Inicio</mat-label>
                 <input matInput formControlName="fecha_final" [matDatepicker]="picker2">
-                <mat-hint>MM/DD/YYYY</mat-hint>
+                <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
                 <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                 <mat-datepicker #picker2></mat-datepicker>
               </mat-form-field>
@@ -36,8 +36,8 @@
                 </mat-select>
               </mat-form-field>
         </div>
-        <div fxFlex="50%" fxFlex.sm="100%">
-            <mat-form-field appearance="fill">
+        <div fxFlex="44%" fxFlex.sm="100%">
+              <mat-form-field appearance="fill">
                 <mat-label>Proyectos</mat-label>
                 <mat-select formControlName="proyectos">
                   <mat-option *ngFor="let proyecto of Proyectos" [value]="proyecto.id">
@@ -45,9 +45,12 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
-              <button mat-fab color="warn" (click)="agregarProyecto()"> 
-                <mat-icon>add</mat-icon>
-              </button>
+              
+        </div>
+        <div fxFlex="6%" fxFlex.sm="100%" class="text-center">
+            <button mat-mini-fab color="primary" (click)="agregarProyecto()"> 
+              <mat-icon>add</mat-icon>
+            </button>
         </div>
       </div>
       <table mat-table [dataSource]="dataSource" class="cat-tbl-search">

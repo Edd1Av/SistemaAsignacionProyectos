@@ -26,8 +26,21 @@ namespace WEB.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Asignacion>>> GetAsignacion()
         {
-            
-            return await _context.Asignacion.ToListAsync();
+            var asignaciones = await _context.Asignacion.ToListAsync();
+            List <AsignacionHistorico> asignacionHistorico = new List<AsignacionHistorico>();
+            foreach(var element in asignaciones)
+            {
+                asignacionHistorico.Add(new AsignacionHistorico
+                {
+                    Id = element.Id,
+                    Colaborador = element.Colaborador,
+                    Fecha_inicio = element.Fecha_Inicio,
+                    Fecha_final = element.Fecha_Final,
+                    Distribucion = element.Distribuciones,
+                    Proyectos = string.Join(",",element.Distribuciones.Select(x => x.Proyecto.Titulo).ToList())
+                }) ;
+            }
+            return Ok();
         }
 
         // GET: api/Asignaciones/5

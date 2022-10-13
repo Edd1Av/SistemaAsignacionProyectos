@@ -1,12 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
 
 namespace WEB.Data.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class ModelosIniciales : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "app");
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -47,6 +52,25 @@ namespace WEB.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Colaboradores",
+                schema: "app",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombres = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Apellidos = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CURP = table.Column<string>(type: "nvarchar(18)", maxLength: 18, nullable: false),
+                    Id_Odoo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Colaboradores", x => x.Id);
+                    table.UniqueConstraint("AK_Colaboradores_CURP", x => x.CURP);
+                    table.UniqueConstraint("AK_Colaboradores_Id_Odoo", x => x.Id_Odoo);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DeviceCodes",
                 columns: table => new
                 {
@@ -58,7 +82,7 @@ namespace WEB.Data.Migrations
                     Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Expiration = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Data = table.Column<string>(type: "nvarchar(max)", maxLength: 52320, nullable: false)
+                    Data = table.Column<string>(type: "nvarchar(max)", maxLength: 50000, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -72,11 +96,11 @@ namespace WEB.Data.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Version = table.Column<int>(type: "int", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Use = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    Use = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Algorithm = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     IsX509Certificate = table.Column<bool>(type: "bit", nullable: false),
                     DataProtected = table.Column<bool>(type: "bit", nullable: false),
-                    Data = table.Column<string>(type: "nvarchar(max)", maxLength: 52320, nullable: false)
+                    Data = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -96,11 +120,26 @@ namespace WEB.Data.Migrations
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Expiration = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ConsumedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Data = table.Column<string>(type: "nvarchar(max)", maxLength: 52320, nullable: false)
+                    Data = table.Column<string>(type: "nvarchar(max)", maxLength: 50000, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PersistedGrants", x => x.Key);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Proyectos",
+                schema: "app",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Clave = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
+                    Titulo = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Proyectos", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -209,6 +248,65 @@ namespace WEB.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Asignaciones",
+                schema: "app",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Fecha_Inicio = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Fecha_Final = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IdColaborador = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Asignaciones", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Asignaciones_Colaboradores_IdColaborador",
+                        column: x => x.IdColaborador,
+                        principalSchema: "app",
+                        principalTable: "Colaboradores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DistribucionAsignacion",
+                schema: "app",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdAsignacion = table.Column<int>(type: "int", nullable: false),
+                    IdProyecto = table.Column<int>(type: "int", nullable: false),
+                    Porcentaje = table.Column<int>(type: "int", maxLength: 3, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DistribucionAsignacion", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DistribucionAsignacion_Asignaciones_IdAsignacion",
+                        column: x => x.IdAsignacion,
+                        principalSchema: "app",
+                        principalTable: "Asignaciones",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DistribucionAsignacion_Proyectos_IdProyecto",
+                        column: x => x.IdProyecto,
+                        principalSchema: "app",
+                        principalTable: "Proyectos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Asignaciones_IdColaborador",
+                schema: "app",
+                table: "Asignaciones",
+                column: "IdColaborador");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -260,6 +358,18 @@ namespace WEB.Data.Migrations
                 column: "Expiration");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DistribucionAsignacion_IdAsignacion",
+                schema: "app",
+                table: "DistribucionAsignacion",
+                column: "IdAsignacion");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DistribucionAsignacion_IdProyecto",
+                schema: "app",
+                table: "DistribucionAsignacion",
+                column: "IdProyecto");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Keys_Use",
                 table: "Keys",
                 column: "Use");
@@ -283,6 +393,13 @@ namespace WEB.Data.Migrations
                 name: "IX_PersistedGrants_SubjectId_SessionId_Type",
                 table: "PersistedGrants",
                 columns: new[] { "SubjectId", "SessionId", "Type" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Proyectos_Clave",
+                schema: "app",
+                table: "Proyectos",
+                column: "Clave",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -306,6 +423,10 @@ namespace WEB.Data.Migrations
                 name: "DeviceCodes");
 
             migrationBuilder.DropTable(
+                name: "DistribucionAsignacion",
+                schema: "app");
+
+            migrationBuilder.DropTable(
                 name: "Keys");
 
             migrationBuilder.DropTable(
@@ -316,6 +437,18 @@ namespace WEB.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Asignaciones",
+                schema: "app");
+
+            migrationBuilder.DropTable(
+                name: "Proyectos",
+                schema: "app");
+
+            migrationBuilder.DropTable(
+                name: "Colaboradores",
+                schema: "app");
         }
     }
 }

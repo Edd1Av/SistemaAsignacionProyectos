@@ -9,15 +9,15 @@ namespace WEB.Models
         public int Id { get; set; }
         [Required]
         [StringLength(100)]
-        public String Nombres { get; set; }
+        public string Nombres { get; set; }
         [Required]
         [StringLength(100)]
-        public String Apellidos { get; set; }
+        public string Apellidos { get; set; }
         [Required]
         [StringLength(18)]
-        public String CURP { get; set; }
+        public string CURP { get; set; }
         [Required]
         [StringLength(50)]
-        public String Id_Odoo { get; set; }
+        public string Id_Odoo { get; set; }
     }
 }

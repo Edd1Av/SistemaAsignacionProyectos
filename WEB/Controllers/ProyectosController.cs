@@ -56,10 +56,21 @@ namespace WEB.Controllers
                 return Ok(response);
             }
 
-            _context.Entry(proyecto).State = EntityState.Modified;
-
             try
             {
+                if (_context.Proyectos.Any(x => x.Clave.ToUpper().Trim() == proyecto.Clave.ToUpper().Trim() && x.Id != proyecto.Id))
+                {
+                    response.success = false;
+                    response.response = $"Ya existe un proyecto con esa clave Odoo";
+                    return Ok(response);
+                }
+
+                Proyecto addProyecto = new Proyecto();
+                addProyecto.Id = proyecto.Id;
+                addProyecto.Titulo = proyecto.Titulo.Trim();
+                addProyecto.Clave = proyecto.Clave.ToUpper().Trim();
+
+                _context.Entry(addProyecto).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
             catch (Exception)
@@ -90,7 +101,18 @@ namespace WEB.Controllers
             Response response = new Response();
             try
             {
-                _context.Proyectos.Add(proyecto);
+                if (_context.Proyectos.Any(x => x.Clave.ToUpper().Trim() == proyecto.Clave.ToUpper().Trim()))
+                {
+                    response.success = false;
+                    response.response = $"Ya existe un proyecto con esa clave Odoo";
+                    return Ok(response);
+                }
+
+                Proyecto addProyecto = new Proyecto();
+                addProyecto.Titulo = proyecto.Titulo.Trim();
+                addProyecto.Clave = proyecto.Clave.ToUpper().Trim();
+
+                _context.Proyectos.Add(addProyecto);
                 await _context.SaveChangesAsync();
             }
             catch (Exception)

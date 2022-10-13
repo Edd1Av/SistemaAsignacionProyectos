@@ -57,10 +57,30 @@ namespace WEB.Controllers
                 return Ok(response);
             }
 
-            _context.Entry(colaborador).State = EntityState.Modified;
-
             try
             {
+                if (_context.Colaboradores.Any(x => x.CURP.ToUpper().Trim() == colaborador.CURP.ToUpper().Trim() && x.Id != colaborador.Id))
+                {
+                    response.success = false;
+                    response.response = $"Ya existe un contacto con ese CURP";
+                    return Ok(response);
+                }
+                if (_context.Colaboradores.Any(x => x.Id_Odoo.ToUpper().Trim() == colaborador.Id_Odoo.ToUpper().Trim() && x.Id != colaborador.Id))
+                {
+                    response.success = false;
+                    response.response = $"Ya existe un contacto con esa clave Odoo";
+                    return Ok(response);
+                }
+
+                Colaborador updateColaborador = new Colaborador();
+                updateColaborador.Id = colaborador.Id;
+                updateColaborador.Nombres = colaborador.Nombres.Trim();
+                updateColaborador.Apellidos = colaborador.Apellidos.Trim();
+                updateColaborador.CURP = colaborador.CURP.ToUpper().Trim();
+                updateColaborador.Id_Odoo = colaborador.Id_Odoo.ToUpper().Trim();
+
+
+                _context.Entry(updateColaborador).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
             catch (Exception)
@@ -93,7 +113,24 @@ namespace WEB.Controllers
             Response response = new Response();
             try
             {
-                _context.Colaboradores.Add(colaborador);
+                if (_context.Colaboradores.Any(x => x.CURP.ToUpper().Trim() == colaborador.CURP.ToUpper().Trim()))
+                {
+                    response.success = false;
+                    response.response = $"Ya existe un contacto con ese CURP";
+                    return Ok(response);
+                }
+                if (_context.Colaboradores.Any(x => x.Id_Odoo.ToUpper().Trim() == colaborador.Id_Odoo.ToUpper().Trim()))
+                {
+                    response.success = false;
+                    response.response = $"Ya existe un contacto con esa clave Odoo";
+                    return Ok(response);
+                }
+                Colaborador addColaborador = new Colaborador();
+                addColaborador.Nombres = colaborador.Nombres.Trim();
+                addColaborador.Apellidos = colaborador.Apellidos.Trim();
+                addColaborador.CURP = colaborador.CURP.ToUpper().Trim();
+                addColaborador.Id_Odoo = colaborador.Id_Odoo.ToUpper().Trim();
+                _context.Colaboradores.Add(addColaborador);
                 await _context.SaveChangesAsync();
             }
             catch (Exception)

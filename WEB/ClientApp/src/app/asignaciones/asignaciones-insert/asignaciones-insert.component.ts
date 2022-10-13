@@ -44,6 +44,7 @@ export class AsignacionesInsertComponent implements OnInit {
   ProyectosAsignados:IProyectoAsignado[]=[];
   colaboradores: IColaborador[]=[];
   Proyectos:IProyecto[]=[];
+  ProyectoSeleccionado:IProyecto;
   ProyectoId:number=0;
   ngOnInit(): void {
   this.GetColaboradores();
@@ -74,17 +75,18 @@ export class AsignacionesInsertComponent implements OnInit {
     this.dataSource=new MatTableDataSource<IProyectoAsignado>(this.ProyectosAsignados);
   }
   public agregarProyecto(){
-    if(this.ProyectosAsignados.filter(x=>x.id==this.formGroup.controls['proyectos'].value).length>0){
+    if(this.ProyectosAsignados.find(x=>x.id==this.formGroup.controls['proyectos'].value)){
       this.openSnackBar("No se pueden repetir los proyectos");
       return;
     }
-    let item:IProyectoAsignado;
-    let proyecto:IProyecto=this.Proyectos.filter(x=>x.id==this.formGroup.controls['proyectos'].value)[0];
-    console.log(proyecto);
+
+    this.ProyectoSeleccionado=this.Proyectos.filter(x=>x.id==this.formGroup.controls['proyectos'].value)[0];
+    
+    console.log(this.ProyectoSeleccionado);
     let proyectoA:IProyectoAsignado={
-      clave:proyecto.clave,
-      id:proyecto.id,
-      titulo:proyecto.titulo,
+      clave:this.ProyectoSeleccionado.clave,
+      id:this.ProyectoSeleccionado.id,
+      titulo:this.ProyectoSeleccionado.titulo,
       porcentaje:0
     }
 
@@ -126,7 +128,7 @@ export class AsignacionesInsertComponent implements OnInit {
     }
     if(this.formGroup.valid){
       let POST:IAsignacionPost={
-        id_colaborador:this.formGroup.controls['colaborador'].value,
+        idColaborador:this.formGroup.controls['colaborador'].value,
         fecha_inicio:this.formGroup.controls['fecha_inicio'].value,
         fecha_final:this.formGroup.controls['fecha_final'].value,
         proyectos:this.ProyectosAsignados

@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WEB.Models
 {
+    [Table("Asignaciones", Schema = "app")]
     public class Asignacion
     {
         public int Id { get; set; }
@@ -9,9 +11,14 @@ namespace WEB.Models
         public DateTime Fecha_Inicio { get; set; }
         [Required]
         public DateTime Fecha_Final { get; set; }
-        public Colaborador Colaborador { get; set; }
-        public List<Distribucion> Distribuciones { get; set; }
         [Required]
-        public int Id_Colaborador { get; set; }
+
+        public int IdColaborador { get; set; }
+        [ForeignKey("IdColaborador")]
+        public Colaborador Colaborador { get; set; }
+
+        public List<Distribucion> Distribuciones { get; set; }
+        
+        
     }
 }

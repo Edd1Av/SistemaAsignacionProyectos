@@ -373,23 +373,20 @@ namespace WEB.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("ColaboradorId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Fecha_Final")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("Fecha_Inicio")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Id_Colaborador")
+                    b.Property<int>("IdColaborador")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ColaboradorId");
+                    b.HasIndex("IdColaborador");
 
-                    b.ToTable("Asignacion");
+                    b.ToTable("Asignaciones", "app");
                 });
 
             modelBuilder.Entity("WEB.Models.Colaborador", b =>
@@ -422,11 +419,9 @@ namespace WEB.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CURP")
-                        .IsUnique();
+                    b.HasAlternateKey("CURP");
 
-                    b.HasIndex("Id_Odoo")
-                        .IsUnique();
+                    b.HasAlternateKey("Id_Odoo");
 
                     b.ToTable("Colaboradores", "app");
                 });
@@ -439,29 +434,23 @@ namespace WEB.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("AsignacionId")
+                    b.Property<int>("IdAsignacion")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id_Asignacion")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Id_Proyecto")
+                    b.Property<int>("IdProyecto")
                         .HasColumnType("int");
 
                     b.Property<int>("Porcentaje")
                         .HasMaxLength(3)
                         .HasColumnType("int");
 
-                    b.Property<int>("ProyectoId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("AsignacionId");
+                    b.HasIndex("IdAsignacion");
 
-                    b.HasIndex("ProyectoId");
+                    b.HasIndex("IdProyecto");
 
-                    b.ToTable("Distribucion");
+                    b.ToTable("DistribucionAsignacion", "app");
                 });
 
             modelBuilder.Entity("WEB.Models.Proyecto", b =>
@@ -545,7 +534,7 @@ namespace WEB.Data.Migrations
                 {
                     b.HasOne("WEB.Models.Colaborador", "Colaborador")
                         .WithMany()
-                        .HasForeignKey("ColaboradorId")
+                        .HasForeignKey("IdColaborador")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -556,13 +545,13 @@ namespace WEB.Data.Migrations
                 {
                     b.HasOne("WEB.Models.Asignacion", "Asignacion")
                         .WithMany("Distribuciones")
-                        .HasForeignKey("AsignacionId")
+                        .HasForeignKey("IdAsignacion")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WEB.Models.Proyecto", "Proyecto")
                         .WithMany()
-                        .HasForeignKey("ProyectoId")
+                        .HasForeignKey("IdProyecto")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

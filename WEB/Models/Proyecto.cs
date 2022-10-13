@@ -9,9 +9,9 @@ namespace WEB.Models
         public int Id { get; set; }
         [StringLength(5)]
         [Required]
-        public String Clave { get; set; }
+        public string Clave { get; set; }
         [StringLength(200)]
         [Required]
-        public String Titulo { get; set; }
+        public string Titulo { get; set; }
     }
 }
