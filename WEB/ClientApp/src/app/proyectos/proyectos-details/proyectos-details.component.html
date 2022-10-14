@@ -1,1 +1,28 @@
-<p>proyectos-details works!</p>
+<div class="cat-title">
+    <ul style="padding-left: 0px;">
+      <li>Detalles Proyecto</li>
+    </ul>
+  </div>
+  <mat-dialog-content class="">
+    <form class="form item" [formGroup]="formGroup">
+      <div fxLayout="row" fxLayout.sm="column">
+            <div fxFlex="70%" fxFlex.sm="100%">
+                <mat-form-field appearance="fill">
+                    <mat-label>Titulo</mat-label>
+                    <input [readonly]="true" matInput maxlength="100" formControlName="titulo"/>
+                </mat-form-field>
+            </div>
+            <div fxFlex="30%" fxFlex.sm="100%">
+                <mat-form-field appearance="fill">
+                    <mat-label>Clave Odoo</mat-label>
+                    <input [readonly]="true" matInput maxlength="5" formControlName="clave"/>
+                </mat-form-field>
+            </div>
+        </div>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="warn" mat-dialog-close>
+      Cerrar
+    </button>
+  </mat-dialog-actions>

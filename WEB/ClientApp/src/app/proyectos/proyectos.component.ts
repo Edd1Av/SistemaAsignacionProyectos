@@ -8,6 +8,7 @@ import { tap } from 'rxjs/operators';
 import { DialogoConfirmacionComponent } from '../dialogo-confirmacion/dialogo-confirmacion.component';
 import { IProyecto } from '../interfaces/IProyectos';
 import { ProyectosService } from '../services/proyectos.service';
+import { ProyectosDetailsComponent } from './proyectos-details/proyectos-details.component';
 import { ProyectosInsertComponent } from './proyectos-insert/proyectos-insert.component';
 import { ProyectosUpdateComponent } from './proyectos-update/proyectos-update.component';
 
@@ -78,6 +79,19 @@ export class ProyectosComponent implements OnInit {
 
   openDialogUpdate(proyecto:IProyecto): void {
     let dialog = this.dialog.open(ProyectosUpdateComponent, {
+      width: "800px",
+      data: {
+        proyecto: proyecto
+      },
+      disableClose: true,
+    });
+    dialog.afterClosed().subscribe((result) => {
+      this.actualizarHistorico();
+    });
+  }
+
+  openDialogDetalle(proyecto:IProyecto): void {
+    let dialog = this.dialog.open(ProyectosDetailsComponent, {
       width: "800px",
       data: {
         proyecto: proyecto

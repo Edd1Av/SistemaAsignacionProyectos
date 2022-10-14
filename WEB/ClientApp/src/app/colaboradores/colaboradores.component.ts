@@ -10,6 +10,7 @@ import { ColaboradoresService } from '../services/colaboradores.service';
 import { DialogoConfirmacionComponent } from '../dialogo-confirmacion/dialogo-confirmacion.component';
 import { ColaboradorUpdateComponent } from './colaborador-update/colaborador-update.component';
 import { ColaboradorInsertComponent } from './colaborador-insert/colaborador-insert.component';
+import { ColaboradorDetailsComponent } from './colaborador-details/colaborador-details.component';
 
 @Component({
   selector: 'app-colaboradores',
@@ -83,6 +84,20 @@ export class ColaboradoresComponent implements OnInit {
 
   openDialogUpdate(colaborador:IColaborador): void {
     let dialog = this.dialog.open(ColaboradorUpdateComponent, {
+      width: "800px",
+      data: {
+        colaborador: colaborador
+      },
+      disableClose: true,
+    });
+    dialog.afterClosed().subscribe((result) => {
+      this.actualizarHistorico();
+      this.filtrarTabla();
+    });
+  }
+
+  openDialogDetalle(colaborador:IColaborador): void {
+    let dialog = this.dialog.open(ColaboradorDetailsComponent, {
       width: "800px",
       data: {
         colaborador: colaborador

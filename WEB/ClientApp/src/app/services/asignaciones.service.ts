@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IAsignacion } from '../interfaces/iasignacion';
+import { IAsignacion, IAsignacionGet } from '../interfaces/iasignacion';
 import { IAsignacionPost } from '../interfaces/iasignacion-post';
 import { IResponse } from '../interfaces/iResponse';
 
@@ -18,6 +18,11 @@ export class AsignacionesService {
   getAsignacionById(id: number): Observable<IAsignacion> {
     return this.http.get<IAsignacion>(this.urlBase + "api/Asignaciones" + id);
   }
+
+  getAsignacionByIdColaborador(id: number): Observable<IAsignacionGet> {
+    return this.http.get<IAsignacionGet>(this.urlBase + "api/Asignaciones/ByColaborador/" + id);
+  }
+
 
   getAsignaciones(): Observable<IAsignacion[]> {
     return this.http.get<IAsignacion[]>(this.urlBase + "api/Asignaciones");

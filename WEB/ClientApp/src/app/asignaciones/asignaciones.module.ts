@@ -16,6 +16,7 @@ import { AsignacionesInsertComponent } from './asignaciones-insert/asignaciones-
 import { AsignacionesUpdateComponent } from './asignaciones-update/asignaciones-update.component';
 import { MatSelect, MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from "@angular/material/datepicker";
+import { AsignacionesDetailsComponent } from './asignaciones-details/asignaciones-details.component';
 
 const routes: Routes = [
   { path: '', component: AsignacionesComponent }
@@ -25,7 +26,8 @@ const routes: Routes = [
   declarations: [
     AsignacionesComponent,
     AsignacionesInsertComponent,
-    AsignacionesUpdateComponent
+    AsignacionesUpdateComponent,
+    AsignacionesDetailsComponent
   ],
   imports: [
     ReactiveFormsModule,

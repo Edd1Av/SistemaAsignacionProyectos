@@ -65,6 +65,22 @@ namespace WEB.Controllers
             return asignacion;
         }
 
+        [Route("ByColaborador/{id}")]
+        [HttpGet]
+        public async Task<ActionResult<Asignacion>> GetAsignacionByColaborador(int id)
+        {
+            var asignacion = _context.Asignacion.Include(x => x.Colaborador)
+                                           .Include(x => x.Distribuciones)
+                                               .ThenInclude(y => y.Proyecto).Where(x => x.IdColaborador == id).FirstOrDefault();
+
+            if (asignacion == null)
+            {
+                return NotFound();
+            }
+
+            return asignacion;
+        }
+
         // PUT: api/Asignaciones/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

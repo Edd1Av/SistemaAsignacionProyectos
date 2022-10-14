@@ -12,4 +12,15 @@ export interface IAsignacion {
     proyectos:string;
 }
 
+export interface IAsignacionGet {
+    id:Number;
+    fecha_Inicio:Date;
+    fecha_Final:Date;
+    fecha_inicio_s:string;
+    fecha_final_s:string;
+    colaborador:IColaborador;
+    distribuciones:IDistribucion[];
+    proyectos:string;
+}
+
 

@@ -8,6 +8,7 @@ import { tap } from 'rxjs/operators';
 import { DialogoConfirmacionComponent } from '../dialogo-confirmacion/dialogo-confirmacion.component';
 import { IAsignacion } from '../interfaces/iasignacion';
 import { AsignacionesService } from '../services/asignaciones.service';
+import { AsignacionesDetailsComponent } from './asignaciones-details/asignaciones-details.component';
 import { AsignacionesInsertComponent } from './asignaciones-insert/asignaciones-insert.component';
 import { AsignacionesUpdateComponent } from './asignaciones-update/asignaciones-update.component';
 
@@ -75,6 +76,21 @@ export class AsignacionesComponent implements OnInit {
   
   openDialogUpdate(asignacion:IAsignacion): void {
     let dialog = this.dialog.open(AsignacionesUpdateComponent, {
+      width: "800px",
+      data: {
+        asignacion: asignacion
+      },
+      disableClose: true,
+    });
+    dialog.afterClosed().subscribe((result) => {
+      this.actualizarHistorico();
+      this.filtrarTabla();
+    });
+  }
+
+    
+  openDialogDetalle(asignacion:IAsignacion): void {
+    let dialog = this.dialog.open(AsignacionesDetailsComponent, {
       width: "800px",
       data: {
         asignacion: asignacion

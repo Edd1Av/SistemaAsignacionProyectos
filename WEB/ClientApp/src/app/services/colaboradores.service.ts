@@ -20,6 +20,7 @@ export class ColaboradoresService {
     return this.http.get<IColaborador>(this.urlBase + "api/Colaboradores" + id);
   }
 
+
   getColaboradores(): Observable<IColaborador[]> {
     return this.http.get<IColaborador[]>(this.urlBase + "api/Colaboradores");
   }

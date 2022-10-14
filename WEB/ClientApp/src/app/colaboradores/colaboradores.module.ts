@@ -15,6 +15,7 @@ import { FlexLayoutModule } from "@angular/flex-layout";
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { ColaboradorUpdateComponent } from './colaborador-update/colaborador-update.component';
 import { ColaboradorDetailsComponent } from './colaborador-details/colaborador-details.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 const routes: Routes = [
   { path: '', component: ColaboradoresComponent }
 ];
@@ -39,6 +40,7 @@ const routes: Routes = [
     MatInputModule,
     FlexLayoutModule,
     MatSnackBarModule,
+    MatDatepickerModule,
     RouterModule.forChild(routes)
   ]
 })

@@ -16,7 +16,7 @@ code {
 } */
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background: rgb(214, 214, 214); }
 
 
 html, body { height: 100%; }

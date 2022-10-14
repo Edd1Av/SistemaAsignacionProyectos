@@ -1,62 +1,35 @@
 <div class="cat-title">
     <ul style="padding-left: 0px;">
-      <li>Detalle de Colaborador {{nombre_colaborador}}</li>
+      <li>Detalle Asignación</li>
     </ul>
   </div>
   <mat-dialog-content class="">
     <form class="form item" [formGroup]="formGroup">
       <div fxLayout="row" fxLayout.sm="column">
         <div fxFlex="50%" fxFlex.sm="100%">
-          <mat-form-field appearance="fill">
-            <mat-label>Nombre(s)</mat-label>
-            <input [readonly]="true" matInput maxlength="100" formControlName="nombres" />
-          </mat-form-field>
-        </div>
-        <div fxFlex="50%" fxFlex.sm="100%">
-          <mat-form-field appearance="fill">
-            <mat-label>Apellidos</mat-label>
-            <input [readonly]="true" matInput maxlength="100" formControlName="apellidos" />
-          </mat-form-field>
-        </div>
-      </div>
-      <div fxLayout="row" fxLayout.sm="column">
-        <div fxFlex="50%" fxFlex.sm="100%">
-          <mat-form-field  appearance="fill">
-            <mat-label>CURP</mat-label>
-            <input [readonly]="true" matInput maxlength="18" formControlName="curp" />
-          </mat-form-field>
-        </div>
-        <div fxFlex="50%" fxFlex.sm="100%">
-          <mat-form-field appearance="fill">
-            <mat-label>Clave Odoo</mat-label>
-            <input [readonly]="true" matInput maxlength="50" formControlName="id_odoo" />
-          </mat-form-field>
-        </div>
-      </div>
-    </form>
-  </mat-dialog-content>
-
-  <h2>Asignación en curso</h2>
-
-  <mat-dialog-content class="">
-    <form class="form item" [formGroup]="formGroup">
-      <div fxLayout="row" fxLayout.sm="column">
-        <div fxFlex="50%" fxFlex.sm="100%">
             <mat-form-field appearance="fill">
                 <mat-label>Fecha Inicio</mat-label>
-                <input  matInput formControlName="fecha_Inicio" [matDatepicker]="picker">
+                <input [readonly]="true" matInput formControlName="fecha_inicio" [matDatepicker]="picker">
                 <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker-toggle matSuffix ></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
         </div>
         <div fxFlex="50%" fxFlex.sm="100%">
             <mat-form-field appearance="fill">
                 <mat-label>Fecha Inicio</mat-label>
-                <input matInput formControlName="fecha_Final" [matDatepicker]="picker2">
+                <input [readonly]="true" matInput formControlName="fecha_final" [matDatepicker]="picker2">
                 <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
-                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker-toggle matSuffix></mat-datepicker-toggle>
                 <mat-datepicker #picker2></mat-datepicker>
+              </mat-form-field>
+        </div>
+      </div>
+      <div fxLayout="row" fxLayout.sm="column">
+        <div fxFlex="50%" fxFlex.sm="100%">
+            <mat-form-field appearance="fill" >
+                <mat-label>Colaborador</mat-label>
+                <input type="text" matInput [readonly]="true" formControlName="Colaborador" >
               </mat-form-field>
         </div>
       </div>
@@ -85,13 +58,14 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
       </table>
+      <mat-paginator [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons
+      aria-label="Select page of periodic elements">
+    </mat-paginator>
     </form>
   </mat-dialog-content>
-
-
-
   <mat-dialog-actions align="end">
-    <button  mat-raised-button color="warn" mat-dialog-close>
-        Cerrar
-      </button>
+    <button mat-raised-button color="warn" mat-dialog-close>
+      Cerrar
+    </button>
   </mat-dialog-actions>
+
