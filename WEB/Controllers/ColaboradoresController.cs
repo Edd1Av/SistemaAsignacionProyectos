@@ -129,7 +129,7 @@ namespace WEB.Controllers
                 addColaborador.Nombres = colaborador.Nombres.Trim();
                 addColaborador.Apellidos = colaborador.Apellidos.Trim();
                 addColaborador.CURP = colaborador.CURP.ToUpper().Trim();
-                addColaborador.Id_Odoo = colaborador.Id_Odoo.ToUpper().Trim();
+                addColaborador.Id_Odoo = colaborador.Id_Odoo.Trim();
                 _context.Colaboradores.Add(addColaborador);
                 await _context.SaveChangesAsync();
             }

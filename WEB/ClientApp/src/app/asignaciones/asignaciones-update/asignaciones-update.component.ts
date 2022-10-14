@@ -50,6 +50,7 @@ export class AsignacionesUpdateComponent implements OnInit {
   Proyectos:IProyecto[]=[];
   ProyectoSeleccionado:IProyecto;
   ProyectoId:number=0;
+  select:number;
   ngOnInit(): void {
 
   this.GetColaboradores();

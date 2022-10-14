@@ -40,7 +40,7 @@
   
             <ng-container matColumnDef="Colaborador">
               <th class="columna" style="width: 18%;" mat-header-cell *matHeaderCellDef> Colaborador </th>
-              <td class='has_label_on_mobile' data-label='Nombre: '  mat-cell *matCellDef="let element"> {{element.colaborador.nombres}} </td>
+              <td class='has_label_on_mobile' data-label='Nombre: '  mat-cell *matCellDef="let element"> {{element.colaborador.nombres}} {{element.colaborador.apellidos}}</td>
             </ng-container>
 
             <ng-container matColumnDef="Fecha_Inicio">

@@ -48,7 +48,7 @@
               
         </div>
         <div fxFlex="6%" fxFlex.sm="100%" class="text-center">
-            <button mat-mini-fab color="primary" (click)="agregarProyecto()"> 
+            <button mat-mini-fab color="primary" (click)="agregarProyecto()" [disabled]="!formGroup.controls['proyectos'].value"> 
               <mat-icon>add</mat-icon>
             </button>
         </div>

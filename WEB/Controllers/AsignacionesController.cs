@@ -26,15 +26,16 @@ namespace WEB.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AsignacionHistorico>>> GetAsignacion()
         {
-            var asignaciones =  _context.Asignacion.Include(x=>x.Colaborador).Include(x=>x.Distribuciones).ToList();
+            //var asignaciones =  _context.Asignacion.Include(x=>x.Colaborador).Include(x=>x.Distribuciones).ToList();
+            var asignaciones = _context.Asignacion
+                                           .Include(x => x.Colaborador)
+                                           .Include(x => x.Distribuciones)
+                                               .ThenInclude(y => y.Proyecto)
+                                           .ToList();
+
             List <AsignacionHistorico> asignacionHistorico = new List<AsignacionHistorico>();
             foreach(var element in asignaciones)
             {
-                List<Proyecto> proyectos = new List<Proyecto>();
-                foreach(var item in element.Distribuciones)
-                {
-                    proyectos.Add(_context.Proyectos.Where(x => x.Id == item.IdProyecto).FirstOrDefault());
-                }
                 asignacionHistorico.Add(new AsignacionHistorico
                 {
                     Id = element.Id,
@@ -44,7 +45,7 @@ namespace WEB.Controllers
                     Fecha_inicio_s = element.Fecha_Inicio.ToShortDateString(),
                     Fecha_final_s = element.Fecha_Final.ToShortDateString(),
                     Distribucion = element.Distribuciones,
-                    Proyectos = string.Join(",", proyectos.Select(x => x.Titulo).ToList())
+                    Proyectos = string.Join(", ", element.Distribuciones.Select(x=>x.Proyecto.Titulo).ToList())
                 }) ;
             }
             return (asignacionHistorico);
@@ -70,41 +71,49 @@ namespace WEB.Controllers
         public async Task<IActionResult> PutAsignacion(int id, AsignacionPost postModel)
         {
             Response response = new Response();
-            try
+            using (var transaction = _context.Database.BeginTransaction())
             {
-
-                Asignacion asignacion = _context.Asignacion.Where(x => x.Id == id).FirstOrDefault();
-                var colaborador = new Colaborador();
-                colaborador = _context.Colaboradores.Where(x => x.Id == postModel.Id_Colaborador).FirstOrDefault();
-
-                var distribucion = new List<Distribucion>();
-                asignacion.Fecha_Inicio = postModel.Fecha_Inicio;
-                asignacion.Fecha_Final = postModel.Fecha_Final;
-
-
-                foreach (var item in postModel.Proyectos)
+                try
                 {
-                    var proyecto = new Proyecto();
-                    proyecto = _context.Proyectos.Where(x => x.Id == item.Id).FirstOrDefault();
+                    Asignacion asignacion = _context.Asignacion
+                                            .Include(x=>x.Colaborador)
+                                            .Include(x=>x.Distribuciones)
+                                                .ThenInclude(y=>y.Proyecto)
+                                            .Where(x => x.Id == id).First();
 
-                    distribucion.Add(new Distribucion()
+                    asignacion.Fecha_Inicio = postModel.Fecha_Inicio;
+                    asignacion.Fecha_Final = postModel.Fecha_Final;
+
+                    _context.Distribucion.RemoveRange(asignacion.Distribuciones);
+
+                    asignacion.Distribuciones.Clear();
+
+
+                    foreach (var item in postModel.Proyectos)
                     {
-                        Proyecto = proyecto,
-                        Porcentaje = item.Porcentaje
-                    });
+                        var proyecto = new Proyecto();
+                        proyecto = _context.Proyectos.Where(x => x.Id == item.Id).First();
+
+                        asignacion.Distribuciones.Add(new Distribucion()
+                        {
+                            Proyecto = proyecto,
+                            Porcentaje = item.Porcentaje
+                        });
+                    }
+
+                    _context.Asignacion.Attach(asignacion);
+                    _context.Entry(asignacion).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+
+                    transaction.Commit();
                 }
-
-                _context.Distribucion.RemoveRange(asignacion.Distribuciones);
-                asignacion.Distribuciones = distribucion;
-
-                _context.Entry(asignacion).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                response.success = false;
-                response.response = $"Error al modificar";
-                return Ok(response);
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    response.success = false;
+                    response.response = $"Error al modificar";
+                    return Ok(response);
+                }
             }
 
             response.success = true;
