@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { IColaborador } from '../interfaces/Icolaboradores';
+import { IColaborador } from '../../interfaces/Icolaboradores';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { tap } from 'rxjs/operators';
-import { ColaboradoresService } from '../services/colaboradores.service';
-import { DialogoConfirmacionComponent } from '../dialogo-confirmacion/dialogo-confirmacion.component';
+import { ColaboradoresService } from '../../services/colaboradores.service';
+import { DialogoConfirmacionComponent } from '../../dialogo-confirmacion/dialogo-confirmacion.component';
 import { ColaboradorUpdateComponent } from './colaborador-update/colaborador-update.component';
 import { ColaboradorInsertComponent } from './colaborador-insert/colaborador-insert.component';
 import { ColaboradorDetailsComponent } from './colaborador-details/colaborador-details.component';

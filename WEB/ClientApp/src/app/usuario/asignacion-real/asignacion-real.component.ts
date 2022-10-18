@@ -5,56 +5,53 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { tap } from 'rxjs/operators';
-import { DialogoConfirmacionComponent } from '../dialogo-confirmacion/dialogo-confirmacion.component';
-import { IProyecto } from '../interfaces/IProyectos';
-import { ProyectosService } from '../services/proyectos.service';
-import { ProyectosDetailsComponent } from './proyectos-details/proyectos-details.component';
-import { ProyectosInsertComponent } from './proyectos-insert/proyectos-insert.component';
-import { ProyectosUpdateComponent } from './proyectos-update/proyectos-update.component';
+import { DialogoConfirmacionComponent } from 'src/app/dialogo-confirmacion/dialogo-confirmacion.component';
+import { IAsignacionReal } from 'src/app/interfaces/iasignacion';
+import { AsignacionesService } from 'src/app/services/asignaciones.service';
+import { AsignacionesRealDetailsComponent } from '../asignaciones-real-details/asignaciones-real-details.component';
+import { AsignacionesRealInsertComponent } from '../asignaciones-real-insert/asignaciones-real-insert.component';
+import { AsignacionesRealUpdateComponent } from '../asignaciones-real-update/asignaciones-real-update.component';
 
 @Component({
-  selector: 'app-proyectos',
-  templateUrl: './proyectos.component.html',
-  styleUrls: ['./proyectos.component.css']
+  selector: 'app-asignacion-real',
+  templateUrl: './asignacion-real.component.html',
+  styleUrls: ['./asignacion-real.component.css']
 })
-export class ProyectosComponent implements OnInit {
-
+export class AsignacionRealComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   displayedColumns: string[] = [
-    "titulo",
-    "clave",
+    "Colaborador",
+    "Proyectos",
+    "Fecha_Inicio",
+    "Fecha_Final",
     "acciones"
   ];
-  
- 
-  constructor(private proyectosService: ProyectosService,
-    private dialog: MatDialog,
-    private formBuilder: FormBuilder,
-    private snackBar: MatSnackBar
-    ) {
-     
-    }
 
-    proyectos: IProyecto[]=[];
-    dataSource!: MatTableDataSource<IProyecto>;
+  constructor(private AsignacionService: AsignacionesService, private dialog: MatDialog,
+    private formBuilder: FormBuilder,
+    private snackBar: MatSnackBar) 
+    { }
+
+    Asignaciones: IAsignacionReal[]=[];
+    dataSource!: MatTableDataSource<IAsignacionReal>;
     formGroup: any;
-    
 
   ngOnInit(): void {
     this.actualizarHistorico();
     this.buildForm();
-    //this.initializeFormGroup();
-
+    this.initializeFormGroup();
   }
 
-
   actualizarHistorico() {
-    this.proyectosService
-      .getProyectos()
+    console.log("entro");
+    this.AsignacionService
+      .getAsignacionesReal()
       .pipe(
         tap((result) => {
-          this.proyectos = result;
-          this.dataSource = new MatTableDataSource<IProyecto>(this.proyectos);
+          console.log(result);
+
+          this.Asignaciones = result;
+          this.dataSource = new MatTableDataSource<IAsignacionReal>(this.Asignaciones);
           this.dataSource.paginator = this.paginator;
         })
       )
@@ -67,61 +64,66 @@ export class ProyectosComponent implements OnInit {
     });
   }
 
-  // initializeFormGroup() {
-  //   this.formGroup.setValue({
-  //     buscador: "",
-  //   });
-  // }
+  initializeFormGroup() {
+    this.formGroup.setValue({
+      buscador: "",
+    });
+  }
 
   filtrarTabla() {
     this.dataSource.filter = this.formGroup.get("buscador").value;
   }
-
-  openDialogUpdate(proyecto:IProyecto): void {
-    let dialog = this.dialog.open(ProyectosUpdateComponent, {
+  
+  openDialogUpdate(asignacion:IAsignacionReal): void {
+    let dialog = this.dialog.open(AsignacionesRealUpdateComponent, {
       width: "800px",
       data: {
-        proyecto: proyecto
+        asignacion: asignacion
       },
       disableClose: true,
     });
     dialog.afterClosed().subscribe((result) => {
       this.actualizarHistorico();
+      this.filtrarTabla();
     });
   }
 
-  openDialogDetalle(proyecto:IProyecto): void {
-    let dialog = this.dialog.open(ProyectosDetailsComponent, {
+    
+  openDialogDetalle(asignacion:IAsignacionReal): void {
+    console.log(asignacion);
+    let dialog = this.dialog.open(AsignacionesRealDetailsComponent, {
       width: "800px",
       data: {
-        proyecto: proyecto
+        asignacion: asignacion
       },
       disableClose: true,
     });
     dialog.afterClosed().subscribe((result) => {
       this.actualizarHistorico();
+      this.filtrarTabla();
     });
   }
 
   openDialogInsert(): void {
-    let dialog = this.dialog.open(ProyectosInsertComponent, {
+    let dialog = this.dialog.open(AsignacionesRealInsertComponent, {
       width: "800px",
       disableClose: true,
     });
     dialog.afterClosed().subscribe((result) => {
       this.actualizarHistorico();
+      this.filtrarTabla();
     });
   }
 
   mostrarDialogo(id:number): void {
     this.dialog
       .open(DialogoConfirmacionComponent, {
-        data: `¿Está seguro de eliminar este proyecto?`,
+        data: `¿Está seguro de eliminar esta asignacion?`,
       })
       .afterClosed()
       .subscribe((confirmado: Boolean) => {
         if (confirmado) {
-          this.proyectosService.DeleteProyecto(id).subscribe(
+          this.AsignacionService.DeleteAsignacion(id).subscribe(
             (rs) => {
               if (rs.success) {
                 this.actualizarHistorico();
@@ -144,7 +146,5 @@ export class ProyectosComponent implements OnInit {
     });
   }
 
+
 }
-
-
-

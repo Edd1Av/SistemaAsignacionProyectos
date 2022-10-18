@@ -25,6 +25,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatNativeDateModule } from '@angular/material/core';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -53,9 +54,10 @@ import { MatNativeDateModule } from '@angular/material/core';
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthorizeGuard] },
-      { path: 'proyectos', loadChildren: () => import('./proyectos/proyectos.module').then(m => m.ProyectosModule) },
-      { path: 'asignaciones', loadChildren: () => import('./asignaciones/asignaciones.module').then(m => m.AsignacionesModule) },
-      { path: 'colaboradores', loadChildren: () => import('./colaboradores/colaboradores.module').then(m => m.ColaboradoresModule) },
+      { path: 'proyectos', loadChildren: () => import('./administador/proyectos/proyectos.module').then(m => m.ProyectosModule) },
+      { path: 'asignaciones', loadChildren: () => import('./administador/asignaciones/asignaciones.module').then(m => m.AsignacionesModule) },
+      { path: 'colaboradores', loadChildren: () => import('./administador/colaboradores/colaboradores.module').then(m => m.ColaboradoresModule) },
+      { path: 'asignacionReal', loadChildren: () => import('./usuario/asignacion-real/asignacion-real.module').then(m => m.AsignacionRealModule) },
       { path: '**', component: HomeComponent}
     ]),
     BrowserAnimationsModule
