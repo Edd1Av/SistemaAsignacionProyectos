@@ -21,19 +21,20 @@ namespace WEB.Data
             //modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
             //modelBuilder.Conventions.Remove<PluralizingEntitySetNameConvention>();
 
-            modelBuilder.Entity<Colaborador>().HasAlternateKey(x => x.CURP);
-            modelBuilder.Entity<Colaborador>().HasAlternateKey(x => x.Id_Odoo);
+            modelBuilder.Entity<Colaborador>().HasIndex(x => x.CURP).IsUnique();
+            modelBuilder.Entity<Colaborador>().HasIndex(x => x.Id_Odoo).IsUnique();
 
             modelBuilder.Entity<Proyecto>().HasIndex(x => x.Clave).IsUnique();
 
-
+            modelBuilder.Entity<Asignacion>().HasIndex(x=>x.IdColaborador).IsUnique();
 
         }
 
         public DbSet<Colaborador> Colaboradores { get; set; }
         public DbSet<Proyecto> Proyectos { get; set; }
         public DbSet<Asignacion> Asignacion { get; set; }
-
+        public DbSet<AsignacionReal> AsignacionReal { get; set; }
+        public DbSet<DistribucionReal> DistribucionReal { get; set; }
         public DbSet<Distribucion> Distribucion { get; set; }
     }
 }

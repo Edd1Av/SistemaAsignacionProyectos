@@ -22,8 +22,6 @@ export class AsignacionesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   displayedColumns: string[] = [
     "Colaborador",
-    "Fecha_Inicio",
-    "Fecha_Final",
     "Proyectos",
     "acciones"
   ];
@@ -90,6 +88,7 @@ export class AsignacionesComponent implements OnInit {
 
     
   openDialogDetalle(asignacion:IAsignacion): void {
+    console.log(asignacion);
     let dialog = this.dialog.open(AsignacionesDetailsComponent, {
       width: "800px",
       data: {

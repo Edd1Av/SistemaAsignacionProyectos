@@ -5,12 +5,12 @@
   </div>
   <mat-dialog-content class="">
     <form class="form item" [formGroup]="formGroup">
-      <div fxLayout="row" fxLayout.sm="column">
+      <!-- <div fxLayout="row" fxLayout.sm="column">
         <div fxFlex="50%" fxFlex.sm="100%">
             <mat-form-field appearance="fill">
                 <mat-label>Fecha Inicio</mat-label>
                 <input matInput formControlName="fecha_inicio" [matDatepicker]="picker">
-                <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
+                <mat-hint>MM/DD/YYYY</mat-hint>
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
@@ -19,12 +19,12 @@
             <mat-form-field appearance="fill">
                 <mat-label>Fecha Inicio</mat-label>
                 <input matInput formControlName="fecha_final" [matDatepicker]="picker2">
-                <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
+                <mat-hint>MM/DD/YYYY</mat-hint>
                 <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                 <mat-datepicker #picker2></mat-datepicker>
               </mat-form-field>
         </div>
-      </div>
+      </div> -->
       <div fxLayout="row" fxLayout.sm="column">
         <div fxFlex="50%" fxFlex.sm="100%">
             <mat-form-field appearance="fill">
@@ -65,15 +65,38 @@
           <td   mat-cell *matCellDef="let element"> {{element.clave}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="Porcentaje">
+        <!-- <ng-container matColumnDef="Porcentaje">
           <th class="columna" style="width: 18%;" mat-header-cell *matHeaderCellDef> Porcentaje</th>
           <td  mat-cell *matCellDef="let element; let index = index;"> 
             <mat-form-field appearance="outline" fxFlexFill>
             <input type="number" [max]="100" [min]="1" matInput [(ngModel)]="ProyectosAsignados[index].porcentaje"  [ngModelOptions]="{standalone: true}" />
           </mat-form-field> 
         </td>
+        </ng-container> -->
+        <ng-container matColumnDef="Fecha_Inicio">
+          <th class="columna" style="width: 18%;" mat-header-cell *matHeaderCellDef> Fecha Inicio</th>
+          <td   mat-cell *matCellDef="let element; let index = index;">            
+             <mat-form-field appearance="fill">
+            <mat-label>Fecha Inicio</mat-label>
+            <input [readonly]="true" matInput [(ngModel)]="ProyectosAsignados[index].fecha_inicio" [ngModelOptions]="{standalone: true}" [matDatepicker]="picker_index">
+            <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
+            <mat-datepicker-toggle matSuffix [for]="picker_index"></mat-datepicker-toggle>
+            <mat-datepicker #picker_index></mat-datepicker>
+          </mat-form-field></td>
         </ng-container>
 
+        <ng-container matColumnDef="Fecha_Final">
+          <th class="columna" style="width: 18%;" mat-header-cell *matHeaderCellDef> Fecha Final</th>
+          <td   mat-cell *matCellDef="let element; let index = index;"> 
+            <mat-form-field appearance="fill">
+              <mat-label>Fecha Final</mat-label>
+              <input [readonly]="true" matInput [(ngModel)]="ProyectosAsignados[index].fecha_final" [ngModelOptions]="{standalone: true}"  [matDatepicker]="picker2_index">
+              <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
+              <mat-datepicker-toggle matSuffix [for]="picker2_index"></mat-datepicker-toggle>
+              <mat-datepicker #picker2_index></mat-datepicker>
+            </mat-form-field>  
+          </td>
+        </ng-container>
         <ng-container  matColumnDef="acciones">
           <th class="columna" style="width: 12%;" mat-header-cell *matHeaderCellDef> Acciones </th>
           <td mat-cell *matCellDef="let element; let index = index;">

@@ -29,7 +29,8 @@ export class AsignacionesDetailsComponent implements OnInit {
   displayedColumns: string[] = [
     "Proyecto",
     "Clave_Odoo",
-    "Porcentaje",
+    "Fecha_Inicio",
+    "Fecha_Final"
   ];
 
   constructor(
@@ -65,10 +66,12 @@ export class AsignacionesDetailsComponent implements OnInit {
     Asignacion.distribucion.map(x=>{
       let proyecto:IProyectoAsignado={
         id:x.proyecto.id,
-        porcentaje:x.porcentaje,
+        fecha_final:x.fecha_Final,
+        fecha_inicio:x.fecha_Inicio,
         clave:x.proyecto.clave,
         titulo:x.proyecto.titulo
       }
+      console.log(this.data.asignacion);
       this.ProyectosAsignados.push(proyecto);
       this.dataSource=new MatTableDataSource<IProyectoAsignado>(this.ProyectosAsignados);
       this.dataSource.paginator=this.paginator;
@@ -113,7 +116,8 @@ export class AsignacionesDetailsComponent implements OnInit {
       clave:this.ProyectoSeleccionado.clave,
       id:this.ProyectoSeleccionado.id,
       titulo:this.ProyectoSeleccionado.titulo,
-      porcentaje:0
+      fecha_inicio:new Date(),
+      fecha_final:new Date()
     }
 
     console.log(proyectoA);
@@ -127,8 +131,8 @@ export class AsignacionesDetailsComponent implements OnInit {
 
   private buildForm() {
     this.formGroup = this.formBuilder.group({
-      fecha_inicio: new FormControl(this.data.asignacion.fecha_inicio, Validators.required),
-      fecha_final: new FormControl(this.data.asignacion.fecha_final, Validators.required),
+      // fecha_inicio: new FormControl(this.data.asignacion.fecha_inicio, Validators.required),
+      // fecha_final: new FormControl(this.data.asignacion.fecha_final, Validators.required),
       Colaborador: new FormControl(this.data.asignacion.colaborador.nombres, Validators.required),
     });
   }

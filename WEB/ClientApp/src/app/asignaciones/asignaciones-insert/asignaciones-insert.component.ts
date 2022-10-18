@@ -26,7 +26,8 @@ export class AsignacionesInsertComponent implements OnInit {
   displayedColumns: string[] = [
     "Proyecto",
     "Clave_Odoo",
-    "Porcentaje",
+    "Fecha_Inicio",
+    "Fecha_Final",
     "acciones"
   ];
 
@@ -87,7 +88,8 @@ export class AsignacionesInsertComponent implements OnInit {
       clave:this.ProyectoSeleccionado.clave,
       id:this.ProyectoSeleccionado.id,
       titulo:this.ProyectoSeleccionado.titulo,
-      porcentaje:0
+      fecha_inicio:new Date(),
+      fecha_final:new Date(),
     }
 
     console.log(proyectoA);
@@ -101,8 +103,8 @@ export class AsignacionesInsertComponent implements OnInit {
 
   private buildForm() {
     this.formGroup = this.formBuilder.group({
-      fecha_inicio: new FormControl("", Validators.required),
-      fecha_final: new FormControl("", Validators.required),
+      // fecha_inicio: new FormControl("", Validators.required),
+      // fecha_final: new FormControl("", Validators.required),
       colaborador: new FormControl("", Validators.required),
       proyectos: new FormControl(""),
     });
@@ -118,19 +120,16 @@ export class AsignacionesInsertComponent implements OnInit {
   }
 
   onSubmit() {
-    let total:number=0;
-    this.ProyectosAsignados.forEach(element => {
-      total+=element.porcentaje;
-    });
-    if(total!=100){
-      this.openSnackBar("El porcentaje de asignación a proyectos debe sumar 100");
-      return;
-    }
+    // let total:number=0;
+    // if(total!=100){
+    //   this.openSnackBar("El porcentaje de asignación a proyectos debe sumar 100");
+    //   return;
+    // }
     if(this.formGroup.valid){
       let POST:IAsignacionPost={
         id_colaborador:this.formGroup.controls['colaborador'].value,
-        fecha_inicio:this.formGroup.controls['fecha_inicio'].value,
-        fecha_final:this.formGroup.controls['fecha_final'].value,
+        // fecha_inicio:this.formGroup.controls['fecha_inicio'].value,
+        // fecha_final:this.formGroup.controls['fecha_final'].value,
         proyectos:this.ProyectosAsignados
       }
         this._asignacionService

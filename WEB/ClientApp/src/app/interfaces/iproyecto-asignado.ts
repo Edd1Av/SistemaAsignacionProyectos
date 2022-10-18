@@ -2,5 +2,6 @@ export interface IProyectoAsignado {
     id:Number;
     clave:String;
     titulo:String;
-    porcentaje:number;
+    fecha_inicio:Date;
+    fecha_final:Date;
 }

@@ -29,7 +29,8 @@ export class AsignacionesUpdateComponent implements OnInit {
   displayedColumns: string[] = [
     "Proyecto",
     "Clave_Odoo",
-    "Porcentaje",
+    "Fecha_Inicio",
+    "Fecha_Final",
     "acciones"
   ];
 
@@ -66,7 +67,8 @@ export class AsignacionesUpdateComponent implements OnInit {
     Asignacion.distribucion.map(x=>{
       let proyecto:IProyectoAsignado={
         id:x.proyecto.id,
-        porcentaje:x.porcentaje,
+        fecha_inicio:x.fecha_Inicio,
+        fecha_final:x.fecha_Final,
         clave:x.proyecto.clave,
         titulo:x.proyecto.titulo
       }
@@ -114,7 +116,9 @@ export class AsignacionesUpdateComponent implements OnInit {
       clave:this.ProyectoSeleccionado.clave,
       id:this.ProyectoSeleccionado.id,
       titulo:this.ProyectoSeleccionado.titulo,
-      porcentaje:0
+      fecha_inicio:new Date(),
+      fecha_final:new Date(),
+      // porcentaje:0
     }
 
     console.log(proyectoA);
@@ -128,8 +132,8 @@ export class AsignacionesUpdateComponent implements OnInit {
 
   private buildForm() {
     this.formGroup = this.formBuilder.group({
-      fecha_inicio: new FormControl(this.data.asignacion.fecha_inicio, Validators.required),
-      fecha_final: new FormControl(this.data.asignacion.fecha_final, Validators.required),
+      // fecha_inicio: new FormControl(this.data.asignacion.fecha_inicio, Validators.required),
+      // fecha_final: new FormControl(this.data.asignacion.fecha_final, Validators.required),
       colaborador: new FormControl(this.data.asignacion.colaborador.id, Validators.required),
       proyectos: new FormControl(""),
     });
@@ -145,19 +149,20 @@ export class AsignacionesUpdateComponent implements OnInit {
   }
 
   onSubmit() {
-    let total:number=0;
-    this.ProyectosAsignados.forEach(element => {
-      total+=element.porcentaje;
-    });
-    if(total!=100){
-      this.openSnackBar("El porcentaje de asignación a proyectos debe sumar 100");
-      return;
-    }
+    // let total:number=0;
+    // this.ProyectosAsignados.forEach(element => {
+    //   total+=element.porcentaje;
+    // });
+    // if(total!=100){
+    //   this.openSnackBar("El porcentaje de asignación a proyectos debe sumar 100");
+    //   return;
+    // }
     if(this.formGroup.valid){
       let POST:IAsignacionPost={
         id_colaborador:this.formGroup.controls['colaborador'].value,
-        fecha_inicio:this.formGroup.controls['fecha_inicio'].value,
-        fecha_final:this.formGroup.controls['fecha_final'].value,
+        // fecha_inicio:this.formGroup.controls['fecha_inicio'].value,
+        // fecha_final:this.formGroup.controls['fecha_final'].value,
+
         proyectos:this.ProyectosAsignados
       }
         this._asignacionService

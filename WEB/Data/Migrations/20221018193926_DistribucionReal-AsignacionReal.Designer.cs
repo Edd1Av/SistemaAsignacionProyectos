@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WEB.Data;
 
@@ -11,9 +12,10 @@ using WEB.Data;
 namespace WEB.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221018193926_DistribucionReal-AsignacionReal")]
+    partial class DistribucionRealAsignacionReal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -378,8 +380,7 @@ namespace WEB.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdColaborador")
-                        .IsUnique();
+                    b.HasAlternateKey("IdColaborador");
 
                     b.ToTable("Asignaciones", "app");
                 });
@@ -438,11 +439,9 @@ namespace WEB.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CURP")
-                        .IsUnique();
+                    b.HasAlternateKey("CURP");
 
-                    b.HasIndex("Id_Odoo")
-                        .IsUnique();
+                    b.HasAlternateKey("Id_Odoo");
 
                     b.ToTable("Colaboradores", "app");
                 });
@@ -523,8 +522,7 @@ namespace WEB.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Clave")
-                        .IsUnique();
+                    b.HasAlternateKey("Clave");
 
                     b.ToTable("Proyectos", "app");
                 });

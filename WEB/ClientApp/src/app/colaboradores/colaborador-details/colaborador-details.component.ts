@@ -64,15 +64,16 @@ displayedColumns: string[] = [
         this.asignacion.distribuciones.map(x=>{
           let proyecto:IProyectoAsignado={
             id:x.proyecto.id,
-            porcentaje:x.porcentaje,
+            fecha_inicio:x.fecha_Inicio,
+            fecha_final:x.fecha_Final,
             clave:x.proyecto.clave,
             titulo:x.proyecto.titulo
           }
           this.ProyectosAsignados.push(proyecto);
           this.dataSource=new MatTableDataSource<IProyectoAsignado>(this.ProyectosAsignados);
           this.dataSource.paginator=this.paginator;
-          this.formGroup.controls.fecha_Inicio.setValue(this.asignacion.fecha_Inicio);
-          this.formGroup.controls.fecha_Final.setValue(this.asignacion.fecha_Final);
+          // this.formGroup.controls.fecha_Inicio.setValue(this.asignacion.fecha_Inicio);
+          // this.formGroup.controls.fecha_Final.setValue(this.asignacion.fecha_Final);
         })
       })
     ).subscribe();

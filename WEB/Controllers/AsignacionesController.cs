@@ -40,10 +40,10 @@ namespace WEB.Controllers
                 {
                     Id = element.Id,
                     Colaborador = element.Colaborador,
-                    Fecha_inicio = element.Fecha_Inicio,
-                    Fecha_final = element.Fecha_Final,
-                    Fecha_inicio_s = element.Fecha_Inicio.ToShortDateString(),
-                    Fecha_final_s = element.Fecha_Final.ToShortDateString(),
+                    //Fecha_inicio = element.Fecha_Inicio,
+                    //Fecha_final = element.Fecha_Final,
+                    //Fecha_inicio_s = element.Fecha_Inicio.ToShortDateString(),
+                    //Fecha_final_s = element.Fecha_Final.ToShortDateString(),
                     Distribucion = element.Distribuciones,
                     Proyectos = string.Join(", ", element.Distribuciones.Select(x=>x.Proyecto.Titulo).ToList())
                 }) ;
@@ -97,8 +97,8 @@ namespace WEB.Controllers
                                                 .ThenInclude(y=>y.Proyecto)
                                             .Where(x => x.Id == id).First();
 
-                    asignacion.Fecha_Inicio = postModel.Fecha_Inicio;
-                    asignacion.Fecha_Final = postModel.Fecha_Final;
+                    //asignacion.Fecha_Inicio = postModel.Fecha_Inicio;
+                    //asignacion.Fecha_Final = postModel.Fecha_Final;
 
                     _context.Distribucion.RemoveRange(asignacion.Distribuciones);
 
@@ -112,8 +112,10 @@ namespace WEB.Controllers
 
                         asignacion.Distribuciones.Add(new Distribucion()
                         {
+                            Fecha_Inicio = item.Fecha_inicio,
+                            Fecha_Final = item.Fecha_final,
                             Proyecto = proyecto,
-                            Porcentaje = item.Porcentaje
+                            //Porcentaje = item.Porcentaje
                         });
                     }
 
@@ -150,8 +152,8 @@ namespace WEB.Controllers
 
                 var asignacion = new Asignacion();
                 var distribucion = new List<Distribucion>();
-                asignacion.Fecha_Inicio = postModel.Fecha_Inicio;
-                asignacion.Fecha_Final = postModel.Fecha_Final;
+                //asignacion.Fecha_Inicio = postModel.Fecha_Inicio;
+                //asignacion.Fecha_Final = postModel.Fecha_Final;
 
 
                 foreach (var item in postModel.Proyectos)
@@ -161,8 +163,10 @@ namespace WEB.Controllers
 
                     distribucion.Add(new Distribucion()
                     {
+                        Fecha_Inicio= item.Fecha_inicio,
+                        Fecha_Final=item.Fecha_final,
                         Proyecto = proyecto,
-                        Porcentaje = item.Porcentaje
+                        //Porcentaje = item.Porcentaje
                     }); ;
                 }
 

@@ -14,10 +14,13 @@ namespace WEB.Models
         [Required]
         public int IdProyecto { get; set; }
         [ForeignKey("IdProyecto")]
-        public virtual Proyecto Proyecto { get; set; }
-        
+        public Proyecto Proyecto { get; set; }
         [Required]
-        [MaxLength(3)]
-        public int Porcentaje { get; set; }
+        public DateTime Fecha_Inicio { get; set; }
+        [Required]
+        public DateTime Fecha_Final { get; set; }
+        //[Required]
+        //[MaxLength(3)]
+        //public int Porcentaje { get; set; }
     }
 }
