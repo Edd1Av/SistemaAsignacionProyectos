@@ -52,9 +52,6 @@ export class AsignacionesDetailsComponent implements OnInit {
   ProyectoId:number=0;
   select:number;
   ngOnInit(): void {
-
-  this.GetColaboradores();
-  this.GetProyectos();
   this.buildForm();
   this.rellenarCampos();
   }
@@ -75,59 +72,10 @@ export class AsignacionesDetailsComponent implements OnInit {
       this.ProyectosAsignados.push(proyecto);
       this.dataSource=new MatTableDataSource<IProyectoAsignado>(this.ProyectosAsignados);
       this.dataSource.paginator=this.paginator;
-    })
+    });
 
       
     };
-  
-
-  private GetColaboradores(){
-    this._colaboradoresService.getColaboradores()
-    .pipe(
-      tap((result:IColaborador[])=>{
-        this.colaboradores=result;
-      })
-    ).subscribe();
-  }
-
-  private GetProyectos(){
-    this._proyectosService.getProyectos()
-    .pipe(
-      tap((result:IProyecto[])=>{
-        this.Proyectos=result;
-      })
-    ).subscribe();
-  }
-
-  public eliminarProyecto(index:number){
-    this.ProyectosAsignados.splice(index,1);
-    this.dataSource=new MatTableDataSource<IProyectoAsignado>(this.ProyectosAsignados);
-  }
-  public agregarProyecto(){
-    if(this.ProyectosAsignados.find(x=>x.id==this.formGroup.controls['proyectos'].value)){
-      this.openSnackBar("No se pueden repetir los proyectos");
-      return;
-    }
-
-    this.ProyectoSeleccionado=this.Proyectos.filter(x=>x.id==this.formGroup.controls['proyectos'].value)[0];
-    
-    console.log(this.ProyectoSeleccionado);
-    let proyectoA:IProyectoAsignado={
-      clave:this.ProyectoSeleccionado.clave,
-      id:this.ProyectoSeleccionado.id,
-      titulo:this.ProyectoSeleccionado.titulo,
-      fecha_inicio:new Date(),
-      fecha_final:new Date()
-    }
-
-    console.log(proyectoA);
-
-
-    this.ProyectosAsignados.push(proyectoA);
-    console.log(this.ProyectosAsignados);
-    this.dataSource=new MatTableDataSource<IProyectoAsignado>(this.ProyectosAsignados);
-    this.dataSource.paginator=this.paginator;
-  }
 
   private buildForm() {
     this.formGroup = this.formBuilder.group({
@@ -136,15 +84,4 @@ export class AsignacionesDetailsComponent implements OnInit {
       Colaborador: new FormControl(this.data.asignacion.colaborador.nombres, Validators.required),
     });
   }
-
-
-
-
-  openSnackBar(message:string) {
-    this._snackBar.open(message, undefined, {
-      duration: 2000,
-    });
-  }
-
-
 }
