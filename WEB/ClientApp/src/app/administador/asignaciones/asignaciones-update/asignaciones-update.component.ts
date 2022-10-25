@@ -30,7 +30,7 @@ export class AsignacionesUpdateComponent implements OnInit {
     "Proyecto",
     "Clave_Odoo",
     "Fecha_Inicio",
-    "Fecha_Final",
+    "Fecha_Final", 
     "acciones"
   ];
 
@@ -51,7 +51,7 @@ export class AsignacionesUpdateComponent implements OnInit {
   Proyectos:IProyecto[]=[];
   ProyectoSeleccionado:IProyecto;
   ProyectoId:number=0;
-  select:number;
+  
   ngOnInit(): void {
 
   this.GetColaboradores();
@@ -134,7 +134,7 @@ export class AsignacionesUpdateComponent implements OnInit {
     this.formGroup = this.formBuilder.group({
       // fecha_inicio: new FormControl(this.data.asignacion.fecha_inicio, Validators.required),
       // fecha_final: new FormControl(this.data.asignacion.fecha_final, Validators.required),
-      colaborador: new FormControl(this.data.asignacion.colaborador.id, Validators.required),
+      colaborador: new FormControl({value:this.data.asignacion.colaborador.id, disabled:true}, Validators.required),
       proyectos: new FormControl(""),
     });
   }

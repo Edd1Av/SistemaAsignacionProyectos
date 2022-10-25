@@ -74,11 +74,11 @@ export class AsignacionRealComponent implements OnInit {
     this.dataSource.filter = this.formGroup.get("buscador").value;
   }
   
-  openDialogUpdate(asignacion:IAsignacionReal): void {
+  openDialogUpdate(asignacionReal:IAsignacionReal): void {
     let dialog = this.dialog.open(AsignacionesRealUpdateComponent, {
       width: "800px",
       data: {
-        asignacion: asignacion
+        asignacionReal: asignacionReal
       },
       disableClose: true,
     });
@@ -89,12 +89,12 @@ export class AsignacionRealComponent implements OnInit {
   }
 
     
-  openDialogDetalle(asignacion:IAsignacionReal): void {
-    console.log(asignacion);
+  openDialogDetalle(asignacionReal:IAsignacionReal): void {
+    console.log(asignacionReal);
     let dialog = this.dialog.open(AsignacionesRealDetailsComponent, {
       width: "800px",
       data: {
-        asignacion: asignacion
+        asignacionReal: asignacionReal
       },
       disableClose: true,
     });

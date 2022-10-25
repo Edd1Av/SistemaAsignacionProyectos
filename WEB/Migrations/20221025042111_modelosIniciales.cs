@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace WEB.Data.Migrations
+namespace WEB.Migrations
 {
-    public partial class ModelosIniciales : Migration
+    public partial class modelosIniciales : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -66,8 +66,6 @@ namespace WEB.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Colaboradores", x => x.Id);
-                    table.UniqueConstraint("AK_Colaboradores_CURP", x => x.CURP);
-                    table.UniqueConstraint("AK_Colaboradores_Id_Odoo", x => x.Id_Odoo);
                 });
 
             migrationBuilder.CreateTable(
@@ -255,8 +253,6 @@ namespace WEB.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Fecha_Inicio = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Fecha_Final = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IdColaborador = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -272,6 +268,29 @@ namespace WEB.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AsignacionesReal",
+                schema: "app",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdAsignacion = table.Column<int>(type: "int", nullable: false),
+                    Fecha_Inicio = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Fecha_Final = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AsignacionesReal", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AsignacionesReal_Asignaciones_IdAsignacion",
+                        column: x => x.IdAsignacion,
+                        principalSchema: "app",
+                        principalTable: "Asignaciones",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DistribucionAsignacion",
                 schema: "app",
                 columns: table => new
@@ -280,7 +299,8 @@ namespace WEB.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdAsignacion = table.Column<int>(type: "int", nullable: false),
                     IdProyecto = table.Column<int>(type: "int", nullable: false),
-                    Porcentaje = table.Column<int>(type: "int", maxLength: 3, nullable: false)
+                    Fecha_Inicio = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Fecha_Final = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -301,11 +321,48 @@ namespace WEB.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "DistribucionAsignacionReal",
+                schema: "app",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdAsignacionReal = table.Column<int>(type: "int", nullable: false),
+                    IdProyecto = table.Column<int>(type: "int", nullable: false),
+                    Porcentaje = table.Column<int>(type: "int", maxLength: 3, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DistribucionAsignacionReal", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DistribucionAsignacionReal_AsignacionesReal_IdAsignacionReal",
+                        column: x => x.IdAsignacionReal,
+                        principalSchema: "app",
+                        principalTable: "AsignacionesReal",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DistribucionAsignacionReal_Proyectos_IdProyecto",
+                        column: x => x.IdProyecto,
+                        principalSchema: "app",
+                        principalTable: "Proyectos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Asignaciones_IdColaborador",
                 schema: "app",
                 table: "Asignaciones",
-                column: "IdColaborador");
+                column: "IdColaborador",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AsignacionesReal_IdAsignacion",
+                schema: "app",
+                table: "AsignacionesReal",
+                column: "IdAsignacion");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -347,6 +404,20 @@ namespace WEB.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Colaboradores_CURP",
+                schema: "app",
+                table: "Colaboradores",
+                column: "CURP",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Colaboradores_Id_Odoo",
+                schema: "app",
+                table: "Colaboradores",
+                column: "Id_Odoo",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DeviceCodes_DeviceCode",
                 table: "DeviceCodes",
                 column: "DeviceCode",
@@ -367,6 +438,18 @@ namespace WEB.Data.Migrations
                 name: "IX_DistribucionAsignacion_IdProyecto",
                 schema: "app",
                 table: "DistribucionAsignacion",
+                column: "IdProyecto");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DistribucionAsignacionReal_IdAsignacionReal",
+                schema: "app",
+                table: "DistribucionAsignacionReal",
+                column: "IdAsignacionReal");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DistribucionAsignacionReal_IdProyecto",
+                schema: "app",
+                table: "DistribucionAsignacionReal",
                 column: "IdProyecto");
 
             migrationBuilder.CreateIndex(
@@ -427,6 +510,10 @@ namespace WEB.Data.Migrations
                 schema: "app");
 
             migrationBuilder.DropTable(
+                name: "DistribucionAsignacionReal",
+                schema: "app");
+
+            migrationBuilder.DropTable(
                 name: "Keys");
 
             migrationBuilder.DropTable(
@@ -439,11 +526,15 @@ namespace WEB.Data.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Asignaciones",
+                name: "AsignacionesReal",
                 schema: "app");
 
             migrationBuilder.DropTable(
                 name: "Proyectos",
+                schema: "app");
+
+            migrationBuilder.DropTable(
+                name: "Asignaciones",
                 schema: "app");
 
             migrationBuilder.DropTable(

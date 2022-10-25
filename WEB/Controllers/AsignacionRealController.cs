@@ -94,19 +94,18 @@ namespace WEB.Controllers
             {
                 try
                 {
-                    AsignacionReal asignacion = _context.AsignacionReal
-                                            .Include(x => x.Asignacion)
-                                            .ThenInclude(i=>i.Colaborador)
-                                            .Include(z => z.DistribucionesReales)
-                                                .ThenInclude(y => y.Proyecto)
-                                            .Where(x => x.Id == id).First();
+ 
+                    var asignacionPlaneada = _context.Asignacion.Include(z => z.Colaborador)
+                    .Include(i => i.AsignacionReal)
+                    .ThenInclude(c => c.DistribucionesReales)
+                    .ThenInclude(v => v.Proyecto)
+                    .Where(x => x.IdColaborador == postModel.Id_Colaborador).First();
 
-                    //asignacion.Fecha_Inicio = postModel.Fecha_Inicio;
-                    //asignacion.Fecha_Final = postModel.Fecha_Final;
+                    var asignacionReal = asignacionPlaneada.AsignacionReal.Where(x=>x.Id == id).First();
 
-                    _context.DistribucionReal.RemoveRange(asignacion.DistribucionesReales);
+                    _context.DistribucionReal.RemoveRange(asignacionReal.DistribucionesReales);
 
-                    asignacion.DistribucionesReales.Clear();
+                    asignacionReal.DistribucionesReales.Clear();
 
 
                     foreach (var item in postModel.Proyectos)
@@ -114,7 +113,7 @@ namespace WEB.Controllers
                         var proyecto = new Proyecto();
                         proyecto = _context.Proyectos.Where(x => x.Id == item.Id).First();
 
-                        asignacion.DistribucionesReales.Add(new DistribucionReal()
+                        asignacionReal.DistribucionesReales.Add(new DistribucionReal()
                         {
                             //Fecha_Inicio = item.Fecha_inicio,
                             //Fecha_Final = item.Fecha_final,
@@ -123,8 +122,11 @@ namespace WEB.Controllers
                         });
                     }
 
-                    _context.AsignacionReal.Attach(asignacion);
-                    _context.Entry(asignacion).State = EntityState.Modified;
+                    asignacionReal.Fecha_Inicio = postModel.Fecha_Inicio.ToLocalTime();
+                    asignacionReal.Fecha_Final = postModel.Fecha_Final.ToLocalTime();
+
+                    _context.AsignacionReal.Attach(asignacionReal);
+                    _context.Entry(asignacionReal).State = EntityState.Modified;
                     await _context.SaveChangesAsync();
 
                     transaction.Commit();
@@ -156,7 +158,7 @@ namespace WEB.Controllers
                     .Include(i=>i.AsignacionReal)
                     .ThenInclude(c=>c.DistribucionesReales)
                     .ThenInclude(v=>v.Proyecto)
-                    .Where(x => x.IdColaborador == postModel.Id_Colaborador).FirstOrDefault();
+                    .Where(x => x.IdColaborador == postModel.Id_Colaborador).First();
                 var asignacionReal = new AsignacionReal();
                 var distribucionReal = new List<DistribucionReal>();
 
@@ -165,7 +167,7 @@ namespace WEB.Controllers
                 foreach (var item in postModel.Proyectos)
                 {
                     var proyecto = new Proyecto();
-                    proyecto = _context.Proyectos.Where(x => x.Id == item.Id).FirstOrDefault();
+                    proyecto = _context.Proyectos.Where(x => x.Id == item.Id).First();
 
                     distribucionReal.Add(new DistribucionReal()
                     {
@@ -173,15 +175,18 @@ namespace WEB.Controllers
                         //Fecha_Final = item.Fecha_final,
                         Proyecto = proyecto,
                         Porcentaje = item.Porcentaje
-                    }); ;
+                    });
                 }
 
                 asignacionReal.DistribucionesReales = distribucionReal;
-                asignacionReal.Fecha_Inicio = postModel.Fecha_Inicio;
-                asignacionReal.Fecha_Final = postModel.Fecha_Final;
+                asignacionReal.Fecha_Inicio = postModel.Fecha_Inicio.ToLocalTime();
+                asignacionReal.Fecha_Final = postModel.Fecha_Final.ToLocalTime();
                 asignacionPlaneada.AsignacionReal = new List<AsignacionReal>();
                 asignacionPlaneada.AsignacionReal.Add(asignacionReal);
-                _context.AsignacionReal.Add(asignacionReal);
+
+
+                _context.Asignacion.Attach(asignacionPlaneada);
+                _context.Entry(asignacionPlaneada).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)

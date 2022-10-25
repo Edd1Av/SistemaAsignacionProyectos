@@ -24,6 +24,7 @@
         public DateTime Fecha_Inicio { get; set; }
         public DateTime Fecha_Final { get; set; }
         public List<ProyectosAsignadosReal> Proyectos { get; set; }
+
     }
 
     public class ProyectosAsignadosReal

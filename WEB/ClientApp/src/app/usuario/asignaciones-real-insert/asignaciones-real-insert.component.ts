@@ -24,7 +24,7 @@ export class AsignacionesRealInsertComponent implements OnInit {
  
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   displayedColumns: string[] = [
-    "Proyecto",
+    "Proyecto", 
     "Clave_Odoo",
     "Porcentaje",
     "acciones"
@@ -120,11 +120,14 @@ export class AsignacionesRealInsertComponent implements OnInit {
   }
 
   onSubmit() {
-    // let total:number=0;
-    // if(total!=100){
-    //   this.openSnackBar("El porcentaje de asignación a proyectos debe sumar 100");
-    //   return;
-    // }
+    let total:number=0;
+    this.ProyectosAsignados.forEach(element => {
+      total+=element.porcentaje;
+    });
+    if(total!=100){
+      this.openSnackBar("El porcentaje de asignación a proyectos debe sumar 100");
+      return;
+    }
     if(this.formGroup.valid){
       let POST:IAsignacionPostReal={
         id_colaborador:this.formGroup.controls['colaborador'].value,

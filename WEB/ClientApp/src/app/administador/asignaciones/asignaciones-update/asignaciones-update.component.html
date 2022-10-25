@@ -29,7 +29,7 @@
         <div fxFlex="50%" fxFlex.sm="100%">
             <mat-form-field appearance="fill">
                 <mat-label>Colaborador</mat-label>
-                <mat-select formControlName="colaborador" [disabled]="true">
+                <mat-select formControlName="colaborador">
                   <mat-option *ngFor="let colab of colaboradores" [value]="colab.id">
                     {{colab.nombres}}
                   </mat-option>
@@ -39,7 +39,7 @@
         <div fxFlex="44%" fxFlex.sm="100%">
               <mat-form-field appearance="fill">
                 <mat-label>Proyectos</mat-label>
-                <mat-select formControlName="proyectos" [(ngModel)]="select">
+                <mat-select formControlName="proyectos">
                   <mat-option *ngFor="let proyecto of Proyectos" [value]="proyecto.id">
                     {{proyecto.titulo}}
                   </mat-option>

@@ -3,23 +3,21 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WEB.Data;
 
 #nullable disable
 
-namespace WEB.Data.Migrations
+namespace WEB.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221018193926_DistribucionReal-AsignacionReal")]
-    partial class DistribucionRealAsignacionReal
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.9")
+                .HasAnnotation("ProductVersion", "6.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -380,7 +378,8 @@ namespace WEB.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("IdColaborador");
+                    b.HasIndex("IdColaborador")
+                        .IsUnique();
 
                     b.ToTable("Asignaciones", "app");
                 });
@@ -439,9 +438,11 @@ namespace WEB.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("CURP");
+                    b.HasIndex("CURP")
+                        .IsUnique();
 
-                    b.HasAlternateKey("Id_Odoo");
+                    b.HasIndex("Id_Odoo")
+                        .IsUnique();
 
                     b.ToTable("Colaboradores", "app");
                 });
@@ -522,7 +523,8 @@ namespace WEB.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("Clave");
+                    b.HasIndex("Clave")
+                        .IsUnique();
 
                     b.ToTable("Proyectos", "app");
                 });

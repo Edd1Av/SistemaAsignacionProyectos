@@ -112,8 +112,8 @@ namespace WEB.Controllers
 
                         asignacion.Distribuciones.Add(new Distribucion()
                         {
-                            Fecha_Inicio = item.Fecha_inicio,
-                            Fecha_Final = item.Fecha_final,
+                            Fecha_Inicio = item.Fecha_inicio.ToLocalTime(),
+                            Fecha_Final = item.Fecha_final.ToLocalTime(),
                             Proyecto = proyecto,
                             //Porcentaje = item.Porcentaje
                         });
@@ -163,8 +163,8 @@ namespace WEB.Controllers
 
                     distribucion.Add(new Distribucion()
                     {
-                        Fecha_Inicio= item.Fecha_inicio,
-                        Fecha_Final=item.Fecha_final,
+                        Fecha_Inicio= item.Fecha_inicio.ToLocalTime(),
+                        Fecha_Final=item.Fecha_final.ToLocalTime(),
                         Proyecto = proyecto,
                         //Porcentaje = item.Porcentaje
                     }); ;

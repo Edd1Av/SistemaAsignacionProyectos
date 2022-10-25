@@ -1,1 +1,103 @@
-<p>asignaciones-real-update works!</p>
+<div class="cat-title">
+    <ul style="padding-left: 0px;">
+      <li>Agregar Asignación</li>
+    </ul>
+  </div>
+  <mat-dialog-content class="">
+    <form class="form item" [formGroup]="formGroup">
+<div fxLayout="row" fxLayout.sm="column">
+        <div fxFlex="50%" fxFlex.sm="100%">
+            <mat-form-field appearance="fill">
+                <mat-label>Fecha Inicio</mat-label>
+                <input matInput formControlName="fecha_inicio" [matDatepicker]="picker">
+                <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+        </div>
+        <div fxFlex="50%" fxFlex.sm="100%">
+            <mat-form-field appearance="fill">
+                <mat-label>Fecha Inicio</mat-label>
+                <input matInput formControlName="fecha_final" [matDatepicker]="picker2">
+                <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
+                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker #picker2></mat-datepicker>
+              </mat-form-field>
+        </div>
+      </div>
+      <div fxLayout="row" fxLayout.sm="column">
+        <div fxFlex="50%" fxFlex.sm="100%">
+            <mat-form-field appearance="fill">
+                <mat-label>Colaborador</mat-label>
+                <mat-select formControlName="colaborador">
+                  <mat-option *ngFor="let colab of colaboradores" [value]="colab.id">
+                    {{colab.nombres}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+        </div>
+        <div fxFlex="44%" fxFlex.sm="100%">
+              <mat-form-field appearance="fill">
+                <mat-label>Proyectos</mat-label>
+                <mat-select formControlName="proyectos">
+                  <mat-option *ngFor="let proyecto of Proyectos" [value]="proyecto.id">
+                    {{proyecto.titulo}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              
+        </div>
+        <div fxFlex="6%" fxFlex.sm="100%" class="text-center">
+            <button mat-mini-fab color="primary" (click)="agregarProyecto()" [disabled]="!formGroup.controls['proyectos'].value"> 
+              <mat-icon>add</mat-icon>
+            </button>
+        </div>
+      </div>
+      <table mat-table [dataSource]="dataSource" class="cat-tbl-search">
+  
+        <ng-container matColumnDef="Proyecto">
+          <th class="columna" style="width: 18%;" mat-header-cell *matHeaderCellDef> Titulo </th>
+          <td  mat-cell *matCellDef="let element"> {{element.titulo}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Clave_Odoo">
+          <th class="columna" style="width: 18%;" mat-header-cell *matHeaderCellDef> Clave Odoo</th>
+          <td   mat-cell *matCellDef="let element"> {{element.clave}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Porcentaje">
+          <th class="columna" style="width: 18%;" mat-header-cell *matHeaderCellDef> Porcentaje</th>
+          <td  mat-cell *matCellDef="let element; let index = index;"> 
+            <mat-form-field appearance="outline" fxFlexFill>
+            <input type="number" [max]="100" [min]="1" matInput [(ngModel)]="ProyectosAsignados[index].porcentaje"  [ngModelOptions]="{standalone: true}" />
+          </mat-form-field> 
+        </td>
+        </ng-container>
+
+        <ng-container  matColumnDef="acciones">
+          <th class="columna" style="width: 12%;" mat-header-cell *matHeaderCellDef> Acciones </th>
+          <td mat-cell *matCellDef="let element; let index = index;">
+            <div>
+              <button mat-mini-fab color="warn" matTooltip="Eliminar" (click)="eliminarProyecto(index)" class="" alt="Eliminar" ><mat-icon>delete</mat-icon></button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      </table>
+      <mat-paginator [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons
+      aria-label="Select page of periodic elements">
+    </mat-paginator>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="warn" mat-dialog-close>
+      Cancelar
+    </button>
+    <button mat-raised-button color="primary" (click)="onSubmit()">
+      <mat-icon>save</mat-icon>
+      Guardar
+    </button>
+  </mat-dialog-actions>

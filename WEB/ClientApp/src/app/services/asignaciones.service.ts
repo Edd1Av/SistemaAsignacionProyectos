@@ -52,16 +52,16 @@ export class AsignacionesService {
       return this.http.get<IAsignacionReal>(this.urlBase + "api/AsignacionReal" + id);
     }
   
-    getAsignacionRealByIdColaborador(id: number): Observable<IAsignacionGet> {
-      return this.http.get<IAsignacionGet>(this.urlBase + "api/AsignacionReal/ByColaborador/" + id);
-    }
+    // getAsignacionRealByIdColaborador(id: number): Observable<IAsignacionGet> {
+    //   return this.http.get<IAsignacionGet>(this.urlBase + "api/AsignacionReal/ByColaborador/" + id);
+    // }
   
-  
+    //Historico
     getAsignacionesReal(): Observable<IAsignacionReal[]> {
       return this.http.get<IAsignacionReal[]>(this.urlBase + "api/AsignacionReal");
     }
   
-    UpdateAsignacionReal(id:number, Asignacion:IAsignacionPost)  {
+    UpdateAsignacionReal(id:number, Asignacion:IAsignacionPostReal)  {
       return this.http.put<IResponse>(this.urlBase + "api/AsignacionReal/"+id, Asignacion);
     }
   
