@@ -2,11 +2,13 @@
 {
     public class LocalStorage
     {
-        public int IdUsuario { get; set; }
-        public string Correo { get; set; }
+        public int IdUsuario { get; set; } = 0;
+        public string Correo { get; set; } = "";
 
-        public string Token { get; set; }
+        public string Token { get; set; } = "";
 
-        public string Rol { get; set; }
+        public string Rol { get; set; } = "";
+
+        public bool Success { get; set; }=false;
     }
 }

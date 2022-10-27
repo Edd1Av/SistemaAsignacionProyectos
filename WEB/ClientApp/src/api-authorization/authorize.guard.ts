@@ -8,23 +8,49 @@ import { ApplicationPaths, QueryParameterNames } from './api-authorization.const
 @Injectable({
   providedIn: 'root'
 })
-export class AuthorizeGuard implements CanActivate {
+export class AuthorizeGuardAdministrador implements CanActivate {
   constructor(private authorize: AuthorizeService, private router: Router) {
   }
   canActivate(
     _next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-      return this.authorize.isAuthenticated()
-        .pipe(tap(isAuthenticated => this.handleAuthorization(isAuthenticated, state)));
+    
+      let user = this.authorize.isLoggedIn()
+      if(user){
+        if (user.rol=="Administrador"){
+          return true;
+        }
+        else{
+          //HOME DESARROLLADOR
+          this.router.navigate(['/login']);
+          return false;
+        }
+      }
+      this.router.navigate(['/login']);
+      return false;
   }
 
-  private handleAuthorization(isAuthenticated: boolean, state: RouterStateSnapshot) {
-    if (!isAuthenticated) {
-      this.router.navigate(ApplicationPaths.LoginPathComponents, {
-        queryParams: {
-          [QueryParameterNames.ReturnUrl]: state.url
-        }
-      });
-    }
+}
+
+export class AuthorizeGuardDesarrollador implements CanActivate {
+  constructor(private authorize: AuthorizeService, private router: Router) {
   }
+  canActivate(
+    _next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+    
+      let user = this.authorize.isLoggedIn()
+      if(user){
+        if (user.rol=="Desarrollador"){
+          return true;
+        }
+        else{
+          this.router.navigate(['/home']);
+          return false;
+        }
+      }
+      this.router.navigate(['/login']);
+      return false;
+  }
+
 }

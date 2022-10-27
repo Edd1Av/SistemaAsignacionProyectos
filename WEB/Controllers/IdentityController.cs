@@ -36,7 +36,7 @@ namespace WEB.Controllers
             var user = await _userManager.FindByEmailAsync(credenciales.Email);
             if (user == null || !await _userManager.CheckPasswordAsync(user, credenciales.Password))
             {
-                return Unauthorized(new Response{ success = false, response = "Usuario y/o contraseña incorrecta" });
+                return Unauthorized(new LocalStorage{ Success = false});
             }
 
             var keyBytes = Encoding.ASCII.GetBytes(SecretKey);
@@ -58,8 +58,8 @@ namespace WEB.Controllers
 
             var rol = _userManager.GetRolesAsync(user);
 
-            LocalStorage localS = new LocalStorage{IdUsuario=user.IdColaborador, Correo=user.Email, Token=Token, Rol=rol.Result.First()};
-            return Ok(new Response { success=true, response=localS});
+            LocalStorage localS = new LocalStorage{IdUsuario=user.IdColaborador, Correo=user.Email, Token=Token, Rol=rol.Result.First(), Success=true};
+            return Ok(localS);
         }
 
     }

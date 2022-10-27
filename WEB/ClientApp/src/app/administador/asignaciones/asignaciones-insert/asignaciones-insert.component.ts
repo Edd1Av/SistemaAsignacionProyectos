@@ -9,7 +9,7 @@ import { IAsignacionPost } from 'src/app/interfaces/iasignacion-post';
 import { IColaborador } from 'src/app/interfaces/Icolaboradores';
 import { IProyectoAsignado } from 'src/app/interfaces/iproyecto-asignado';
 import { IProyecto } from 'src/app/interfaces/IProyectos';
-import { IResponse } from 'src/app/interfaces/iResponse';
+import { IResponse } from 'src/app/interfaces/IResponse';
 import { AsignacionesService } from 'src/app/services/asignaciones.service';
 import { ColaboradoresService } from 'src/app/services/colaboradores.service';
 import { ProyectosService } from 'src/app/services/proyectos.service';

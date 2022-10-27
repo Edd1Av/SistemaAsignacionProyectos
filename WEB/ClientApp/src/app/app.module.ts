@@ -10,7 +10,7 @@ import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { ApiAuthorizationModule } from 'src/api-authorization/api-authorization.module';
-import { AuthorizeGuard } from 'src/api-authorization/authorize.guard';
+import { AuthorizeGuardAdministrador, AuthorizeGuardDesarrollador } from 'src/api-authorization/authorize.guard';
 import { AuthorizeInterceptor } from 'src/api-authorization/authorize.interceptor';
 import { LayoutComponent } from './layout/layout/layout.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -23,6 +23,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
 import { MatInputModule } from "@angular/material/input";
 import { MatNativeDateModule } from '@angular/material/core';
+import { LoginComponent } from 'src/api-authorization/login/login.component';
 
 
 
@@ -51,14 +52,13 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatInputModule,
     MatNativeDateModule,
     RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthorizeGuard] },
-      { path: 'proyectos', loadChildren: () => import('./administador/proyectos/proyectos.module').then(m => m.ProyectosModule) },
-      { path: 'asignaciones', loadChildren: () => import('./administador/asignaciones/asignaciones.module').then(m => m.AsignacionesModule) },
-      { path: 'colaboradores', loadChildren: () => import('./administador/colaboradores/colaboradores.module').then(m => m.ColaboradoresModule) },
-      { path: 'asignacionReal', loadChildren: () => import('./usuario/asignacion-real/asignacion-real.module').then(m => m.AsignacionRealModule) },
-      { path: '**', component: HomeComponent}
+      { path: '', component: HomeComponent, canActivate:[AuthorizeGuardAdministrador] },
+      { path: 'login', component: LoginComponent},
+      { path: 'proyectos', loadChildren: () => import('./administador/proyectos/proyectos.module').then(m => m.ProyectosModule), canActivate:[AuthorizeGuardAdministrador] },
+      { path: 'asignaciones', loadChildren: () => import('./administador/asignaciones/asignaciones.module').then(m => m.AsignacionesModule), canActivate:[AuthorizeGuardAdministrador]},
+      { path: 'colaboradores', loadChildren: () => import('./administador/colaboradores/colaboradores.module').then(m => m.ColaboradoresModule), canActivate:[AuthorizeGuardAdministrador] },
+      { path: 'asignacionReal', loadChildren: () => import('./usuario/asignacion-real/asignacion-real.module').then(m => m.AsignacionRealModule), canActivate:[AuthorizeGuardDesarrollador] },
+      { path: '**', component: HomeComponent, canActivate:[AuthorizeGuardAdministrador]}
     ]),
     BrowserAnimationsModule
   ],
