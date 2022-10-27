@@ -33,7 +33,7 @@ namespace WEB.Controllers
         [Route("Login")]
         public async Task<IActionResult> Login(LoginUsuario credenciales)
         {
-            var user = await _userManager.FindByNameAsync(credenciales.Email);
+            var user = await _userManager.FindByEmailAsync(credenciales.Email);
             if (user == null || !await _userManager.CheckPasswordAsync(user, credenciales.Password))
             {
                 return Unauthorized(new Response{ success = false, response = "Usuario y/o contraseña incorrecta" });
@@ -56,7 +56,9 @@ namespace WEB.Controllers
 
             string Token = tokenHandler.WriteToken(tokenConfig);
 
-            LocalStorage localS = new LocalStorage{ success=true, IdUsuario=user.IdColaborador, Correo=user.Email, Token=Token};
+            var rol = _userManager.GetRolesAsync(user);
+
+            LocalStorage localS = new LocalStorage{IdUsuario=user.IdColaborador, Correo=user.Email, Token=Token, Rol=rol.Result.First()};
             return Ok(new Response { success=true, response=localS});
         }
 

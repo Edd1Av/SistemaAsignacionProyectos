@@ -12,7 +12,7 @@ using WEB.Data;
 namespace WEB.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221027043833_ModelosIniciales")]
+    [Migration("20221027055131_ModelosIniciales")]
     partial class ModelosIniciales
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -195,14 +195,14 @@ namespace WEB.Migrations
                         new
                         {
                             Id = "2c5e174e-3b0e-446f-86af-483d56fd7210",
-                            ConcurrencyStamp = "f5edfa51-d4a0-44ce-8373-8af395770b46",
+                            ConcurrencyStamp = "f2bbf943-b197-4b4f-ab21-a2889827d101",
                             Name = "Administrador",
                             NormalizedName = "ADMINISTRADOR"
                         },
                         new
                         {
                             Id = "3c6e284e-4b1e-557f-97af-594d67fd8321",
-                            ConcurrencyStamp = "58391ad8-fe97-44d0-8999-7cc48af2aef4",
+                            ConcurrencyStamp = "0e697a3e-9cf7-432e-b910-43cf454ba160",
                             Name = "Desarrollador",
                             NormalizedName = "DESARROLLADOR"
                         });
@@ -261,12 +261,10 @@ namespace WEB.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -290,7 +288,12 @@ namespace WEB.Migrations
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("RoleId");
 
@@ -310,12 +313,10 @@ namespace WEB.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -382,7 +383,8 @@ namespace WEB.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdColaborador");
+                    b.HasIndex("IdColaborador")
+                        .IsUnique();
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -399,14 +401,15 @@ namespace WEB.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7db973ac-c7d0-45c5-a064-686516615fab",
+                            ConcurrencyStamp = "88a7f819-47b9-438d-a1d6-371bb4af933b",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             IdColaborador = 1,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEPxq8eDPxajhq3XIlbzVFRVXj2ATA3JnhA78V2AX8yqMiLDIdTtBVeKB/FmQuPH0iw==",
+                            NormalizedEmail = "ADMIN@ADMIN.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFMiW+uqDbL3YhXM/CsocJDfj1NItz1no/6/Px5k/y5Zd9VdwTVZQtJ4JFQG0AqEug==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "7cb7323c-aa03-4f61-bb66-66641d740c61",
+                            SecurityStamp = "2bc9da77-f659-492d-9bb9-137c75e3c063",
                             TwoFactorEnabled = false
                         });
                 });
@@ -613,6 +616,10 @@ namespace WEB.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
+                    b.HasOne("WEB.Models.ApplicationUser", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
@@ -638,8 +645,8 @@ namespace WEB.Migrations
             modelBuilder.Entity("WEB.Models.ApplicationUser", b =>
                 {
                     b.HasOne("WEB.Models.Colaborador", "Colaborador")
-                        .WithMany()
-                        .HasForeignKey("IdColaborador")
+                        .WithOne("IdentityUser")
+                        .HasForeignKey("WEB.Models.ApplicationUser", "IdColaborador")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -706,6 +713,11 @@ namespace WEB.Migrations
                     b.Navigation("Proyecto");
                 });
 
+            modelBuilder.Entity("WEB.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Roles");
+                });
+
             modelBuilder.Entity("WEB.Models.Asignacion", b =>
                 {
                     b.Navigation("AsignacionReal");
@@ -716,6 +728,12 @@ namespace WEB.Migrations
             modelBuilder.Entity("WEB.Models.AsignacionReal", b =>
                 {
                     b.Navigation("DistribucionesReales");
+                });
+
+            modelBuilder.Entity("WEB.Models.Colaborador", b =>
+                {
+                    b.Navigation("IdentityUser")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

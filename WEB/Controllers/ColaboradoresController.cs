@@ -34,7 +34,9 @@ namespace WEB.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Colaborador>>> GetColaboradores()
         {
-            return await _context.Colaboradores.OrderBy(x=>x.Id_Odoo).ToListAsync();
+            var rolDesarrollador = _roleManager.FindByNameAsync("Desarrollador");
+            var colaboradores = await _context.Colaboradores.Where(x => x.IdentityUser.Roles.Any(y => y.RoleId == rolDesarrollador.Result.Id)).OrderBy(x => x.Id_Odoo).ToListAsync();
+            return colaboradores;
         }
 
         // GET: api/Colaboradores/5
@@ -118,23 +120,25 @@ namespace WEB.Controllers
         public async Task<IActionResult> PostColaborador(ColaboradorPost colaborador)
         {
             Response response = new Response();
+            if (_context.Colaboradores.Any(x => x.CURP.ToUpper().Trim() == colaborador.CURP.ToUpper().Trim()))
+            {
+                response.success = false;
+                response.response = $"Ya existe un contacto con ese CURP";
+                return Ok(response);
+            }
+            if (_context.Colaboradores.Any(x => x.Id_Odoo.ToUpper().Trim() == colaborador.Id_Odoo.ToUpper().Trim()))
+            {
+                response.success = false;
+                response.response = $"Ya existe un contacto con esa clave Odoo";
+                return Ok(response);
+            }
+
             using (var transaction = _context.Database.BeginTransaction())
             {
                 
                 try
                 {
-                    if (_context.Colaboradores.Any(x => x.CURP.ToUpper().Trim() == colaborador.CURP.ToUpper().Trim()))
-                    {
-                        response.success = false;
-                        response.response = $"Ya existe un contacto con ese CURP";
-                        return Ok(response);
-                    }
-                    if (_context.Colaboradores.Any(x => x.Id_Odoo.ToUpper().Trim() == colaborador.Id_Odoo.ToUpper().Trim()))
-                    {
-                        response.success = false;
-                        response.response = $"Ya existe un contacto con esa clave Odoo";
-                        return Ok(response);
-                    }
+                    
                     Colaborador addColaborador = new Colaborador();
                     addColaborador.Nombres = colaborador.Nombres.Trim();
                     addColaborador.Apellidos = colaborador.Apellidos.Trim();
@@ -145,13 +149,15 @@ namespace WEB.Controllers
 
                     ApplicationUser user = new ApplicationUser();
                     user.Email = colaborador.Email;
-                    user.UserName = colaborador.Email;
+                    user.NormalizedEmail = colaborador.Email.Trim().ToUpper();
                     user.Colaborador = addColaborador;
                     user.EmailConfirmed = true;
 
                     var result = _userManager.CreateAsync(user, "Pa$word1");
 
-                    if (result.IsCompleted)
+                    var asignarRol = _userManager.AddToRoleAsync(user, "Desarrollador");
+
+                    if (result.IsCompleted  && asignarRol.IsCompleted)
                     {
                         //Enviar Correo
               
@@ -159,6 +165,7 @@ namespace WEB.Controllers
                     }
                     else
                     {
+                        transaction.Rollback();
                         response.success = false;
                         response.response = $"No se pudo crear el usuario";
                         return Ok(response);
@@ -187,25 +194,27 @@ namespace WEB.Controllers
         public async Task<IActionResult> DeleteColaborador(int id)
         {
             Response response = new Response();
-            var colaborador = await _context.Colaboradores.FindAsync(id);
-            if (colaborador == null)
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                response.success = false;
-                response.response = "El registro no existe";
-                return Ok(response);
+                var colaborador = await _context.Colaboradores.FindAsync(id);
+                if (colaborador == null)
+                {
+                    response.success = false;
+                    response.response = "El registro no existe";
+                    return Ok(response);
+                }
+                try
+                {
+                    _context.Colaboradores.Remove(colaborador);
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception)
+                {
+                    response.success = false;
+                    response.response = $"Error al eliminar el registro";
+                    return Ok(response);
+                }
             }
-            try
-            {
-                _context.Colaboradores.Remove(colaborador);
-                await _context.SaveChangesAsync();
-            }
-            catch(Exception)
-            {
-                response.success = false;
-                response.response = $"Error al eliminar el registro";
-                return Ok(response);
-            }
-
             response.success = true;
             response.response = "Registro eliminado con éxito";
             return Ok(response);

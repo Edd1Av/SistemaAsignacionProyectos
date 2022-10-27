@@ -7,6 +7,6 @@
 
         public string Token { get; set; }
 
-        public bool success { get; set; }
+        public string Rol { get; set; }
     }
 }

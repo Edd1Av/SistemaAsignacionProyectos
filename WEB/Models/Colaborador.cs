@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WEB.Models
@@ -19,5 +20,8 @@ namespace WEB.Models
         [Required]
         [StringLength(50)]
         public string Id_Odoo { get; set; }
+
+        public ApplicationUser IdentityUser { get; set; }
+
     }
 }

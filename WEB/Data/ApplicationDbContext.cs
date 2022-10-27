@@ -44,6 +44,7 @@ namespace WEB.Data
                 IdColaborador = 1,
                 Email = "admin@admin.com",
                 EmailConfirmed = true,
+                NormalizedEmail = "ADMIN@ADMIN.COM",
                 PasswordHash = hasher.HashPassword(null, "Pa$word1")
             };
 

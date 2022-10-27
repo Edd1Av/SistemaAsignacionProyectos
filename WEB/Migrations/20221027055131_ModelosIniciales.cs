@@ -269,8 +269,8 @@ namespace WEB.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -290,7 +290,8 @@ namespace WEB.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -301,6 +302,11 @@ namespace WEB.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -314,8 +320,8 @@ namespace WEB.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -362,12 +368,12 @@ namespace WEB.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "2c5e174e-3b0e-446f-86af-483d56fd7210", "f5edfa51-d4a0-44ce-8373-8af395770b46", "Administrador", "ADMINISTRADOR" });
+                values: new object[] { "2c5e174e-3b0e-446f-86af-483d56fd7210", "f2bbf943-b197-4b4f-ab21-a2889827d101", "Administrador", "ADMINISTRADOR" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "3c6e284e-4b1e-557f-97af-594d67fd8321", "58391ad8-fe97-44d0-8999-7cc48af2aef4", "Desarrollador", "DESARROLLADOR" });
+                values: new object[] { "3c6e284e-4b1e-557f-97af-594d67fd8321", "0e697a3e-9cf7-432e-b910-43cf454ba160", "Desarrollador", "DESARROLLADOR" });
 
             migrationBuilder.InsertData(
                 schema: "app",
@@ -378,12 +384,12 @@ namespace WEB.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "IdColaborador", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "7db973ac-c7d0-45c5-a064-686516615fab", "admin@admin.com", true, 1, false, null, null, null, "AQAAAAEAACcQAAAAEPxq8eDPxajhq3XIlbzVFRVXj2ATA3JnhA78V2AX8yqMiLDIdTtBVeKB/FmQuPH0iw==", null, false, "7cb7323c-aa03-4f61-bb66-66641d740c61", false, null });
+                values: new object[] { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "88a7f819-47b9-438d-a1d6-371bb4af933b", "admin@admin.com", true, 1, false, null, "ADMIN@ADMIN.COM", null, "AQAAAAEAACcQAAAAEFMiW+uqDbL3YhXM/CsocJDfj1NItz1no/6/Px5k/y5Zd9VdwTVZQtJ4JFQG0AqEug==", null, false, "2bc9da77-f659-492d-9bb9-137c75e3c063", false, null });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
-                columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "2c5e174e-3b0e-446f-86af-483d56fd7210", "8e445865-a24d-4543-a6c6-9443d048cdb9" });
+                columns: new[] { "RoleId", "UserId", "ApplicationUserId" },
+                values: new object[] { "2c5e174e-3b0e-446f-86af-483d56fd7210", "8e445865-a24d-4543-a6c6-9443d048cdb9", null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Asignaciones_IdColaborador",
@@ -420,6 +426,11 @@ namespace WEB.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserRoles_ApplicationUserId",
+                table: "AspNetUserRoles",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserRoles_RoleId",
                 table: "AspNetUserRoles",
                 column: "RoleId");
@@ -432,7 +443,8 @@ namespace WEB.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_IdColaborador",
                 table: "AspNetUsers",
-                column: "IdColaborador");
+                column: "IdColaborador",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",

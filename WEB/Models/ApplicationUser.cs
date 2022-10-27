@@ -9,5 +9,7 @@ namespace WEB.Models
         [ForeignKey("IdColaborador")]
         public Colaborador Colaborador { get; set; }
 
+        public List<IdentityUserRole<string>> Roles { get; set; }
+
     }
 }
