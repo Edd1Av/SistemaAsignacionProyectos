@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WEB.Migrations
 {
-    public partial class modelosIniciales : Migration
+    public partial class ModelosIniciales : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -24,31 +24,6 @@ namespace WEB.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -162,6 +137,114 @@ namespace WEB.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Asignaciones",
+                schema: "app",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdColaborador = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Asignaciones", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Asignaciones_Colaboradores_IdColaborador",
+                        column: x => x.IdColaborador,
+                        principalSchema: "app",
+                        principalTable: "Colaboradores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdColaborador = table.Column<int>(type: "int", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Colaboradores_IdColaborador",
+                        column: x => x.IdColaborador,
+                        principalSchema: "app",
+                        principalTable: "Colaboradores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AsignacionesReal",
+                schema: "app",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdAsignacion = table.Column<int>(type: "int", nullable: false),
+                    Fecha_Inicio = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Fecha_Final = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AsignacionesReal", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AsignacionesReal_Asignaciones_IdAsignacion",
+                        column: x => x.IdAsignacion,
+                        principalSchema: "app",
+                        principalTable: "Asignaciones",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DistribucionAsignacion",
+                schema: "app",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdAsignacion = table.Column<int>(type: "int", nullable: false),
+                    IdProyecto = table.Column<int>(type: "int", nullable: false),
+                    Fecha_Inicio = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Fecha_Final = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DistribucionAsignacion", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DistribucionAsignacion_Asignaciones_IdAsignacion",
+                        column: x => x.IdAsignacion,
+                        principalSchema: "app",
+                        principalTable: "Asignaciones",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DistribucionAsignacion_Proyectos_IdProyecto",
+                        column: x => x.IdProyecto,
+                        principalSchema: "app",
+                        principalTable: "Proyectos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
@@ -247,81 +330,6 @@ namespace WEB.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Asignaciones",
-                schema: "app",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdColaborador = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Asignaciones", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Asignaciones_Colaboradores_IdColaborador",
-                        column: x => x.IdColaborador,
-                        principalSchema: "app",
-                        principalTable: "Colaboradores",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AsignacionesReal",
-                schema: "app",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdAsignacion = table.Column<int>(type: "int", nullable: false),
-                    Fecha_Inicio = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Fecha_Final = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AsignacionesReal", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AsignacionesReal_Asignaciones_IdAsignacion",
-                        column: x => x.IdAsignacion,
-                        principalSchema: "app",
-                        principalTable: "Asignaciones",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DistribucionAsignacion",
-                schema: "app",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdAsignacion = table.Column<int>(type: "int", nullable: false),
-                    IdProyecto = table.Column<int>(type: "int", nullable: false),
-                    Fecha_Inicio = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Fecha_Final = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DistribucionAsignacion", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DistribucionAsignacion_Asignaciones_IdAsignacion",
-                        column: x => x.IdAsignacion,
-                        principalSchema: "app",
-                        principalTable: "Asignaciones",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_DistribucionAsignacion_Proyectos_IdProyecto",
-                        column: x => x.IdProyecto,
-                        principalSchema: "app",
-                        principalTable: "Proyectos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "DistribucionAsignacionReal",
                 schema: "app",
                 columns: table => new
@@ -351,12 +359,37 @@ namespace WEB.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[] { "2c5e174e-3b0e-446f-86af-483d56fd7210", "f5edfa51-d4a0-44ce-8373-8af395770b46", "Administrador", "ADMINISTRADOR" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[] { "3c6e284e-4b1e-557f-97af-594d67fd8321", "58391ad8-fe97-44d0-8999-7cc48af2aef4", "Desarrollador", "DESARROLLADOR" });
+
+            migrationBuilder.InsertData(
+                schema: "app",
+                table: "Colaboradores",
+                columns: new[] { "Id", "Apellidos", "CURP", "Id_Odoo", "Nombres" },
+                values: new object[] { 1, "n/a", "n/a", "n/a", "admin" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "IdColaborador", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "7db973ac-c7d0-45c5-a064-686516615fab", "admin@admin.com", true, 1, false, null, null, null, "AQAAAAEAACcQAAAAEPxq8eDPxajhq3XIlbzVFRVXj2ATA3JnhA78V2AX8yqMiLDIdTtBVeKB/FmQuPH0iw==", null, false, "7cb7323c-aa03-4f61-bb66-66641d740c61", false, null });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { "2c5e174e-3b0e-446f-86af-483d56fd7210", "8e445865-a24d-4543-a6c6-9443d048cdb9" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Asignaciones_IdColaborador",
                 schema: "app",
                 table: "Asignaciones",
-                column: "IdColaborador",
-                unique: true);
+                column: "IdColaborador");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AsignacionesReal_IdAsignacion",
@@ -395,6 +428,11 @@ namespace WEB.Migrations
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_IdColaborador",
+                table: "AspNetUsers",
+                column: "IdColaborador");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",

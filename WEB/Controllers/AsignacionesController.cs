@@ -145,43 +145,48 @@ namespace WEB.Controllers
         public async Task<ActionResult<Asignacion>> PostAsignacion(AsignacionPost postModel)
         {
             Response response = new Response();
-            try
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                var colaborador = new Colaborador();
-                colaborador = _context.Colaboradores.Where(x => x.Id == postModel.Id_Colaborador).FirstOrDefault();
-
-                var asignacion = new Asignacion();
-                var distribucion = new List<Distribucion>();
-                //asignacion.Fecha_Inicio = postModel.Fecha_Inicio;
-                //asignacion.Fecha_Final = postModel.Fecha_Final;
-
-
-                foreach (var item in postModel.Proyectos)
+                try
                 {
-                    var proyecto = new Proyecto();
-                    proyecto= _context.Proyectos.Where(x => x.Id==item.Id).FirstOrDefault();
+                    var colaborador = new Colaborador();
+                    colaborador = _context.Colaboradores.Where(x => x.Id == postModel.Id_Colaborador).FirstOrDefault();
 
-                    distribucion.Add(new Distribucion()
+                    var asignacion = new Asignacion();
+                    var distribucion = new List<Distribucion>();
+                    //asignacion.Fecha_Inicio = postModel.Fecha_Inicio;
+                    //asignacion.Fecha_Final = postModel.Fecha_Final;
+
+
+                    foreach (var item in postModel.Proyectos)
                     {
-                        Fecha_Inicio= item.Fecha_inicio.ToLocalTime(),
-                        Fecha_Final=item.Fecha_final.ToLocalTime(),
-                        Proyecto = proyecto,
-                        //Porcentaje = item.Porcentaje
-                    }); ;
+                        var proyecto = new Proyecto();
+                        proyecto = _context.Proyectos.Where(x => x.Id == item.Id).FirstOrDefault();
+
+                        distribucion.Add(new Distribucion()
+                        {
+                            Fecha_Inicio = item.Fecha_inicio.ToLocalTime(),
+                            Fecha_Final = item.Fecha_final.ToLocalTime(),
+                            Proyecto = proyecto,
+                            //Porcentaje = item.Porcentaje
+                        }); ;
+                    }
+
+                    asignacion.Distribuciones = distribucion;
+
+                    asignacion.Colaborador = colaborador;
+                    _context.Asignacion.Add(asignacion);
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
                 }
-
-                asignacion.Distribuciones = distribucion;
-
-                asignacion.Colaborador = colaborador;
-                _context.Asignacion.Add(asignacion);
-                await _context.SaveChangesAsync();
-            }catch(Exception ex)
-            {
-                response.success = false;
-                response.response = $"Error al registrar";
-                return Ok(response);
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    response.success = false;
+                    response.response = $"Error al registrar";
+                    return Ok(response);
+                }
             }
-
             response.success = true;
             response.response = "Registrado con éxito";
             return Ok(response);

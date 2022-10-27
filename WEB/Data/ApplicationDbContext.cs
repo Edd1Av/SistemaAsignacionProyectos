@@ -1,5 +1,6 @@
 ﻿using Duende.IdentityServer.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using WEB.Models;
@@ -26,8 +27,48 @@ namespace WEB.Data
 
             modelBuilder.Entity<Proyecto>().HasIndex(x => x.Clave).IsUnique();
 
-            modelBuilder.Entity<Asignacion>().HasIndex(x=>x.IdColaborador).IsUnique();
+            var hasher = new PasswordHasher<IdentityUser>();
 
+            var userData = new Colaborador()
+            {
+                Id = 1,
+                Apellidos = "n/a",
+                Nombres = "admin",
+                CURP = "n/a",
+                Id_Odoo = "n/a"
+            };
+
+            var user = new ApplicationUser()
+            {
+                Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                IdColaborador = 1,
+                Email = "admin@admin.com",
+                EmailConfirmed = true,
+                PasswordHash = hasher.HashPassword(null, "Pa$word1")
+            };
+
+            var rolAdmin = new IdentityRole()
+            {
+                Id = "2c5e174e-3b0e-446f-86af-483d56fd7210",
+                Name = "Administrador",
+                NormalizedName = "ADMINISTRADOR"
+            };
+
+            var rolDesarrollador = new IdentityRole()
+            {
+                Id = "3c6e284e-4b1e-557f-97af-594d67fd8321",
+                Name = "Desarrollador",
+                NormalizedName = "DESARROLLADOR"
+            };
+
+            modelBuilder.Entity<Colaborador>().HasData(userData);
+            modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole[] { rolAdmin, rolDesarrollador });
+            modelBuilder.Entity<ApplicationUser>().HasData(user);
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+            {
+                UserId = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                RoleId = "2c5e174e-3b0e-446f-86af-483d56fd7210",
+            });
         }
 
         public DbSet<Colaborador> Colaboradores { get; set; }

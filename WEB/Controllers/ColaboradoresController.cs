@@ -9,6 +9,7 @@ using WEB.Data;
 using WEB.Models;
 using Newtonsoft.Json;
 using WEB.ViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace WEB.Controllers
 {
@@ -17,10 +18,16 @@ namespace WEB.Controllers
     public class ColaboradoresController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-
-        public ColaboradoresController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+       
+        
+       
+        public ColaboradoresController(ApplicationDbContext context, RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         // GET: api/Colaboradores
@@ -108,39 +115,67 @@ namespace WEB.Controllers
         // POST: api/Colaboradores
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Colaborador>> PostColaborador(Colaborador colaborador)
+        public async Task<IActionResult> PostColaborador(ColaboradorPost colaborador)
         {
             Response response = new Response();
-            try
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                if (_context.Colaboradores.Any(x => x.CURP.ToUpper().Trim() == colaborador.CURP.ToUpper().Trim()))
+                
+                try
                 {
-                    response.success = false;
-                    response.response = $"Ya existe un contacto con ese CURP";
-                    return Ok(response);
-                }
-                if (_context.Colaboradores.Any(x => x.Id_Odoo.ToUpper().Trim() == colaborador.Id_Odoo.ToUpper().Trim()))
-                {
-                    response.success = false;
-                    response.response = $"Ya existe un contacto con esa clave Odoo";
-                    return Ok(response);
-                }
-                Colaborador addColaborador = new Colaborador();
-                addColaborador.Nombres = colaborador.Nombres.Trim();
-                addColaborador.Apellidos = colaborador.Apellidos.Trim();
-                addColaborador.CURP = colaborador.CURP.ToUpper().Trim();
-                addColaborador.Id_Odoo = colaborador.Id_Odoo.Trim();
-                _context.Colaboradores.Add(addColaborador);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                response.success = false;
-                response.response = $"Error al registrar";
-                return Ok(response);
-            }
-            
+                    if (_context.Colaboradores.Any(x => x.CURP.ToUpper().Trim() == colaborador.CURP.ToUpper().Trim()))
+                    {
+                        response.success = false;
+                        response.response = $"Ya existe un contacto con ese CURP";
+                        return Ok(response);
+                    }
+                    if (_context.Colaboradores.Any(x => x.Id_Odoo.ToUpper().Trim() == colaborador.Id_Odoo.ToUpper().Trim()))
+                    {
+                        response.success = false;
+                        response.response = $"Ya existe un contacto con esa clave Odoo";
+                        return Ok(response);
+                    }
+                    Colaborador addColaborador = new Colaborador();
+                    addColaborador.Nombres = colaborador.Nombres.Trim();
+                    addColaborador.Apellidos = colaborador.Apellidos.Trim();
+                    addColaborador.CURP = colaborador.CURP.ToUpper().Trim();
+                    addColaborador.Id_Odoo = colaborador.Id_Odoo.Trim();
+                    _context.Colaboradores.Add(addColaborador);
 
+
+                    ApplicationUser user = new ApplicationUser();
+                    user.Email = colaborador.Email;
+                    user.UserName = colaborador.Email;
+                    user.Colaborador = addColaborador;
+                    user.EmailConfirmed = true;
+
+                    var result = _userManager.CreateAsync(user, "Pa$word1");
+
+                    if (result.IsCompleted)
+                    {
+                        //Enviar Correo
+              
+                        
+                    }
+                    else
+                    {
+                        response.success = false;
+                        response.response = $"No se pudo crear el usuario";
+                        return Ok(response);
+                    }
+
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    response.success = false;
+                    response.response = $"Error al registrar";
+                    return Ok(response);
+                }
+
+            }
 
             response.success = true;
             response.response = "Registrado con éxito";

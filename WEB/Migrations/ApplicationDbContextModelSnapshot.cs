@@ -188,6 +188,22 @@ namespace WEB.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "2c5e174e-3b0e-446f-86af-483d56fd7210",
+                            ConcurrencyStamp = "f5edfa51-d4a0-44ce-8373-8af395770b46",
+                            Name = "Administrador",
+                            NormalizedName = "ADMINISTRADOR"
+                        },
+                        new
+                        {
+                            Id = "3c6e284e-4b1e-557f-97af-594d67fd8321",
+                            ConcurrencyStamp = "58391ad8-fe97-44d0-8999-7cc48af2aef4",
+                            Name = "Desarrollador",
+                            NormalizedName = "DESARROLLADOR"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -277,6 +293,13 @@ namespace WEB.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                            RoleId = "2c5e174e-3b0e-446f-86af-483d56fd7210"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -319,6 +342,9 @@ namespace WEB.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<int>("IdColaborador")
+                        .HasColumnType("int");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -354,6 +380,8 @@ namespace WEB.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IdColaborador");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -363,6 +391,22 @@ namespace WEB.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "7db973ac-c7d0-45c5-a064-686516615fab",
+                            Email = "admin@admin.com",
+                            EmailConfirmed = true,
+                            IdColaborador = 1,
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAEAACcQAAAAEPxq8eDPxajhq3XIlbzVFRVXj2ATA3JnhA78V2AX8yqMiLDIdTtBVeKB/FmQuPH0iw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "7cb7323c-aa03-4f61-bb66-66641d740c61",
+                            TwoFactorEnabled = false
+                        });
                 });
 
             modelBuilder.Entity("WEB.Models.Asignacion", b =>
@@ -378,8 +422,7 @@ namespace WEB.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdColaborador")
-                        .IsUnique();
+                    b.HasIndex("IdColaborador");
 
                     b.ToTable("Asignaciones", "app");
                 });
@@ -445,6 +488,16 @@ namespace WEB.Migrations
                         .IsUnique();
 
                     b.ToTable("Colaboradores", "app");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Apellidos = "n/a",
+                            CURP = "n/a",
+                            Id_Odoo = "n/a",
+                            Nombres = "admin"
+                        });
                 });
 
             modelBuilder.Entity("WEB.Models.Distribucion", b =>
@@ -578,6 +631,17 @@ namespace WEB.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("WEB.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("WEB.Models.Colaborador", "Colaborador")
+                        .WithMany()
+                        .HasForeignKey("IdColaborador")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Colaborador");
                 });
 
             modelBuilder.Entity("WEB.Models.Asignacion", b =>

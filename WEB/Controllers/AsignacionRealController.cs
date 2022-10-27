@@ -151,51 +151,55 @@ namespace WEB.Controllers
         public async Task<ActionResult<AsignacionReal>> PostAsignacion(AsignacionPostReal postModel)
         {
             Response response = new Response();
-            try
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                
-                var asignacionPlaneada = _context.Asignacion.Include(z=>z.Colaborador)
-                    .Include(i=>i.AsignacionReal)
-                    .ThenInclude(c=>c.DistribucionesReales)
-                    .ThenInclude(v=>v.Proyecto)
-                    .Where(x => x.IdColaborador == postModel.Id_Colaborador).First();
-                var asignacionReal = new AsignacionReal();
-                var distribucionReal = new List<DistribucionReal>();
-
-
-
-                foreach (var item in postModel.Proyectos)
+                try
                 {
-                    var proyecto = new Proyecto();
-                    proyecto = _context.Proyectos.Where(x => x.Id == item.Id).First();
 
-                    distribucionReal.Add(new DistribucionReal()
+                    var asignacionPlaneada = _context.Asignacion.Include(z => z.Colaborador)
+                        .Include(i => i.AsignacionReal)
+                        .ThenInclude(c => c.DistribucionesReales)
+                        .ThenInclude(v => v.Proyecto)
+                        .Where(x => x.IdColaborador == postModel.Id_Colaborador).First();
+                    var asignacionReal = new AsignacionReal();
+                    var distribucionReal = new List<DistribucionReal>();
+
+
+
+                    foreach (var item in postModel.Proyectos)
                     {
-                        //Fecha_Inicio = item.Fecha_inicio,
-                        //Fecha_Final = item.Fecha_final,
-                        Proyecto = proyecto,
-                        Porcentaje = item.Porcentaje
-                    });
+                        var proyecto = new Proyecto();
+                        proyecto = _context.Proyectos.Where(x => x.Id == item.Id).First();
+
+                        distribucionReal.Add(new DistribucionReal()
+                        {
+                            //Fecha_Inicio = item.Fecha_inicio,
+                            //Fecha_Final = item.Fecha_final,
+                            Proyecto = proyecto,
+                            Porcentaje = item.Porcentaje
+                        });
+                    }
+
+                    asignacionReal.DistribucionesReales = distribucionReal;
+                    asignacionReal.Fecha_Inicio = postModel.Fecha_Inicio.ToLocalTime();
+                    asignacionReal.Fecha_Final = postModel.Fecha_Final.ToLocalTime();
+                    asignacionPlaneada.AsignacionReal = new List<AsignacionReal>();
+                    asignacionPlaneada.AsignacionReal.Add(asignacionReal);
+
+
+                    _context.Asignacion.Attach(asignacionPlaneada);
+                    _context.Entry(asignacionPlaneada).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
                 }
-
-                asignacionReal.DistribucionesReales = distribucionReal;
-                asignacionReal.Fecha_Inicio = postModel.Fecha_Inicio.ToLocalTime();
-                asignacionReal.Fecha_Final = postModel.Fecha_Final.ToLocalTime();
-                asignacionPlaneada.AsignacionReal = new List<AsignacionReal>();
-                asignacionPlaneada.AsignacionReal.Add(asignacionReal);
-
-
-                _context.Asignacion.Attach(asignacionPlaneada);
-                _context.Entry(asignacionPlaneada).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    response.success = false;
+                    response.response = $"Error al registrar";
+                    return Ok(response);
+                }
             }
-            catch (Exception ex)
-            {
-                response.success = false;
-                response.response = $"Error al registrar";
-                return Ok(response);
-            }
-
             response.success = true;
             response.response = "Registrado con éxito";
             return Ok(response);
