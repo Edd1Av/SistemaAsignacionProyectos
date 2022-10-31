@@ -25,6 +25,10 @@ export class ProyectosService {
     return this.http.get<IProyecto[]>(this.urlBase + "api/proyectos");
   }
 
+  getProyectosColaborador(id:number): Observable<IProyecto[]> {
+    return this.http.get<IProyecto[]>(this.urlBase + "api/proyectos/proyectosColaborador/"+id);
+  }
+
   UpdateProyecto(id:number, Proyecto:IProyecto)  {
     return this.http.put<IResponse>(this.urlBase + "api/proyectos/"+id, Proyecto);
   }

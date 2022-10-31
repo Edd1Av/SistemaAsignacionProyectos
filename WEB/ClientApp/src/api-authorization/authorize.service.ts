@@ -38,7 +38,7 @@ export class AuthorizeService {
     
   }
 
-  public get usuarioData():IUsuario|null{
+  public get usuarioData(){
     return this.changeLoginStatusSubject.value;
   }
 
@@ -72,6 +72,15 @@ export class AuthorizeService {
     //this.usuario = JSON.parse(localStorage.getItem('Sesion')||JSON.stringify(false));
     if(this.usuario){
       return this.usuario;
+    }
+    return false;
+  }
+
+  public isLogged(){
+    this.usuario = this.changeLoginStatusSubject.value;
+    //this.usuario = JSON.parse(localStorage.getItem('Sesion')||JSON.stringify(false));
+    if(this.usuario){
+      return true;
     }
     return false;
   }

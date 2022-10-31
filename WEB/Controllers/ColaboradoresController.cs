@@ -21,9 +21,9 @@ namespace WEB.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-       
-        
-       
+
+
+
         public ColaboradoresController(ApplicationDbContext context, RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
         {
             _context = context;
@@ -36,13 +36,17 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<Colaborador>>> GetColaboradores()
         {
-            var rolDesarrollador = _roleManager.FindByNameAsync("Desarrollador");
-            var colaboradores = await _context.Colaboradores.Where(x => x.IdentityUser.Roles.Any(y => y.RoleId == rolDesarrollador.Result.Id)).OrderBy(x => x.Id_Odoo).ToListAsync();
+            var x = await _userManager.GetUsersInRoleAsync("Desarrollador");
+
+            var colaboradores = await _context.Colaboradores.Where(x => x.Id != 1).ToListAsync();
+            //var rolDesarrollador = _roleManager.FindByNameAsync("Desarrollador");
+            //var colaboradores = await _context.Colaboradores.Where(x =>x.IdentityUser.Roles.Any(y => y.RoleId == rolDesarrollador.Result.Id)).OrderBy(x => x.Id_Odoo).ToListAsync();
             return colaboradores;
         }
 
         // GET: api/Colaboradores/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Colaborador>> GetColaborador(int id)
         {
             var colaborador = await _context.Colaboradores.FindAsync(id);
@@ -58,6 +62,7 @@ namespace WEB.Controllers
         // PUT: api/Colaboradores/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutColaborador(int id, Colaborador colaborador)
         {
             Response response = new Response();
@@ -119,6 +124,7 @@ namespace WEB.Controllers
         // POST: api/Colaboradores
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> PostColaborador(ColaboradorPost colaborador)
         {
             Response response = new Response();
@@ -132,6 +138,15 @@ namespace WEB.Controllers
             {
                 response.success = false;
                 response.response = $"Ya existe un contacto con esa clave Odoo";
+                return Ok(response);
+            }
+
+            var c = await _userManager.FindByEmailAsync(colaborador.Email);
+
+            if (c!=null)
+            {
+                response.success = false;
+                response.response = $"Ya existe un contacto con ese Email";
                 return Ok(response);
             }
 
@@ -154,16 +169,24 @@ namespace WEB.Controllers
                     user.NormalizedEmail = colaborador.Email.Trim().ToUpper();
                     user.Colaborador = addColaborador;
                     user.EmailConfirmed = true;
+                    user.UserName = colaborador.Id_Odoo;
 
-                    var result = _userManager.CreateAsync(user, "Pa$word1");
-
-                    var asignarRol = _userManager.AddToRoleAsync(user, "Desarrollador");
-
-                    if (result.IsCompleted  && asignarRol.IsCompleted)
+                    var x = await _userManager.CreateAsync(user, "Pa$word1");
+                    await _context.SaveChangesAsync();
+                    if (x.Succeeded)
                     {
-                        //Enviar Correo
-              
-                        
+                        var y = await _userManager.AddToRoleAsync(user, "Desarrollador");
+                        if (y.Succeeded)
+                        {
+                            //Enviar Correo
+                        }
+                        else
+                        {
+                            transaction.Rollback();
+                            response.success = false;
+                            response.response = $"No se pudo asignar un rol";
+                            return Ok(response);
+                        }
                     }
                     else
                     {
@@ -174,6 +197,7 @@ namespace WEB.Controllers
                     }
 
                     await _context.SaveChangesAsync();
+                   
                     transaction.Commit();
                 }
                 catch (Exception)
@@ -193,6 +217,7 @@ namespace WEB.Controllers
 
         // DELETE: api/Colaboradores/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteColaborador(int id)
         {
             Response response = new Response();

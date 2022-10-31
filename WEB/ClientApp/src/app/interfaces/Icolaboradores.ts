@@ -4,4 +4,5 @@ export interface IColaborador {
     apellidos:String;
     curp:String;
     id_Odoo:String;
+    email:string;
 }

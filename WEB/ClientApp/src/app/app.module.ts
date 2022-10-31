@@ -25,6 +25,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatNativeDateModule } from '@angular/material/core';
 import { LoginComponent } from 'src/api-authorization/login/login.component';
 import { AuthorizeGuardDesarrollador } from 'src/api-authorization/authorizeDesarrollador.guard';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 
 
@@ -51,7 +52,9 @@ import { AuthorizeGuardDesarrollador } from 'src/api-authorization/authorizeDesa
     MatDialogModule,
     MatButtonModule,
     MatInputModule,
+    FlexLayoutModule,
     MatNativeDateModule,
+    
     RouterModule.forRoot([
       { path: '', component: HomeComponent, canActivate:[AuthorizeGuardAdministrador] },
       { path: 'home', component: HomeComponent, canActivate:[AuthorizeGuardAdministrador] },

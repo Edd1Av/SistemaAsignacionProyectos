@@ -1,7 +1,7 @@
 export interface IUsuario{
     success:boolean;
-    id:number;
-    email:string;
+    idUsuario:number;
+    correo:string;
     rol:string;
     token:string;
     expiration:Date;

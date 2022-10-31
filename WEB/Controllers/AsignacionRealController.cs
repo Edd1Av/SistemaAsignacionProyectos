@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ namespace WEB.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AsignacionRealController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -66,23 +68,23 @@ namespace WEB.Controllers
             return asignacion;
         }
 
-        [Route("ByColaborador/{id}")]
-        [HttpGet]
-        public async Task<ActionResult<AsignacionReal>> GetAsignacionByColaborador(int id)
-        {
-            var asignacion = _context.AsignacionReal
-                                               .Include(x => x.Asignacion)
-                                               .ThenInclude(i=>i.Colaborador)
-                                                .Include(z => z.DistribucionesReales)
-                                               .ThenInclude(y => y.Proyecto).Where(x => x.Asignacion.IdColaborador == id).FirstOrDefault();
+        //[Route("ByColaborador/{id}")]
+        //[HttpGet]
+        //public async Task<ActionResult<AsignacionReal>> GetAsignacionByColaborador(int id)
+        //{
+        //    var asignacion = _context.AsignacionReal
+        //                                       .Include(x => x.Asignacion)
+        //                                       .ThenInclude(i=>i.Colaborador)
+        //                                        .Include(z => z.DistribucionesReales)
+        //                                       .ThenInclude(y => y.Proyecto).Where(x => x.Asignacion.IdColaborador == id).FirstOrDefault();
 
-            if (asignacion == null)
-            {
-                return NotFound();
-            }
+        //    if (asignacion == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return asignacion;
-        }
+        //    return asignacion;
+        //}
 
         // PUT: api/Asignaciones/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

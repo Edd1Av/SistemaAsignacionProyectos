@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,13 +25,27 @@ namespace WEB.Controllers
 
         // GET: api/Proyectos
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Proyecto>>> GetProyectos()
         {
             return await _context.Proyectos.OrderBy(x=>x.Titulo).ToListAsync();
         }
 
+        [HttpGet]
+        [Authorize]
+        [Route("proyectosColaborador/{id}")]
+        public async Task<ActionResult<IEnumerable<Proyecto>>> GetProyectos(int id)
+        {
+            //var x = _context.Asignacion.Select(x => x.Distribuciones.Where(y => y.Asignacion.IdColaborador == id).Select(x=>x.Proyecto)).ToList();
+
+            var y = await _context.Distribucion.Where(x => x.Asignacion.IdColaborador == id).Select(y=>y.Proyecto).ToListAsync();
+            
+            return y; 
+        }
+
         // GET: api/Proyectos/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Proyecto>> GetProyecto(int id)
         {
             var proyecto = await _context.Proyectos.FindAsync(id);
@@ -46,6 +61,7 @@ namespace WEB.Controllers
         // PUT: api/Proyectos/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutProyecto(int id, Proyecto proyecto)
         {
             Response response = new Response();
@@ -96,6 +112,7 @@ namespace WEB.Controllers
         // POST: api/Proyectos
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Proyecto>> PostProyecto(Proyecto proyecto)
         {
             Response response = new Response();
@@ -129,6 +146,7 @@ namespace WEB.Controllers
 
         // DELETE: api/Proyectos/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteProyecto(int id)
         {
             Response response = new Response();

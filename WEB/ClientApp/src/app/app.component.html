@@ -1,5 +1,5 @@
-<app-layout></app-layout>
 <div class="container body-content shadow-sm mb-5 mt-0 rounded bg-light">
+  <app-layout *ngIf="usuarioLoggeado"></app-layout>
   <div class="pt-5 pb-5 bg-dark text-white border-rounded homeImg mb-4">
       <div class="p-2 px-5 bg-dark col-md-12 bg-opacity-50 h-100 w-100" >
           <a routerLink="/home"><img src="../assets/img/logoPlenumsoft.png" alt="Plenumsoft"></a>

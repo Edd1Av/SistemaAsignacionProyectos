@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ namespace WEB.Controllers
 
         // GET: api/Asignaciones
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<AsignacionHistorico>>> GetAsignacion()
         {
             //var asignaciones =  _context.Asignacion.Include(x=>x.Colaborador).Include(x=>x.Distribuciones).ToList();
@@ -53,6 +55,7 @@ namespace WEB.Controllers
 
         // GET: api/Asignaciones/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Asignacion>> GetAsignacion(int id)
         {
             var asignacion = await _context.Asignacion.FindAsync(id);
@@ -67,6 +70,7 @@ namespace WEB.Controllers
 
         [Route("ByColaborador/{id}")]
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<Asignacion>> GetAsignacionByColaborador(int id)
         {
             var asignacion = _context.Asignacion.Include(x => x.Colaborador)
@@ -84,6 +88,7 @@ namespace WEB.Controllers
         // PUT: api/Asignaciones/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutAsignacion(int id, AsignacionPost postModel)
         {
             Response response = new Response();
@@ -142,6 +147,7 @@ namespace WEB.Controllers
         // POST: api/Asignaciones
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Asignacion>> PostAsignacion(AsignacionPost postModel)
         {
             Response response = new Response();
@@ -194,6 +200,7 @@ namespace WEB.Controllers
 
         // DELETE: api/Asignaciones/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteAsignacion(int id)
         {
             Response response = new Response();

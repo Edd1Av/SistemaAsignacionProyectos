@@ -1,11 +1,11 @@
 <nav class="navbar navbar-expand-sm navbar-dark bg-black">
-    <div *ngIf="usuario" class="container px-5">
+    <div class="container px-5">
         <a class="navbar-brand" routerLink="/"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="mynavbar">
-            <ul class="navbar-nav me-auto">
+            <ul *ngIf="isAdmin" class="navbar-nav me-auto">
                 <li class="nav-item">
                   <a routerLink="/" class="nav-link active"><mat-icon>home</mat-icon></a>
                 </li>
@@ -18,17 +18,26 @@
                 <li class="nav-item">
                   <a routerLink="/asignaciones" class="nav-link active">Asignaciones</a>
                 </li>
-                <!-- <li class="nav-item">
-                  <a routerLink="/asignacionReal" class="nav-link active">Asignaciones Reales</a>
-                </li> -->
             </ul>
-            <div *ngIf="usuario" class="d-flex">
-                <!-- <input class="form-control me-2" disabled type="text" placeholder="{{usuario.email}}"> -->
-                <mat-form-field appearance="outline" class="border-white">
-                  <mat-label>{{usuario.correo}}</mat-label>
-                  <input matInput maxlength="100" formControlName="email" [disabled]="true"/>
-                </mat-form-field>
-                <button class="btn btn-primary" type="button" (click)="salir()">Salir</button>
+            <ul *ngIf="isDevelop" class="navbar-nav me-auto">
+              <li class="nav-item">
+                <a routerLink="/" class="nav-link active"><mat-icon>home</mat-icon></a>
+              </li>
+              <li class="nav-item">
+                <a routerLink="/asignacionReal" class="nav-link active">Asignacion Real</a>
+              </li>
+            </ul>
+            <div fxLayout="row" fxLayout.sm="column">
+              <div fxFlex="80%" fxFlex.sm="100%">
+                  <div>
+                    <input class="form-control me-2" disabled type="text" placeholder="{{email}}">
+                  </div>
+              </div>
+              <div fxFlex="20%" fxFlex.sm="100%">
+                <div>
+                  <button class="btn" type="button" (click)="salir()"><mat-icon color="primary">exit_to_app</mat-icon></button>
+                </div>
+            </div>
             </div>
         </div>
     </div>

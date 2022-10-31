@@ -5,11 +5,13 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { tap } from 'rxjs/operators';
+import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { IAsignacionPostReal } from 'src/app/interfaces/iasignacion-post';
 import { IColaborador } from 'src/app/interfaces/Icolaboradores';
 import { IProyectoAsignadoReal } from 'src/app/interfaces/iproyecto-asignado';
 import { IProyecto } from 'src/app/interfaces/IProyectos';
 import { IResponse } from 'src/app/interfaces/IResponse';
+import { IUsuario } from 'src/app/interfaces/IUsuario';
 import { AsignacionesService } from 'src/app/services/asignaciones.service';
 import { ColaboradoresService } from 'src/app/services/colaboradores.service';
 import { ProyectosService } from 'src/app/services/proyectos.service';
@@ -37,7 +39,8 @@ export class AsignacionesRealInsertComponent implements OnInit {
     private _asignacionService: AsignacionesService,
     private _snackBar: MatSnackBar,
     private _colaboradoresService:ColaboradoresService,
-    private _proyectosService:ProyectosService
+    private _proyectosService:ProyectosService,
+    private _authService:AuthorizeService
   ) { }
   
   dataSource!: MatTableDataSource<IProyectoAsignadoReal>;
@@ -46,7 +49,13 @@ export class AsignacionesRealInsertComponent implements OnInit {
   Proyectos:IProyecto[]=[];
   ProyectoSeleccionado:IProyecto;
   ProyectoId:number=0;
+  Usuario:IUsuario;
   ngOnInit(): void {
+
+    if(this._authService.usuarioData!=null){
+      this.Usuario=this._authService.usuarioData;
+    }
+  console.log(this.Usuario);
   this.GetColaboradores();
   this.GetProyectos();
   this.buildForm();
@@ -62,7 +71,7 @@ export class AsignacionesRealInsertComponent implements OnInit {
   }
 
   private GetProyectos(){
-    this._proyectosService.getProyectos()
+    this._proyectosService.getProyectosColaborador(this.Usuario.idUsuario)
     .pipe(
       tap((result:IProyecto[])=>{
         this.Proyectos=result;
@@ -105,7 +114,7 @@ export class AsignacionesRealInsertComponent implements OnInit {
     this.formGroup = this.formBuilder.group({
       fecha_inicio: new FormControl("", Validators.required),
       fecha_final: new FormControl("", Validators.required),
-      colaborador: new FormControl("", Validators.required),
+      colaborador: new FormControl({value: this.Usuario.idUsuario, disabled:true}, Validators.required),
       proyectos: new FormControl(""),
     });
   }

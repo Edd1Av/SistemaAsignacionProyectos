@@ -34,6 +34,7 @@ export class ColaboradorInsertComponent implements OnInit {
       apellidos: new FormControl("", Validators.required),
       curp: new FormControl("", Validators.required),
       id_odoo: new FormControl("res_partner_contact_", Validators.required),
+      email: new FormControl("", Validators.required)
     });
   }
 

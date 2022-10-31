@@ -1,3 +1,4 @@
+
 <div class="cat-title">
     <ul style="padding-left: 0px;">
       <li>Agregar Asignación</li>
@@ -31,7 +32,7 @@
                 <mat-label>Colaborador</mat-label>
                 <mat-select formControlName="colaborador">
                   <mat-option *ngFor="let colab of colaboradores" [value]="colab.id">
-                    {{colab.nombres}}
+                    {{colab.nombres}} {{colab.apellidos}}
                   </mat-option>
                 </mat-select>
               </mat-form-field>

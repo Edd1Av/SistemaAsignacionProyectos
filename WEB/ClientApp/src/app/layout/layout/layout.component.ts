@@ -13,12 +13,33 @@ export class LayoutComponent implements OnInit {
 
   usuario:any;
   email:string;
+  usuarioLoggeado:Boolean;
+  isAdmin:Boolean=false;
+  isDevelop:Boolean=false;;
   ngOnInit(): void {
-    this.usuario=this.authService.isLoggedIn();
-    console.log(this.usuario);
-    if(typeof(this.usuario)!="boolean"){
-      this.email = this.usuario.correo
-    }
+    this.usuarioLoggeado = this.authService.isLogged();
+    this.authService.changeLoginStatus.subscribe((value)=>{
+      if(value){
+        this.usuarioLoggeado=true;
+        this.email=value.correo;
+        if(value.rol=="Administrador"){
+          this.isAdmin=true;
+          this.isDevelop=false;
+          
+        }
+        if(value.rol=="Desarrollador"){
+          this.isAdmin=false;
+          this.isDevelop=true;
+        }
+      }
+      else{
+        this.usuarioLoggeado = false;
+        this.isAdmin=false;
+        this.isDevelop=false;
+
+      }
+      
+    })
   }
 
 

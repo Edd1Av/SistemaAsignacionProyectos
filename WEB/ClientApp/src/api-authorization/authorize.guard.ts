@@ -22,7 +22,7 @@ export class AuthorizeGuardAdministrador implements CanActivate {
         }
         else{
          
-          this.router.navigate(['/login']);
+          this.router.navigate(['/asignacionReal']);
           return false;
         }
       }

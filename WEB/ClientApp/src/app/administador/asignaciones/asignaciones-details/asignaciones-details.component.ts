@@ -78,7 +78,7 @@ export class AsignacionesDetailsComponent implements OnInit {
     this.formGroup = this.formBuilder.group({
       // fecha_inicio: new FormControl(this.data.asignacion.fecha_inicio, Validators.required),
       // fecha_final: new FormControl(this.data.asignacion.fecha_final, Validators.required),
-      Colaborador: new FormControl(this.data.asignacion.colaborador.nombres, Validators.required),
+      Colaborador: new FormControl(this.data.asignacion.colaborador.nombres + " " + this.data.asignacion.colaborador.apellidos, Validators.required),
     });
   }
 }

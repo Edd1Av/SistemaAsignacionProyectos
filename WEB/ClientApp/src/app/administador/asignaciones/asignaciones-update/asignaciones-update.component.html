@@ -31,7 +31,7 @@
                 <mat-label>Colaborador</mat-label>
                 <mat-select formControlName="colaborador">
                   <mat-option *ngFor="let colab of colaboradores" [value]="colab.id">
-                    {{colab.nombres}}
+                    {{colab.nombres}} {{colab.apellidos}}
                   </mat-option>
                 </mat-select>
               </mat-form-field>
