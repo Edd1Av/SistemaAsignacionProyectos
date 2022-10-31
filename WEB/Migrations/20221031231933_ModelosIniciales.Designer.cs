@@ -12,7 +12,7 @@ using WEB.Data;
 namespace WEB.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221027055131_ModelosIniciales")]
+    [Migration("20221031231933_ModelosIniciales")]
     partial class ModelosIniciales
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -195,14 +195,14 @@ namespace WEB.Migrations
                         new
                         {
                             Id = "2c5e174e-3b0e-446f-86af-483d56fd7210",
-                            ConcurrencyStamp = "f2bbf943-b197-4b4f-ab21-a2889827d101",
+                            ConcurrencyStamp = "a18d0f63-9443-4336-adc7-4f1b9e6194a7",
                             Name = "Administrador",
                             NormalizedName = "ADMINISTRADOR"
                         },
                         new
                         {
                             Id = "3c6e284e-4b1e-557f-97af-594d67fd8321",
-                            ConcurrencyStamp = "0e697a3e-9cf7-432e-b910-43cf454ba160",
+                            ConcurrencyStamp = "10f4c021-8e32-4aef-9dbf-fa49c017e7ad",
                             Name = "Desarrollador",
                             NormalizedName = "DESARROLLADOR"
                         });
@@ -288,12 +288,7 @@ namespace WEB.Migrations
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("RoleId");
 
@@ -401,15 +396,15 @@ namespace WEB.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "88a7f819-47b9-438d-a1d6-371bb4af933b",
+                            ConcurrencyStamp = "a2a2b3a3-8157-491b-afe1-2919433b0a03",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             IdColaborador = 1,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFMiW+uqDbL3YhXM/CsocJDfj1NItz1no/6/Px5k/y5Zd9VdwTVZQtJ4JFQG0AqEug==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAnOhhmObgKngFYx4aM7/6U4sP/cc+lZjX/Xkc4Khzrmrha/fDpktje5gLgy8+LOwg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2bc9da77-f659-492d-9bb9-137c75e3c063",
+                            SecurityStamp = "58abf16a-99d4-47a5-8941-c7411b92dc03",
                             TwoFactorEnabled = false
                         });
                 });
@@ -616,10 +611,6 @@ namespace WEB.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("WEB.Models.ApplicationUser", null)
-                        .WithMany("Roles")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
@@ -711,11 +702,6 @@ namespace WEB.Migrations
                     b.Navigation("AsignacionReal");
 
                     b.Navigation("Proyecto");
-                });
-
-            modelBuilder.Entity("WEB.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("Roles");
                 });
 
             modelBuilder.Entity("WEB.Models.Asignacion", b =>
