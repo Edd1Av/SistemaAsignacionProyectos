@@ -5,7 +5,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { tap } from 'rxjs/operators';
-import { IAsignacion, IAsignacionGet } from 'src/app/interfaces/iasignacion';
+import { IAsignacionGet } from 'src/app/interfaces/iasignacion';
 import { IProyectoAsignado } from 'src/app/interfaces/iproyecto-asignado';
 import { AsignacionesService } from 'src/app/services/asignaciones.service';
 import { ColaboradoresService } from 'src/app/services/colaboradores.service';

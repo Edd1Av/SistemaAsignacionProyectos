@@ -4,4 +4,5 @@ export interface IUsuario{
     email:string;
     rol:string;
     token:string;
+    expiration:Date;
 }

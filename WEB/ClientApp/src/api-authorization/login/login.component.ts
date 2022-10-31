@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthorizeService} from '../authorize.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { LoginActions, QueryParameterNames, ApplicationPaths, ReturnUrlType } from '../api-authorization.constants';
 import { ILogin } from 'src/app/interfaces/ILogin';
-import { IResponse } from 'src/app/interfaces/IResponse';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { IUsuario } from 'src/app/interfaces/IUsuario';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 // The main responsibility of this component is to handle the user's login process.
 // This is the starting point for the login process. Any component that needs to authenticate
@@ -15,35 +12,56 @@ import { IUsuario } from 'src/app/interfaces/IUsuario';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css', './login.component.scss']
 })
 export class LoginComponent implements OnInit {
 
   constructor(
     private authorizeService: AuthorizeService,
     private activatedRoute: ActivatedRoute,
-    private router: Router, private _snackBar: MatSnackBar) { }
+    private router: Router, private _snackBar: MatSnackBar,
+    private formBuilder: FormBuilder,) { }
 
-    public changeLoginStatusSubject = new Subject<IUsuario>();
-    public changeLoginStatus = this.changeLoginStatusSubject.asObservable();
 
     datos:ILogin;
+    formGroup!: FormGroup;
   async ngOnInit() {
+    this.buildForm();
+
     
   }
 
-  Login(){
-    this.authorizeService.Login(this.datos).subscribe(result=> {
-      if (result.success == true){
-      
-        localStorage.setItem("Sesion", JSON.stringify(result));
-        this.changeLoginStatusSubject.next(result);
-        this.router.navigate(["/home"]);
-      }
-      else{
-        this.openSnackBar("Datos incorrectos");
-      }
+  buildForm(){
+    this.formGroup = this.formBuilder.group({
+      email: new FormControl("", Validators.required),
+      password: new FormControl("", Validators.required),
     });
+  }
+
+  onSubmit(){
+    if(this.formGroup.valid){
+      this.authorizeService.Login(this.formGroup.value).subscribe(result=> {
+        console.log(result);
+        if (result.success == true){
+          if(result.rol=="Administrador"){
+            console.log("es admin ir a home");
+            this.router.navigate(["/home"]);
+          }
+          if(result.rol == "Desarrollador"){
+            console.log("es desarrollador ir a asignaciones reales");
+            this.router.navigate(["/asignacionReal"])
+          }
+          
+        }
+        else{
+          this.openSnackBar("Datos incorrectos");
+        }
+      });
+    }
+    else{
+      this.openSnackBar("Rellene todos los campos");
+    }
+    
   }
 
   openSnackBar(message:string) {

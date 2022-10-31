@@ -1,0 +1,15 @@
+$color-outline: white;
+
+mat-form-field {
+   &.border-white {
+
+    ::ng-deep .mat-form-field-outline {
+        color: $color-outline !important;
+    }
+   // to change label color
+    ::ng-deep .mat-form-field-label {
+        color: $color-outline !important;
+    }
+
+   }
+}

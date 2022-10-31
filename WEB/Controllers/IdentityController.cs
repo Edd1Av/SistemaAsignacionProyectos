@@ -42,11 +42,11 @@ namespace WEB.Controllers
             var keyBytes = Encoding.ASCII.GetBytes(SecretKey);
             var claims = new ClaimsIdentity();
             claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Email));
-
+            var expiration = DateTime.Now.AddDays(1);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = claims,
-                Expires = DateTime.UtcNow.AddMinutes(60),
+                Expires = expiration,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256Signature),
 
             };
@@ -58,7 +58,7 @@ namespace WEB.Controllers
 
             var rol = _userManager.GetRolesAsync(user);
 
-            LocalStorage localS = new LocalStorage{IdUsuario=user.IdColaborador, Correo=user.Email, Token=Token, Rol=rol.Result.First(), Success=true};
+            LocalStorage localS = new LocalStorage{IdUsuario=user.IdColaborador, Correo=user.Email, Token=Token, Expiration=expiration, Rol=rol.Result.First(), Success=true};
             return Ok(localS);
         }
 

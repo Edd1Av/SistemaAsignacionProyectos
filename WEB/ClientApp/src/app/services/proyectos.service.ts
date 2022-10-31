@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IResponse } from '../interfaces/iResponse';
+import { IResponse } from '../interfaces/IResponse';
 import { IProyecto } from '../interfaces/IProyectos';
 import { map } from 'rxjs/operators';
 

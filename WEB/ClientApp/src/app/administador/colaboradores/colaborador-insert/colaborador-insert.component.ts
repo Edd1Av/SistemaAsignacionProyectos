@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { tap } from 'rxjs/operators';
-import { IResponse } from 'src/app/interfaces/iResponse';
+import { IResponse } from 'src/app/interfaces/IResponse';
 import { ColaboradoresService } from 'src/app/services/colaboradores.service';
 
 @Component({

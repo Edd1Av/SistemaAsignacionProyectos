@@ -10,6 +10,7 @@ using WEB.Models;
 using Newtonsoft.Json;
 using WEB.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WEB.Controllers
 {
@@ -32,6 +33,7 @@ namespace WEB.Controllers
 
         // GET: api/Colaboradores
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Colaborador>>> GetColaboradores()
         {
             var rolDesarrollador = _roleManager.FindByNameAsync("Desarrollador");

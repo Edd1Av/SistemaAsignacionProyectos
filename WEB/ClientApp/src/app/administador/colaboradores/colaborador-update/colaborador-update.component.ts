@@ -3,7 +3,6 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ColaboradoresService } from 'src/app/services/colaboradores.service';
-import { ColaboradorInsertComponent } from '../colaborador-insert/colaborador-insert.component';
 
 @Component({
   selector: 'app-colaborador-update',

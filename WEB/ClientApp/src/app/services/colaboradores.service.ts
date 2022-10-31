@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {IColaborador} from 'src/app/interfaces/Icolaboradores';
-import {IResponse} from 'src/app/interfaces/iResponse';
+import {IResponse} from 'src/app/interfaces/IResponse';
 @Injectable({
   providedIn: 'root'
 }) 
