@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using WEB.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Data.Entities.Enum;
 
 namespace WEB.Controllers
 {
@@ -97,6 +98,15 @@ namespace WEB.Controllers
 
 
                 _context.Entry(updateColaborador).State = EntityState.Modified;
+
+                _context.Logger.Add(new Log()
+                {
+                    Created = DateTime.Now,
+                    User = "ADMIN",
+                    Id_User = 1.ToString(),
+                    Accion = ETipoAccionS.GetString(ETipoAccion.UPDATECOLABORADOR),
+                    Description=ETipoAccionS.GetString(ETipoAccion.UPDATECOLABORADOR) + " Con CURP:" + updateColaborador.CURP+" Por ADMIN",
+                });
                 await _context.SaveChangesAsync();
             }
             catch (Exception)
@@ -195,10 +205,18 @@ namespace WEB.Controllers
                         response.response = $"No se pudo crear el usuario";
                         return Ok(response);
                     }
-
+                    _context.Logger.Add(new Log()
+                    {
+                        Created = DateTime.Now,
+                        User = "ADMIN",
+                        Id_User = 1.ToString(),
+                        Accion = ETipoAccionS.GetString(ETipoAccion.ADDCOLABORADOR),
+                        Description=ETipoAccionS.GetString(ETipoAccion.ADDCOLABORADOR) + " Con CURP:" + colaborador.CURP+" Por ADMIN",
+                    });
                     await _context.SaveChangesAsync();
                    
                     transaction.Commit();
+
                 }
                 catch (Exception)
                 {
@@ -233,6 +251,15 @@ namespace WEB.Controllers
                 try
                 {
                     _context.Colaboradores.Remove(colaborador);
+
+                    _context.Logger.Add(new Log()
+                    {
+                        Created = DateTime.Now,
+                        User = "ADMIN",
+                        Id_User = 1.ToString(),
+                        Accion = ETipoAccionS.GetString(ETipoAccion.DELETECOLABORADOR),
+                        Description=ETipoAccionS.GetString(ETipoAccion.DELETECOLABORADOR) + " Con CURP:" + colaborador.CURP+" Por ADMIN",
+                    });
                     await _context.SaveChangesAsync();
                 }
                 catch (Exception)

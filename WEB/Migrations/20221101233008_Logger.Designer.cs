@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WEB.Data;
 
@@ -11,9 +12,10 @@ using WEB.Data;
 namespace WEB.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221101233008_Logger")]
+    partial class Logger
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -193,14 +195,14 @@ namespace WEB.Migrations
                         new
                         {
                             Id = "2c5e174e-3b0e-446f-86af-483d56fd7210",
-                            ConcurrencyStamp = "059b42ea-c0f9-4837-aa84-4c6c75fd7bd9",
+                            ConcurrencyStamp = "9d2e7779-792a-4525-8341-9c0178e5d2f3",
                             Name = "Administrador",
                             NormalizedName = "ADMINISTRADOR"
                         },
                         new
                         {
                             Id = "3c6e284e-4b1e-557f-97af-594d67fd8321",
-                            ConcurrencyStamp = "cc385a8c-23eb-4e4a-83b1-e91c338a411c",
+                            ConcurrencyStamp = "fdedd739-6458-4810-9eb9-2bccf5687ca3",
                             Name = "Desarrollador",
                             NormalizedName = "DESARROLLADOR"
                         });
@@ -394,15 +396,15 @@ namespace WEB.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9fa134a9-f425-402b-95ff-ab740cf023be",
+                            ConcurrencyStamp = "6a29b241-a1fe-40b1-b29e-d021bdea2f42",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             IdColaborador = 1,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAENptonQiFnioTupw4ZDW6psj3walF81Y2deoJnyveH77p8wKnLnBMqEK6ls1V02AxQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEyx+ZADGomoJf9ff7imwKqVBbB+WLOXEfJ4v8BzIkhMPPMq2BJtaBUjeVp6fi+kBg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "23f72f6c-afc4-4984-8d6a-fd7f6f3bdbea",
+                            SecurityStamp = "7aba50b5-bb2e-4621-8401-811876939061",
                             TwoFactorEnabled = false
                         });
                 });
@@ -562,16 +564,11 @@ namespace WEB.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Accion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Accion")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Id_User")
                         .IsRequired()

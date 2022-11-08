@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Data.Entities.Enum;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -126,9 +127,18 @@ namespace WEB.Controllers
 
                     _context.Asignacion.Attach(asignacion);
                     _context.Entry(asignacion).State = EntityState.Modified;
+                    _context.Logger.Add(new Log()
+                    {
+                        Created = DateTime.Now,
+                        User = "ADMIN",
+                        Id_User = 1.ToString(),
+                        Accion = ETipoAccionS.GetString(ETipoAccion.UPDATEASIGNACIONPLANEADA),
+                        Description= ETipoAccionS.GetString(ETipoAccion.UPDATEASIGNACIONPLANEADA)+ " Con ID=" + asignacion.Id+ " De Colaborador " +asignacion.Colaborador.CURP,
+                    });
                     await _context.SaveChangesAsync();
 
                     transaction.Commit();
+
                 }
                 catch (Exception ex)
                 {
@@ -182,8 +192,17 @@ namespace WEB.Controllers
 
                     asignacion.Colaborador = colaborador;
                     _context.Asignacion.Add(asignacion);
+                    _context.Logger.Add(new Log()
+                    {
+                        Created = DateTime.Now,
+                        User = "ADMIN",
+                        Id_User = 1.ToString(),
+                        Accion = ETipoAccionS.GetString(ETipoAccion.ADDASIGNACIONPLANEADA),
+                        Description= ETipoAccionS.GetString(ETipoAccion.ADDASIGNACIONPLANEADA) + " Con ID=" + asignacion.Id + " De Colaborador " + asignacion.Colaborador.CURP
+                    });
                     await _context.SaveChangesAsync();
                     transaction.Commit();
+
                 }
                 catch (Exception ex)
                 {
@@ -207,7 +226,7 @@ namespace WEB.Controllers
             try
             {
 
-                var asignacion = await _context.Asignacion.FindAsync(id);
+                var asignacion = _context.Asignacion.Include(x=>x.Colaborador).Where(y=>y.Id==id).FirstOrDefault();
                 if (asignacion == null)
                 {
                     response.success = false;
@@ -216,7 +235,16 @@ namespace WEB.Controllers
                 }
 
                 _context.Asignacion.Remove(asignacion);
+                _context.Logger.Add(new Log()
+                {
+                    Created = DateTime.Now,
+                    User = "ADMIN",
+                    Id_User = 1.ToString(),
+                    Accion = ETipoAccionS.GetString(ETipoAccion.DELETEASIGNACIONPLANEADA),
+                    Description= ETipoAccionS.GetString(ETipoAccion.DELETEASIGNACIONPLANEADA) + " Con ID=" + asignacion.Id + " De Colaborador " + asignacion.Colaborador.CURP
+                });
                 await _context.SaveChangesAsync();
+               
 
                 response.success = true;
                 response.response = "Eliminado con éxito";

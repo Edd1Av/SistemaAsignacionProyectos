@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Data.Entities.Enum;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -87,6 +88,15 @@ namespace WEB.Controllers
                 addProyecto.Clave = proyecto.Clave.ToUpper().Trim();
 
                 _context.Entry(addProyecto).State = EntityState.Modified;
+
+                _context.Logger.Add(new Log()
+                {
+                    Created = DateTime.Now,
+                    User = "ADMIN",
+                    Id_User = 1.ToString(),
+                    Accion = ETipoAccionS.GetString(ETipoAccion.UPDATEPROYECTO),
+                    Description = ETipoAccionS.GetString(ETipoAccion.UPDATEPROYECTO) + " " + proyecto.Titulo + " Por ADMIN",
+                });
                 await _context.SaveChangesAsync();
             }
             catch (Exception)
@@ -130,6 +140,15 @@ namespace WEB.Controllers
                 addProyecto.Clave = proyecto.Clave.ToUpper().Trim();
 
                 _context.Proyectos.Add(addProyecto);
+
+                _context.Logger.Add(new Log()
+                {
+                    Created = DateTime.Now,
+                    User = "ADMIN",
+                    Id_User = 1.ToString(),
+                    Accion = ETipoAccionS.GetString(ETipoAccion.ADDPROYECTO),
+                    Description= ETipoAccionS.GetString(ETipoAccion.ADDPROYECTO) + " " + proyecto.Titulo + " Por ADMIN",
+                });
                 await _context.SaveChangesAsync();
             }
             catch (Exception)
@@ -160,6 +179,15 @@ namespace WEB.Controllers
             try
             {
                 _context.Proyectos.Remove(proyecto);
+
+                _context.Logger.Add(new Log()
+                {
+                    Created = DateTime.Now,
+                    User = "ADMIN",
+                    Id_User = 1.ToString(),
+                    Accion = ETipoAccionS.GetString(ETipoAccion.DELETEPROYECTO),
+                    Description = ETipoAccionS.GetString(ETipoAccion.DELETEPROYECTO) + " " + proyecto.Titulo+" Por ADMIN",
+                });
                 await _context.SaveChangesAsync();
             }
             catch(Exception)

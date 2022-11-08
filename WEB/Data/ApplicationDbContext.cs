@@ -78,5 +78,6 @@ namespace WEB.Data
         public DbSet<AsignacionReal> AsignacionReal { get; set; }
         public DbSet<DistribucionReal> DistribucionReal { get; set; }
         public DbSet<Distribucion> Distribucion { get; set; }
+        public DbSet<Log> Logger { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Data.Entities.Enum;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -129,8 +130,15 @@ namespace WEB.Controllers
 
                     _context.AsignacionReal.Attach(asignacionReal);
                     _context.Entry(asignacionReal).State = EntityState.Modified;
+                    _context.Logger.Add(new Log()
+                    {
+                        Created = DateTime.Now,
+                        User = asignacionPlaneada.Colaborador.Nombres+" "+asignacionPlaneada.Colaborador.Apellidos,
+                        Id_User = asignacionPlaneada.IdColaborador.ToString(),
+                        Accion = ETipoAccionS.GetString(ETipoAccion.UPDATEASIGNACIONPLANEADA),
+                        Description= ETipoAccionS.GetString(ETipoAccion.UPDATEASIGNACIONPLANEADA) + " Con ID=" + asignacionReal.Id + " De Colaborador " + asignacionPlaneada.Colaborador.CURP,
+                    });
                     await _context.SaveChangesAsync();
-
                     transaction.Commit();
                 }
                 catch (Exception ex)
@@ -191,8 +199,17 @@ namespace WEB.Controllers
 
                     _context.Asignacion.Attach(asignacionPlaneada);
                     _context.Entry(asignacionPlaneada).State = EntityState.Modified;
+                    _context.Logger.Add(new Log()
+                    {
+                        Created = DateTime.Now,
+                        User = asignacionPlaneada.Colaborador.Nombres + " " + asignacionPlaneada.Colaborador.Apellidos,
+                        Id_User = asignacionPlaneada.IdColaborador.ToString(),
+                        Accion = ETipoAccionS.GetString(ETipoAccion.ADDASIGNACIONREAL),
+                        Description=ETipoAccionS.GetString(ETipoAccion.ADDASIGNACIONREAL) + " Con ID=" + asignacionReal.Id + " De Colaborador " + asignacionPlaneada.Colaborador.CURP,
+                    });
                     await _context.SaveChangesAsync();
                     transaction.Commit();
+
                 }
                 catch (Exception ex)
                 {
@@ -215,7 +232,7 @@ namespace WEB.Controllers
             try
             {
 
-                var asignacion = await _context.AsignacionReal.FindAsync(id);
+                var asignacion =  _context.AsignacionReal.Include(x=>x.Asignacion).ThenInclude(y=>y.Colaborador).Where(z=>z.Id==id).FirstOrDefault();
                 if (asignacion == null)
                 {
                     response.success = false;
@@ -224,8 +241,16 @@ namespace WEB.Controllers
                 }
 
                 _context.AsignacionReal.Remove(asignacion);
-                await _context.SaveChangesAsync();
 
+                _context.Logger.Add(new Log()
+                {
+                    Created = DateTime.Now,
+                    User = asignacion.Asignacion.Colaborador.Nombres + " " + asignacion.Asignacion.Colaborador.Apellidos,
+                    Id_User = asignacion.Asignacion.IdColaborador.ToString(),
+                    Accion = ETipoAccionS.GetString(ETipoAccion.DELETEASIGNACIONREAL) + " Con ID=" + asignacion.Id + " De Colaborador " + asignacion.Asignacion.Colaborador.CURP,
+
+                });
+                await _context.SaveChangesAsync();
                 response.success = true;
                 response.response = "Eliminado con éxito";
                 return Ok(response);
