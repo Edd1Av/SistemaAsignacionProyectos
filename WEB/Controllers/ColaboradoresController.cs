@@ -35,14 +35,26 @@ namespace WEB.Controllers
         // GET: api/Colaboradores
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<Colaborador>>> GetColaboradores()
+        public async Task<ActionResult<IEnumerable<ColaboradorPost>>> GetColaboradores()
         {
             var x = await _userManager.GetUsersInRoleAsync("Desarrollador");
 
-            var colaboradores = await _context.Colaboradores.Where(x => x.Id != 1).ToListAsync();
+            var colaboradores = await _context.Colaboradores.Include(x=>x.IdentityUser).Where(x => x.Id != 1).ToListAsync();
+            List<ColaboradorPost> IdentityColaborador = new List<ColaboradorPost>();
+            foreach (var element in colaboradores)
+            {
+                ColaboradorPost colaborador = new ColaboradorPost();
+                colaborador.Nombres = element.Nombres;
+                colaborador.Apellidos = element.Apellidos;
+                colaborador.Email = element.IdentityUser.Email;
+                colaborador.CURP = element.CURP;
+                colaborador.Id_Odoo = element.Id_Odoo;
+                colaborador.Id = element.Id;
+                IdentityColaborador.Add(colaborador);
+            }
             //var rolDesarrollador = _roleManager.FindByNameAsync("Desarrollador");
             //var colaboradores = await _context.Colaboradores.Where(x =>x.IdentityUser.Roles.Any(y => y.RoleId == rolDesarrollador.Result.Id)).OrderBy(x => x.Id_Odoo).ToListAsync();
-            return colaboradores;
+            return IdentityColaborador;
         }
 
         // GET: api/Colaboradores/5
@@ -64,7 +76,7 @@ namespace WEB.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> PutColaborador(int id, Colaborador colaborador)
+        public async Task<IActionResult> PutColaborador(int id, ColaboradorPost colaborador)
         {
             Response response = new Response();
             if (id != colaborador.Id)
@@ -241,29 +253,46 @@ namespace WEB.Controllers
             Response response = new Response();
             using (var transaction = _context.Database.BeginTransaction())
             {
-                var colaborador = await _context.Colaboradores.FindAsync(id);
+                var colaborador = await _context.Colaboradores.Include(x=>x.IdentityUser).Where(x=>x.Id == id).FirstOrDefaultAsync();
                 if (colaborador == null)
                 {
+                    transaction.Rollback();
                     response.success = false;
                     response.response = "El registro no existe";
                     return Ok(response);
                 }
                 try
                 {
-                    _context.Colaboradores.Remove(colaborador);
-
-                    _context.Logger.Add(new Log()
+                    var IUser = await _userManager.FindByEmailAsync(colaborador.IdentityUser.Email);
+                    var Delete = await _userManager.DeleteAsync(IUser);
+                    if (Delete.Succeeded)
                     {
-                        Created = DateTime.Now,
-                        User = "ADMIN",
-                        Id_User = 1.ToString(),
-                        Accion = ETipoAccionS.GetString(ETipoAccion.DELETECOLABORADOR),
-                        Description=ETipoAccionS.GetString(ETipoAccion.DELETECOLABORADOR) + " Con CURP:" + colaborador.CURP+" Por ADMIN",
-                    });
+                        _context.Colaboradores.Remove(colaborador);
+                        _context.Logger.Add(new Log()
+                        {
+                            Created = DateTime.Now,
+                            User = "ADMIN",
+                            Id_User = 1.ToString(),
+                            Accion = ETipoAccionS.GetString(ETipoAccion.DELETECOLABORADOR),
+                            Description = ETipoAccionS.GetString(ETipoAccion.DELETECOLABORADOR) + " Con CURP:" + colaborador.CURP + " Por ADMIN",
+                        });
+                    }
+                    else
+                    {
+                        transaction.Rollback();
+                        response.success = false;
+                        response.response = $"Error al eliminar el usuario";
+                        return Ok(response);
+                    }
+                    
+
+                    
                     await _context.SaveChangesAsync();
+                    transaction.Commit();
                 }
                 catch (Exception)
                 {
+                    transaction.Rollback();
                     response.success = false;
                     response.response = $"Error al eliminar el registro";
                     return Ok(response);

@@ -48,6 +48,11 @@
               <td class='has_label_on_mobile' data-label='Nombre: '  mat-cell *matCellDef="let element"> {{element.apellidos}} </td>
             </ng-container>
 
+            <ng-container matColumnDef="email">
+              <th class="columna" style="width: 18%;" mat-header-cell *matHeaderCellDef> Email </th>
+              <td class='has_label_on_mobile' data-label='Nombre: '  mat-cell *matCellDef="let element"> {{element.email}} </td>
+            </ng-container>
+
             <ng-container matColumnDef="curp">
               <th class="columna" style="width: 18%;" mat-header-cell *matHeaderCellDef> CURP </th>
               <td class='has_label_on_mobile' data-label='Nombre: '  mat-cell *matCellDef="let element"> {{element.curp}} </td>

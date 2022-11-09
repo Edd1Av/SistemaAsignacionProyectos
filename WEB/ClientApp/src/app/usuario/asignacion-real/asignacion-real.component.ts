@@ -123,7 +123,7 @@ export class AsignacionRealComponent implements OnInit {
       .afterClosed()
       .subscribe((confirmado: Boolean) => {
         if (confirmado) {
-          this.AsignacionService.DeleteAsignacion(id).subscribe(
+          this.AsignacionService.DeleteAsignacionReal(id).subscribe(
             (rs) => {
               if (rs.success) {
                 this.actualizarHistorico();

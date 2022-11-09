@@ -193,7 +193,7 @@ namespace WEB.Controllers
                     asignacionReal.DistribucionesReales = distribucionReal;
                     asignacionReal.Fecha_Inicio = postModel.Fecha_Inicio.ToLocalTime();
                     asignacionReal.Fecha_Final = postModel.Fecha_Final.ToLocalTime();
-                    asignacionPlaneada.AsignacionReal = new List<AsignacionReal>();
+                    //asignacionPlaneada.AsignacionReal = new List<AsignacionReal>();
                     asignacionPlaneada.AsignacionReal.Add(asignacionReal);
 
 
@@ -232,24 +232,24 @@ namespace WEB.Controllers
             try
             {
 
-                var asignacion =  _context.AsignacionReal.Include(x=>x.Asignacion).ThenInclude(y=>y.Colaborador).Where(z=>z.Id==id).FirstOrDefault();
-                if (asignacion == null)
+                var asignacionReal =  _context.AsignacionReal.Include(x=>x.Asignacion).ThenInclude(y=>y.Colaborador).Where(z=>z.Id==id).FirstOrDefault();
+                if (asignacionReal == null)
                 {
                     response.success = false;
                     response.response = $"Error al eliminar";
                     return Ok(response);
                 }
 
-                _context.AsignacionReal.Remove(asignacion);
+                _context.AsignacionReal.Remove(asignacionReal);
 
                 _context.Logger.Add(new Log()
                 {
                     Created = DateTime.Now,
-                    User = asignacion.Asignacion.Colaborador.Nombres + " " + asignacion.Asignacion.Colaborador.Apellidos,
-                    Id_User = asignacion.Asignacion.IdColaborador.ToString(),
-                    Accion = ETipoAccionS.GetString(ETipoAccion.DELETEASIGNACIONREAL) + " Con ID=" + asignacion.Id + " De Colaborador " + asignacion.Asignacion.Colaborador.CURP,
-
-                });
+                    User = asignacionReal.Asignacion.Colaborador.Nombres + " " + asignacionReal.Asignacion.Colaborador.Apellidos,
+                    Id_User = asignacionReal.Asignacion.IdColaborador.ToString(),
+                    Accion = ETipoAccionS.GetString(ETipoAccion.DELETEASIGNACIONREAL) + " Con ID=" + asignacionReal.Id + " De Colaborador " + asignacionReal.Asignacion.Colaborador.CURP,
+                    Description = ""
+                }) ;
                 await _context.SaveChangesAsync();
                 response.success = true;
                 response.response = "Eliminado con éxito";

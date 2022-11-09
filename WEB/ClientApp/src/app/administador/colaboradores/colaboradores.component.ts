@@ -23,6 +23,7 @@ export class ColaboradoresComponent implements OnInit {
   displayedColumns: string[] = [
     "nombre",
     "apellido",
+    "email",
     "curp",
     "claveOdoo",
     "acciones"

@@ -45,43 +45,40 @@ displayedColumns: string[] = [
     console.log(this.data.colaborador);
   console.log(this.data.colaborador.id_odoo, "ID ODOO")
   this.buildForm();
-  this.RellenarAsignacion();
   this.formGroup.controls.id.setValue(this.data.colaborador.id);
   this.formGroup.controls.nombres.setValue(this.data.colaborador.nombres);
   this.formGroup.controls.apellidos.setValue(this.data.colaborador.apellidos);
   this.formGroup.controls.curp.setValue(this.data.colaborador.curp);
   this.formGroup.controls.id_odoo.setValue(this.data.colaborador.id_Odoo);
+  this.formGroup.controls.email.setValue(this.data.colaborador.email);
 
   }
 
-  private RellenarAsignacion(){
-    this._asignacionService.getAsignacionByIdColaborador(this.data.colaborador.id)
-    .pipe(
-      tap((result:IAsignacionGet)=>{
-        console.log(result);
-        this.asignacion=result;
+  // private RellenarAsignacion(){
+  //   this._asignacionService.getAsignacionByIdColaborador(this.data.colaborador.id)
+  //   .pipe(
+  //     tap((result:IAsignacionGet)=>{
+  //       console.log(result);
+  //       this.asignacion=result;
 
-        this.asignacion.distribuciones.map(x=>{
-          let proyecto:IProyectoAsignado={
-            id:x.proyecto.id,
-            fecha_inicio:x.fecha_Inicio,
-            fecha_final:x.fecha_Final,
-            clave:x.proyecto.clave,
-            titulo:x.proyecto.titulo
-          }
-          this.ProyectosAsignados.push(proyecto);
-          this.dataSource=new MatTableDataSource<IProyectoAsignado>(this.ProyectosAsignados);
-          this.dataSource.paginator=this.paginator;
-          // this.formGroup.controls.fecha_Inicio.setValue(this.asignacion.fecha_Inicio);
-          // this.formGroup.controls.fecha_Final.setValue(this.asignacion.fecha_Final);
-        })
-      })
-    ).subscribe();
+  //       this.asignacion.distribuciones.map(x=>{
+  //         let proyecto:IProyectoAsignado={
+  //           id:x.proyecto.id,
+  //           fecha_inicio:x.fecha_Inicio,
+  //           fecha_final:x.fecha_Final,
+  //           clave:x.proyecto.clave,
+  //           titulo:x.proyecto.titulo
+  //         }
+  //         this.ProyectosAsignados.push(proyecto);
+  //         this.dataSource=new MatTableDataSource<IProyectoAsignado>(this.ProyectosAsignados);
+  //         this.dataSource.paginator=this.paginator;
+  //         this.formGroup.controls.fecha_Inicio.setValue(this.asignacion.fecha_Inicio);
+  //         this.formGroup.controls.fecha_Final.setValue(this.asignacion.fecha_Final);
+  //       })
+  //     })
+  //   ).subscribe();
     
-    
- 
-
-  }
+  // }
 
   private buildForm() {
     this.formGroup = this.formBuilder.group({
@@ -90,8 +87,9 @@ displayedColumns: string[] = [
       apellidos: new FormControl("", Validators.required),
       curp: new FormControl("", Validators.required),
       id_odoo: new FormControl("", Validators.required),
-      fecha_Inicio: new FormControl("", Validators.required),
-      fecha_Final: new FormControl("", Validators.required),
+      email: new FormControl("", Validators.required),
+      // fecha_Inicio: new FormControl("", Validators.required),
+      // fecha_Final: new FormControl("", Validators.required),
     });
   }
 

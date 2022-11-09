@@ -33,6 +33,14 @@
           </mat-form-field>
         </div>
       </div>
+      <div fxLayout="row" fxLayout.sm="column">
+        <div fxFlex="50%" fxFlex.sm="100%">
+          <mat-form-field appearance="fill">
+            <mat-label>Email</mat-label>
+            <input [readonly]="true" matInput maxlength="100" formControlName="email" />
+          </mat-form-field>
+        </div>
+      </div>
     </form>
   </mat-dialog-content>
 
