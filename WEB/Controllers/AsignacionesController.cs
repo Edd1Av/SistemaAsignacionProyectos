@@ -105,6 +105,29 @@ namespace WEB.Controllers
 
                     //asignacion.Fecha_Inicio = postModel.Fecha_Inicio;
                     //asignacion.Fecha_Final = postModel.Fecha_Final;
+                    var Asignaciones = new List<Asignacion>();
+                    Asignaciones = _context.Asignacion.Include(c => c.Distribuciones).Where(x => x.IdColaborador == postModel.Id_Colaborador).ToList();
+                    foreach (var item in postModel.Proyectos)
+                    {
+                        var proyecto = new Proyecto();
+                        proyecto = _context.Proyectos.Where(x => x.Id == item.Id).First();
+                        foreach (var z in Asignaciones)
+                        {
+                            foreach (var y in z.Distribuciones)
+                            {
+                                if (y.IdProyecto == item.Id && ((y.Fecha_Final.ToLocalTime().Date >= item.Fecha_final.ToLocalTime().Date && y.Fecha_Inicio.ToLocalTime().Date <= item.Fecha_inicio.ToLocalTime().Date) ||
+                                    (y.Fecha_Final.ToLocalTime().Date >= item.Fecha_inicio.ToLocalTime().Date || y.Fecha_Inicio.ToLocalTime().Date >= item.Fecha_final.ToLocalTime().Date)))
+                                {
+                                    response.success = false;
+
+                                    transaction.Rollback();
+                                    response.response = $"Error al modificar, existe un registro de proyecto en ese intervalo de fechas";
+                                    return Ok(response);
+                                }
+                            }
+                        }
+
+                    }
 
                     _context.Distribucion.RemoveRange(asignacion.Distribuciones);
 
@@ -178,6 +201,24 @@ namespace WEB.Controllers
                     {
                         var proyecto = new Proyecto();
                         proyecto = _context.Proyectos.Where(x => x.Id == item.Id).FirstOrDefault();
+                        var Asignaciones = new List<Asignacion>();
+                        Asignaciones = _context.Asignacion.Include(c=>c.Distribuciones).Where(x => x.IdColaborador == postModel.Id_Colaborador).ToList();
+                        foreach(var z in Asignaciones)
+                        {
+                            foreach(var y in z.Distribuciones)
+                            {
+                                if (y.IdProyecto == item.Id && ((y.Fecha_Final.ToLocalTime().Date >= item.Fecha_final.ToLocalTime().Date && y.Fecha_Inicio.ToLocalTime().Date <= item.Fecha_inicio.ToLocalTime().Date)||
+                                    (y.Fecha_Final.ToLocalTime().Date >= item.Fecha_inicio.ToLocalTime().Date || y.Fecha_Inicio.ToLocalTime().Date >= item.Fecha_final.ToLocalTime().Date)))
+                                {
+                                    response.success = false;
+
+                                    transaction.Rollback();
+                                    response.response = $"Error al registrar, existe un registro de proyecto en ese intervalo de fechas";
+                                    return Ok(response);
+                                }
+                            }
+                        }
+
 
                         distribucion.Add(new Distribucion()
                         {

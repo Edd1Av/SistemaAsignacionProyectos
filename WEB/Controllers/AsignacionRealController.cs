@@ -15,7 +15,7 @@ namespace WEB.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class AsignacionRealController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -174,6 +174,29 @@ namespace WEB.Controllers
                     var asignacionReal = new AsignacionReal();
                     var distribucionReal = new List<DistribucionReal>();
 
+                    var AsignacionesReales = new List<AsignacionReal>();
+                    AsignacionesReales = _context.AsignacionReal.Include(c => c.DistribucionesReales).Include(p=>p.Asignacion).Where(x => x.Asignacion.IdColaborador == postModel.Id_Colaborador).ToList();
+                    
+                    foreach(var item in postModel.Proyectos)
+                    {
+                        foreach (var x in AsignacionesReales)
+                        {
+                            foreach (var y in x.DistribucionesReales)
+                            {
+                                if ((x.Fecha_Final.Date >= postModel.Fecha_Inicio.Date &&
+                                                     x.Fecha_Final.Date <= postModel.Fecha_Final.Date)
+                                                        || (x.Fecha_Inicio.Date <= postModel.Fecha_Final.Date &&
+                                                        x.Fecha_Inicio.Date >= postModel.Fecha_Inicio.Date))
+                                {
+                                    response.success = false;
+
+
+                                    response.response = $"Error al registrar, existe un registro de proyecto en ese intervalo de fechas";
+                                    return Ok(response);
+                                }
+                            }
+                        }
+                    }
 
 
                     foreach (var item in postModel.Proyectos)
@@ -268,5 +291,140 @@ namespace WEB.Controllers
         {
             return _context.Asignacion.Any(e => e.Id == id);
         }
+
+
+        public static int DaysLeft(DateTime startDate, DateTime endDate, Boolean excludeWeekends, List<DateTime> excludeDates)
+        {
+            int count = 0;
+            for (DateTime index = startDate; index < endDate; index = index.AddDays(1))
+            {
+                if (excludeWeekends && index.DayOfWeek != DayOfWeek.Sunday && index.DayOfWeek != DayOfWeek.Saturday)
+                {
+                    bool excluded = false; ;
+                    for (int i = 0; i < excludeDates.Count; i++)
+                    {
+                        if (index.Date.CompareTo(excludeDates[i].Date) == 0)
+                        {
+                            excluded = true;
+                            break;
+                        }
+                    }
+
+                    if (!excluded)
+                    {
+                        count++;
+                    }
+                }
+            }
+
+            return count;
+        }
+
+
+
+        [HttpPost]
+        [Route("Historico")]
+        public async Task<ActionResult<AsignacionReal>> Historico(Fechas postModel)
+        {
+            Response response = new Response();
+            try
+            {
+                var Asignaciones = new List<AsignacionReal>();
+                if (postModel.Fecha_Inicio != null&postModel.Fecha_Final!=null)
+                {
+                    Asignaciones = _context.AsignacionReal
+                                                   .Include(x => x.Asignacion)
+                                                       .ThenInclude(z => z.Colaborador)
+                                                   .Include(i => i.DistribucionesReales)
+                                                       .ThenInclude(y => y.Proyecto).
+                                                     Where(x => (x.Fecha_Final.Date >= postModel.Fecha_Inicio.Date&&
+                                                     x.Fecha_Final.Date <= postModel.Fecha_Final.Date)
+                                                        || (x.Fecha_Inicio.Date <= postModel.Fecha_Final.Date&&
+                                                        x.Fecha_Inicio.Date >= postModel.Fecha_Inicio.Date))
+                                                   .ToList();
+                }
+                else
+                {
+                    Asignaciones = _context.AsignacionReal
+                                                   .Include(x => x.Asignacion)
+                                                       .ThenInclude(z => z.Colaborador)
+                                                   .Include(i => i.DistribucionesReales)
+                                                       .ThenInclude(y => y.Proyecto)
+                                                   .ToList();
+            }
+
+                var rest = new List<dynamic>();
+                var Colaboradores = _context.Colaboradores.Where(x=>x.Id!=1).ToList();
+                foreach (var colaborador in Colaboradores)
+                {
+                    var proyectos = new List<HistoricoResponse>();
+                    var Lista = Asignaciones.Where(x => x.Asignacion.IdColaborador == colaborador.Id).ToList();
+                    foreach(var L in Lista)
+                    {
+                        foreach (var P in L.DistribucionesReales)
+                        {
+
+                            int difFechas = DaysLeft(L.Fecha_Inicio.Date < postModel.Fecha_Inicio.Date ? postModel.Fecha_Inicio.Date : L.Fecha_Inicio.Date,
+                                L.Fecha_Final.Date.AddDays(1)>postModel.Fecha_Final.Date? postModel.Fecha_Final.Date.AddDays(1) : L.Fecha_Final.Date.AddDays(1), true,new List<DateTime>()); 
+                        if (proyectos.Where(x => x.id == P.IdProyecto).ToList().Count > 0)
+                            {
+                                proyectos.Where(x => x.id == P.IdProyecto).FirstOrDefault().value += P.Porcentaje * (difFechas);
+                                proyectos.Where(x => x.id == P.IdProyecto).FirstOrDefault().dias += (difFechas)*(P.Porcentaje/100);
+                            }
+                            else
+                            {
+
+                                proyectos.Add(new HistoricoResponse
+                                {
+                                    id = P.IdProyecto,
+                                    titulo=P.Proyecto.Titulo,
+                                    value = P.Porcentaje *(difFechas),
+                                    dias= ((double)P.Porcentaje/(double)100) * (double)difFechas
+                                });
+                            }
+                        }
+
+                    }
+                var sum = proyectos.Sum(x => x.value);
+                var diferencia=0.0;
+                for (int i = 0; i < proyectos.Count; i++)
+                {
+                    var porcentaje = (int)(((double)proyectos[i].value / (double)sum) * 100);
+                    diferencia += (((double)proyectos[i].value / (double)sum) * 100)- (int)(((double)proyectos[i].value / (double)sum) * 100);
+                    if (i == proyectos.Count - 1)
+                    {
+                        proyectos[i].porcentaje = Math.Ceiling(porcentaje+diferencia);
+                    }
+                    else
+                    {
+                        proyectos[i].porcentaje = Math.Ceiling((double)porcentaje);
+                    }
+
+                }
+
+                    rest.Add(new
+                    {
+                        colaborador = colaborador.Nombres + " " + colaborador.Apellidos,
+                        asignaciones = proyectos,
+                        diasTrabajados=proyectos.Sum(x=>x.dias),
+                        complete= ((double)proyectos.Sum(x => x.dias)/ (double)DaysLeft(postModel.Fecha_Inicio.Date, postModel.Fecha_Final.Date.AddDays(1), true, new List<DateTime>()))*100
+                    });
+
+                }
+
+                dynamic datos = new System.Dynamic.ExpandoObject();
+                datos.diastotales = DaysLeft(postModel.Fecha_Inicio.Date,postModel.Fecha_Final.Date.AddDays(1), true,new List<DateTime>());
+                datos.rest = rest;
+                response.success = true;
+                response.response = datos;
+                return Ok(response);
+        }
+            catch (Exception ex)
+            {
+                response.success = false;
+                response.response = $"Error al eliminar";
+                return Ok(response);
+    }
+}
     }
 }
