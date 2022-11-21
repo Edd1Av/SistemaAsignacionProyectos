@@ -43,11 +43,29 @@
 
     public class HistoricoResponse
     {
+
         public int id { get; set; }
-        public string titulo { get; set; }
+        public string? titulo { get; set; }
         public int value { get; set; }
         public double porcentaje { get; set; }
         public double dias { get; set; }
+
     }
 
+    public class rest
+    {
+        public double Sum(IEnumerable<double> source)
+        {
+            double sum = 0;
+            foreach (var item in source)
+            {
+                sum += item;
+            }
+            return sum;
+        }
+        public string colaborador { get; set; }
+        public List<HistoricoResponse> asignaciones { get; set; }
+        public double diasTrabajados { get; set; }
+        public double complete { get; set; }
+    }
 }

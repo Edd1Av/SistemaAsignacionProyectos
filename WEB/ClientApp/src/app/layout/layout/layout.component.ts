@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { IUsuario } from 'src/app/interfaces/IUsuario';
+import { LoaderService } from 'src/app/loader/loader.service';
 
 @Component({
   selector: 'app-layout',
@@ -9,8 +10,10 @@ import { IUsuario } from 'src/app/interfaces/IUsuario';
 })
 export class LayoutComponent implements OnInit {
 
-  constructor(private authService: AuthorizeService) { }
+  constructor(private authService: AuthorizeService,
+    public loaderService:LoaderService) { }
 
+  
   usuario:any;
   email:string;
   usuarioLoggeado:Boolean;

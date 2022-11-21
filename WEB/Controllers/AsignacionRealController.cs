@@ -353,7 +353,7 @@ namespace WEB.Controllers
                                                    .ToList();
             }
 
-                var rest = new List<dynamic>();
+                var rest = new List<rest>();
                 var Colaboradores = _context.Colaboradores.Where(x=>x.Id!=1).ToList();
                 foreach (var colaborador in Colaboradores)
                 {
@@ -402,7 +402,7 @@ namespace WEB.Controllers
 
                 }
 
-                    rest.Add(new
+                    rest.Add(new rest
                     {
                         colaborador = colaborador.Nombres + " " + colaborador.Apellidos,
                         asignaciones = proyectos,
@@ -414,6 +414,8 @@ namespace WEB.Controllers
 
                 dynamic datos = new System.Dynamic.ExpandoObject();
                 datos.diastotales = DaysLeft(postModel.Fecha_Inicio.Date,postModel.Fecha_Final.Date.AddDays(1), true,new List<DateTime>());
+                datos.porcentaje = ((rest.Sum(x => x.diasTrabajados)/rest.Count)
+                    / DaysLeft(postModel.Fecha_Inicio.Date, postModel.Fecha_Final.Date.AddDays(1), true, new List<DateTime>()))*100;
                 datos.rest = rest;
                 response.success = true;
                 response.response = datos;
@@ -422,7 +424,7 @@ namespace WEB.Controllers
             catch (Exception ex)
             {
                 response.success = false;
-                response.response = $"Error al eliminar";
+                response.response = $"Error al consultar";
                 return Ok(response);
     }
 }

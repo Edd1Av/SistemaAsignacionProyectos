@@ -1,0 +1,106 @@
+.red{
+    ::ng-deep .mat-progress-bar-fill::after {
+        background-color: #800000;
+    }
+    
+    ::ng-deep .mat-progress-bar-buffer {
+        background: #E4E8EB;
+    }
+    
+    ::ng-deep .mat-progress-bar {
+        border-radius: 2px;
+    }
+    
+}
+.green{
+    ::ng-deep .mat-progress-bar-fill::after {
+        background-color: #00800b;
+    }
+    
+    ::ng-deep .mat-progress-bar-buffer {
+        background: #E4E8EB;
+    }
+    
+    ::ng-deep .mat-progress-bar {
+        border-radius: 2px;
+    }
+}
+
+.colaborador{
+    width: 100%;
+    background-color: #E4E8EB;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+}
+.colaboradorRed{
+    width: 100%;
+    background-color: #b485856e;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+}
+
+.diastrabajados{
+    display: inline-block;
+}
+
+.th{
+    font-weight: bold; 
+    color: black; 
+    font-size: 15px;
+}
+
+table{
+    background-color: #ffffff00;
+}
+.form-field {
+    border-radius: 10px;
+    width: 35%;
+    margin: 1%;
+    display: inline-block;
+    color: black !important;
+    font-size: 17px;
+    vertical-align:top;
+  }
+
+.daterange{
+    width: 80%;
+
+    display: inline-block;
+}
+
+.mat-form-field-infix{
+    display: inherit !important;
+  }
+
+  .infoDates{
+    display: inline-block;
+    width: 63%;
+    background-color: #E4E8EB;
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .dates{
+    vertical-align:top;
+  }
+
+  button{
+    background-color: #164d9a;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    float: right;
+    vertical-align: bottom;
+  }
+
+  .titulo{
+    margin-left: 4%;
+    margin-top: 3%;
+    color: black;
+    font-weight: bold;
+  }
