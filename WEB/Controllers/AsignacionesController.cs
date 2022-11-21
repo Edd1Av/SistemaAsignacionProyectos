@@ -105,29 +105,28 @@ namespace WEB.Controllers
 
                     //asignacion.Fecha_Inicio = postModel.Fecha_Inicio;
                     //asignacion.Fecha_Final = postModel.Fecha_Final;
-                    var Asignaciones = new List<Asignacion>();
-                    Asignaciones = _context.Asignacion.Include(c => c.Distribuciones).Where(x => x.IdColaborador == postModel.Id_Colaborador).ToList();
-                    foreach (var item in postModel.Proyectos)
-                    {
-                        var proyecto = new Proyecto();
-                        proyecto = _context.Proyectos.Where(x => x.Id == item.Id).First();
-                        foreach (var z in Asignaciones)
-                        {
-                            foreach (var y in z.Distribuciones)
-                            {
-                                if (y.IdProyecto == item.Id && ((y.Fecha_Final.ToLocalTime().Date >= item.Fecha_final.ToLocalTime().Date && y.Fecha_Inicio.ToLocalTime().Date <= item.Fecha_inicio.ToLocalTime().Date) ||
-                                    (y.Fecha_Final.ToLocalTime().Date >= item.Fecha_inicio.ToLocalTime().Date || y.Fecha_Inicio.ToLocalTime().Date >= item.Fecha_final.ToLocalTime().Date)))
-                                {
-                                    response.success = false;
+                    //var Asignaciones = new List<Asignacion>();
+                    //Asignaciones = _context.Asignacion.Include(c => c.Distribuciones).Where(x => x.IdColaborador == postModel.Id_Colaborador).ToList();
+                    //foreach (var item in postModel.Proyectos)
+                    //{
+                    //    var proyecto = new Proyecto();
+                    //    proyecto = _context.Proyectos.Where(x => x.Id == item.Id).First();
+                    //    foreach (var z in Asignaciones)
+                    //    {
+                    //        foreach (var y in z.Distribuciones)
+                    //        {
+                    //            if (y.IdProyecto == item.Id && ((y.Fecha_Final.ToLocalTime().Date >= item.Fecha_final.ToLocalTime().Date && y.Fecha_Inicio.ToLocalTime().Date <= item.Fecha_inicio.ToLocalTime().Date) ||
+                    //                (y.Fecha_Final.ToLocalTime().Date >= item.Fecha_inicio.ToLocalTime().Date || y.Fecha_Inicio.ToLocalTime().Date >= item.Fecha_final.ToLocalTime().Date)))
+                    //            {
+                    //                response.success = false;
 
-                                    transaction.Rollback();
-                                    response.response = $"Error al modificar, existe un registro de proyecto en ese intervalo de fechas";
-                                    return Ok(response);
-                                }
-                            }
-                        }
-
-                    }
+                    //                transaction.Rollback();
+                    //                response.response = $"Error al modificar, existe un registro de proyecto en ese intervalo de fechas";
+                    //                return Ok(response);
+                    //            }
+                    //        }
+                    //    }
+                    //}
 
                     _context.Distribucion.RemoveRange(asignacion.Distribuciones);
 
@@ -141,8 +140,8 @@ namespace WEB.Controllers
 
                         asignacion.Distribuciones.Add(new Distribucion()
                         {
-                            Fecha_Inicio = item.Fecha_inicio.ToLocalTime(),
-                            Fecha_Final = item.Fecha_final.ToLocalTime(),
+                            Fecha_Inicio = item.Fecha_inicio.ToLocalTime().Date,
+                            Fecha_Final = item.Fecha_final.ToLocalTime().Date,
                             Proyecto = proyecto,
                             //Porcentaje = item.Porcentaje
                         });
@@ -189,7 +188,15 @@ namespace WEB.Controllers
                 try
                 {
                     var colaborador = new Colaborador();
-                    colaborador = _context.Colaboradores.Where(x => x.Id == postModel.Id_Colaborador).FirstOrDefault();
+                    colaborador = _context.Colaboradores.Include(x=>x.Asignacion).Where(x => x.Id == postModel.Id_Colaborador).First();
+
+                    if(colaborador.Asignacion != null)
+                    {
+                        transaction.Rollback();
+                        response.success = false;
+                        response.response = $"El colaborador ya cuenta con una asignación";
+                        return Ok(response);
+                    }
 
                     var asignacion = new Asignacion();
                     var distribucion = new List<Distribucion>();
@@ -201,29 +208,29 @@ namespace WEB.Controllers
                     {
                         var proyecto = new Proyecto();
                         proyecto = _context.Proyectos.Where(x => x.Id == item.Id).FirstOrDefault();
-                        var Asignaciones = new List<Asignacion>();
-                        Asignaciones = _context.Asignacion.Include(c=>c.Distribuciones).Where(x => x.IdColaborador == postModel.Id_Colaborador).ToList();
-                        foreach(var z in Asignaciones)
-                        {
-                            foreach(var y in z.Distribuciones)
-                            {
-                                if (y.IdProyecto == item.Id && ((y.Fecha_Final.ToLocalTime().Date >= item.Fecha_final.ToLocalTime().Date && y.Fecha_Inicio.ToLocalTime().Date <= item.Fecha_inicio.ToLocalTime().Date)||
-                                    (y.Fecha_Final.ToLocalTime().Date >= item.Fecha_inicio.ToLocalTime().Date || y.Fecha_Inicio.ToLocalTime().Date >= item.Fecha_final.ToLocalTime().Date)))
-                                {
-                                    response.success = false;
+                        //var Asignaciones = new List<Asignacion>();
+                        //Asignaciones = _context.Asignacion.Include(c=>c.Distribuciones).Where(x => x.IdColaborador == postModel.Id_Colaborador).ToList();
+                        //foreach(var z in Asignaciones)
+                        //{
+                        //    foreach(var y in z.Distribuciones)
+                        //    {
+                        //        if (y.IdProyecto == item.Id && ((y.Fecha_Final.ToLocalTime().Date >= item.Fecha_final.ToLocalTime().Date && y.Fecha_Inicio.ToLocalTime().Date <= item.Fecha_inicio.ToLocalTime().Date)||
+                        //            (y.Fecha_Final.ToLocalTime().Date >= item.Fecha_inicio.ToLocalTime().Date || y.Fecha_Inicio.ToLocalTime().Date >= item.Fecha_final.ToLocalTime().Date)))
+                        //        {
+                        //            response.success = false;
 
-                                    transaction.Rollback();
-                                    response.response = $"Error al registrar, existe un registro de proyecto en ese intervalo de fechas";
-                                    return Ok(response);
-                                }
-                            }
-                        }
+                        //            transaction.Rollback();
+                        //            response.response = $"Error al registrar, existe un registro de proyecto en ese intervalo de fechas";
+                        //            return Ok(response);
+                        //        }
+                        //    }
+                        //}
 
 
                         distribucion.Add(new Distribucion()
                         {
-                            Fecha_Inicio = item.Fecha_inicio.ToLocalTime(),
-                            Fecha_Final = item.Fecha_final.ToLocalTime(),
+                            Fecha_Inicio = item.Fecha_inicio.ToLocalTime().Date,
+                            Fecha_Final = item.Fecha_final.ToLocalTime().Date,
                             Proyecto = proyecto,
                             //Porcentaje = item.Porcentaje
                         }); ;

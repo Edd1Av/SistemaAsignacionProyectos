@@ -1,6 +1,7 @@
 import { isNgTemplate } from '@angular/compiler';
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -33,6 +34,7 @@ export class AsignacionesUpdateComponent implements OnInit {
     "Fecha_Final", 
     "acciones"
   ];
+
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data:any,
@@ -70,12 +72,18 @@ export class AsignacionesUpdateComponent implements OnInit {
         fecha_inicio:x.fecha_Inicio,
         fecha_final:x.fecha_Final,
         clave:x.proyecto.clave,
-        titulo:x.proyecto.titulo
+        titulo:x.proyecto.titulo,
+        fechaInicioMin:undefined,
+        fechaInicioMax:x.fecha_Final,
+        fechaFinalMin:x.fecha_Inicio,
+        fechaFinalMax:undefined,
       }
       this.ProyectosAsignados.push(proyecto);
       this.dataSource=new MatTableDataSource<IProyectoAsignado>(this.ProyectosAsignados);
       this.dataSource.paginator=this.paginator;
-    })
+    });
+
+  
 
       
     };
@@ -116,8 +124,12 @@ export class AsignacionesUpdateComponent implements OnInit {
       clave:this.ProyectoSeleccionado.clave,
       id:this.ProyectoSeleccionado.id,
       titulo:this.ProyectoSeleccionado.titulo,
-      fecha_inicio:new Date(),
-      fecha_final:new Date(),
+      fecha_inicio:undefined,
+      fecha_final:undefined,
+      fechaInicioMin:undefined,
+      fechaInicioMax:undefined,
+      fechaFinalMin:undefined,
+      fechaFinalMax:undefined,
       // porcentaje:0
     }
 
@@ -179,5 +191,19 @@ export class AsignacionesUpdateComponent implements OnInit {
     }else{
       this.openSnackBar("Introduzca los campos faltantes");
     }
+  }
+
+  updateFechaInicio(type: string, event: MatDatepickerInputEvent<Date>, index:number) {
+    if(event.value!=null){
+      this.ProyectosAsignados[index].fechaFinalMin = new Date(event.value.toISOString());
+    }
+
+  }
+
+  updateFechaFinal(type: string, event: MatDatepickerInputEvent<Date>, index:number) {
+    if(event.value!=null){
+      this.ProyectosAsignados[index].fechaInicioMax = new Date(event.value.toISOString());
+    }
+   
   }
 }

@@ -22,7 +22,7 @@ import { DialogoConfirmacionComponent } from './dialogo-confirmacion/dialogo-con
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
 import { MatInputModule } from "@angular/material/input";
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { LoginComponent } from 'src/api-authorization/login/login.component';
 import { AuthorizeGuardDesarrollador } from 'src/api-authorization/authorizeDesarrollador.guard';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -70,6 +70,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar'
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
     AuthorizeGuardDesarrollador,
     AuthorizeGuardAdministrador
   ],

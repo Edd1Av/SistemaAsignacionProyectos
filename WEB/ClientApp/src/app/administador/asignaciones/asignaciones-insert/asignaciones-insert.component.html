@@ -23,7 +23,7 @@
 
                 <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                 <mat-datepicker #picker2></mat-datepicker>
-              </mat-form-field>
+              </mat-form-field> 
         </div>
       </div> -->
       <div fxLayout="row" fxLayout.sm="column">
@@ -78,9 +78,9 @@
         <ng-container matColumnDef="Fecha_Inicio">
           <th class="columna" style="width: 18%;" mat-header-cell *matHeaderCellDef> Fecha Inicio</th>
           <td   mat-cell *matCellDef="let element; let index = index;">            
-             <mat-form-field appearance="fill">
+             <mat-form-field appearance="outline">
             <mat-label>Fecha Inicio</mat-label>
-            <input [readonly]="true" matInput [(ngModel)]="ProyectosAsignados[index].fecha_inicio" [ngModelOptions]="{standalone: true}" [matDatepicker]="picker_index">
+            <input [readonly]="true" matInput [(ngModel)]="ProyectosAsignados[index].fecha_inicio" [ngModelOptions]="{standalone: true}" [matDatepicker]="picker_index" [min]="ProyectosAsignados[index].fechaInicioMin" [max]="ProyectosAsignados[index].fechaInicioMax" (dateChange)="updateFechaInicio('change', $event, index)">
             <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
             <mat-datepicker-toggle matSuffix [for]="picker_index"></mat-datepicker-toggle>
             <mat-datepicker #picker_index></mat-datepicker>
@@ -90,9 +90,9 @@
         <ng-container matColumnDef="Fecha_Final">
           <th class="columna" style="width: 18%;" mat-header-cell *matHeaderCellDef> Fecha Final</th>
           <td   mat-cell *matCellDef="let element; let index = index;"> 
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="outline">
               <mat-label>Fecha Final</mat-label>
-              <input [readonly]="true" matInput [(ngModel)]="ProyectosAsignados[index].fecha_final" [ngModelOptions]="{standalone: true}"  [matDatepicker]="picker2_index">
+              <input [readonly]="true" matInput [(ngModel)]="ProyectosAsignados[index].fecha_final" [ngModelOptions]="{standalone: true}"  [matDatepicker]="picker2_index" [min]="ProyectosAsignados[index].fechaFinalMin" [max]="ProyectosAsignados[index].fechaFinalMax" (dateChange)="updateFechaFinal('change', $event, index)">
               <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
               <mat-datepicker-toggle matSuffix [for]="picker2_index"></mat-datepicker-toggle>
               <mat-datepicker #picker2_index></mat-datepicker>

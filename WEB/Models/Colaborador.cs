@@ -22,6 +22,8 @@ namespace WEB.Models
         public string Id_Odoo { get; set; }
 
         public ApplicationUser IdentityUser { get; set; }
+        [InverseProperty("Colaborador")]
+        public Asignacion Asignacion { get; set; }
 
     }
 }

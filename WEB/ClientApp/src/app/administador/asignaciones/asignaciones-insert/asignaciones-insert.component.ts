@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -30,6 +31,11 @@ export class AsignacionesInsertComponent implements OnInit {
     "Fecha_Final",
     "acciones"
   ];
+
+  fechaInicioMin:Date|undefined = undefined;
+  fechaInicioMax:Date|undefined = undefined;
+  fechaFinalMin:Date|undefined = undefined;
+  fechaFinalMax:Date|undefined = undefined;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data:any,
@@ -88,8 +94,12 @@ export class AsignacionesInsertComponent implements OnInit {
       clave:this.ProyectoSeleccionado.clave,
       id:this.ProyectoSeleccionado.id,
       titulo:this.ProyectoSeleccionado.titulo,
-      fecha_inicio:new Date(),
-      fecha_final:new Date(),
+      fecha_inicio:undefined,
+      fecha_final:undefined,
+      fechaInicioMin:undefined,
+      fechaInicioMax:undefined,
+      fechaFinalMin:undefined,
+      fechaFinalMax:undefined,
     }
 
     console.log(proyectoA);
@@ -146,5 +156,19 @@ export class AsignacionesInsertComponent implements OnInit {
     }else{
       this.openSnackBar("Introduzca los campos faltantes");
     }
+  }
+
+  updateFechaInicio(type: string, event: MatDatepickerInputEvent<Date>, index:number) {
+    if(event.value!=null){
+      this.ProyectosAsignados[index].fechaFinalMin = new Date(event.value.toISOString());
+    }
+
+  }
+
+  updateFechaFinal(type: string, event: MatDatepickerInputEvent<Date>, index:number) {
+    if(event.value!=null){
+      this.ProyectosAsignados[index].fechaInicioMax = new Date(event.value.toISOString());
+    }
+   
   }
 }

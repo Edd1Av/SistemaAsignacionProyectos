@@ -63,7 +63,11 @@ export class AsignacionesDetailsComponent implements OnInit {
         fecha_final:x.fecha_Final,
         fecha_inicio:x.fecha_Inicio,
         clave:x.proyecto.clave,
-        titulo:x.proyecto.titulo
+        titulo:x.proyecto.titulo,
+        fechaInicioMin:undefined,
+        fechaInicioMax:x.fecha_Final,
+        fechaFinalMin:x.fecha_Inicio,
+        fechaFinalMax:undefined,
       }
       console.log(this.data.asignacion);
       this.ProyectosAsignados.push(proyecto);

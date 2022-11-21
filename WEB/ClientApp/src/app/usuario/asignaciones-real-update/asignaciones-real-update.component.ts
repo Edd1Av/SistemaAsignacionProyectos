@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -32,6 +33,11 @@ export class AsignacionesRealUpdateComponent implements OnInit {
     "Porcentaje",
     "acciones"
   ];
+
+  fechaInicioMin:Date|undefined = undefined;
+  fechaInicioMax:Date|undefined = undefined;
+  fechaFinalMin:Date|undefined = undefined;
+  fechaFinalMax:Date|undefined = undefined;
 
   constructor(@Inject(MAT_DIALOG_DATA) private data:any,
   private matDialogref: MatDialogRef<AsignacionesRealInsertComponent>,
@@ -84,7 +90,8 @@ export class AsignacionesRealUpdateComponent implements OnInit {
 
   private rellenarCampos(){
     let AsignacionReal:IAsignacionReal=this.data.asignacionReal;
-
+    this.fechaInicioMax=AsignacionReal.fecha_final,
+    this.fechaFinalMin=AsignacionReal.fecha_inicio,
     AsignacionReal.distribucion.map(x=>{
       let proyecto:IProyectoAsignadoReal={
         id:x.proyecto.id,
@@ -168,6 +175,20 @@ export class AsignacionesRealUpdateComponent implements OnInit {
       }else{
         this.openSnackBar("Introduzca los campos faltantes");
       }
+    }
+
+    updateFechaInicio(type: string, event: MatDatepickerInputEvent<Date>) {
+      if(event.value!=null){
+        this.fechaFinalMin = new Date(event.value.toISOString());
+      }
+  
+    }
+  
+    updateFechaFinal(type: string, event: MatDatepickerInputEvent<Date>) {
+      if(event.value!=null){
+        this.fechaInicioMax = new Date(event.value.toISOString());
+      }
+     
     }
 
 }
