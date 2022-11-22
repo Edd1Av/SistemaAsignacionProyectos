@@ -7,5 +7,9 @@
           <!-- <h2 class="lead">Asignación de proyectos</h2> -->
       </div>
   </div>
+  <div *ngIf="load">
+    <mat-progress-bar mode="query"></mat-progress-bar>
+  </div>
+
   <router-outlet></router-outlet>
 </div>

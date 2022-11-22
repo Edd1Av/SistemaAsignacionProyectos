@@ -64,6 +64,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar'
       { path: 'asignaciones', loadChildren: () => import('./administador/asignaciones/asignaciones.module').then(m => m.AsignacionesModule), canActivate:[AuthorizeGuardAdministrador]},
       { path: 'colaboradores', loadChildren: () => import('./administador/colaboradores/colaboradores.module').then(m => m.ColaboradoresModule), canActivate:[AuthorizeGuardAdministrador] },
       { path: 'asignacionReal', loadChildren: () => import('./usuario/asignacion-real/asignacion-real.module').then(m => m.AsignacionRealModule), canActivate:[AuthorizeGuardDesarrollador] },
+      { path: 'reporte', loadChildren: () => import('./administador/reporte/reporte.module').then(m => m.ReporteModule) },
       
     ]),
     BrowserAnimationsModule

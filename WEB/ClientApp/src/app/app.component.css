@@ -37,3 +37,8 @@ textarea {
     background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
 } */
 
+div.mat-progress-bar-primary.mat-progress-bar-fill.mat-progress-bar-element::after{
+    background-color: rgb(0, 0, 0);
+    height: 5px;
+    border-radius: 5px;
+  }

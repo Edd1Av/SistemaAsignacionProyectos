@@ -25,6 +25,13 @@ export class ProyectosComponent implements OnInit {
     "clave",
     "acciones"
   ];
+
+  displayedColumnsProyectos: string[] = [
+    "Id",
+    "Titulo",
+    "Dias",
+    "Porcentaje",
+  ];
   
  
   constructor(private proyectosService: ProyectosService,
@@ -56,6 +63,7 @@ export class ProyectosComponent implements OnInit {
           this.proyectos = result;
           this.dataSource = new MatTableDataSource<IProyecto>(this.proyectos);
           this.dataSource.paginator = this.paginator;
+          console.log(this.paginator);
         })
       )
       .subscribe();

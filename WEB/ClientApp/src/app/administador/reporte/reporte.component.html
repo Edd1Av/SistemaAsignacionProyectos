@@ -1,0 +1,99 @@
+<h2 class="titulo">Reporte de asignaciones</h2>
+<div class="dates">
+    <div class="form-field">
+        <mat-form-field style="width: 100%;" appearance="fill">
+            <mat-label>Intervalo de fechas</mat-label>
+            <mat-date-range-input class="daterange"
+              [formGroup]="Intervalo"
+              [rangePicker]="campaignOnePicker"
+              [comparisonStart]="Intervalo.value.start"
+              [comparisonEnd]="Intervalo.value.end">
+              <input matStartDate placeholder="Start date" formControlName="start">
+              <input matEndDate placeholder="End date" formControlName="end">
+            </mat-date-range-input>
+            <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+            
+        </mat-form-field>
+        <br>
+        <div style="padding: 10px;">
+            
+            <button style="margin-right: 10px;" mat-flat-button (click)="Consultar()">Consultar</button>
+      
+        </div>
+   </div>
+
+    <div *ngIf="this.Reporte!=null" class="infoDates">
+        <div>
+            <h2>Dias laborales totales: {{this.Reporte.response.diastotales}}</h2>
+        </div>
+        <div style="width: 100%;">
+            <h2 style="display: inline-block;width: 7%;">{{this.Reporte.response.porcentaje.toFixed(2)}}%</h2>
+            
+            <mat-progress-bar style="display: inline-block;
+            width: 85%; margin-left: 5%;" mode="determinate" 
+            [ngClass]="this.Reporte.response.porcentaje<100 ?
+             'red' : 'green'" 
+             [value]="this.Reporte.response.porcentaje">
+            </mat-progress-bar>
+            <h3 style="color: #800000;" *ngIf="this.Reporte.response.porcentaje<100">Existen colaboradores con registros incompletos</h3>
+        </div>
+    
+    </div>
+</div>
+
+<hr>
+<div *ngIf="this.Reporte!=null" class="container">
+
+    <table style="width: 100%;" mat-table [dataSource]="this.dataSource">
+        <ng-container matColumnDef="colaborador">
+            <th class="" style="width: 60%; vertical-align: bottom;" mat-header-cell *matHeaderCellDef> <h2 style="color: black;font-weight: bold;">Colaboradores 
+                <button style="margin-bottom: 10px;" mat-flat-button (click)="generateExcel()">Exportar a Excel</button>
+            </h2> </th>
+            <td class='has_label_on_mobile' data-label=''  mat-cell *matCellDef="let item"> 
+                <div [ngClass]="item.complete<100 ?
+                'colaboradorRed' : 'colaborador'" >
+                    <h2 style="font-weight: bold;">{{item.id_odoo}}&nbsp;&nbsp;-&nbsp;&nbsp;{{item.colaborador}} </h2>
+                    <h3 class="diastrabajados"><span style="font-weight: bold;">Dias trabajados: </span>{{item.diasTrabajados.toFixed(2)}}</h3>
+                    <br>
+                    <span style="font-weight: bold; display: inline-block;">{{item.complete.toFixed(2)}}%</span>
+                    <mat-progress-bar style="display: inline-block;
+                    width: 90%; margin-left: 20px;" mode="determinate" 
+                    [ngClass]="item.complete<100 ?
+                     'red' : 'green'" 
+                     [value]="item.complete">
+                    </mat-progress-bar>
+                    <br>
+                    <table *ngIf="item.asignaciones.length>0" style="width: 100%;" mat-table [dataSource]="item.asignaciones">
+                        <ng-container matColumnDef="Id">
+                            <th class="columna" style="width: 20%;" mat-header-cell *matHeaderCellDef> <span class="th">Clave</span> </th>
+                            <td class='has_label_on_mobile' data-label='Titulo: '  mat-cell *matCellDef="let element"> {{element.clave}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="Titulo">
+                            <th class="columna" style="width: 20%;" mat-header-cell *matHeaderCellDef> <span class="th">Titulo</span> </th>
+                            <td class='has_label_on_mobile' data-label='Titulo: '  mat-cell *matCellDef="let element"> {{element.titulo}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="Dias">
+                            <th class="columna" style="width: 20%;" mat-header-cell *matHeaderCellDef> <span class="th">Dias trabajados</span> </th>
+                            <td class='has_label_on_mobile' data-label='Titulo: '  mat-cell *matCellDef="let element"> {{element.dias.toFixed(2)}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="Porcentaje">
+                            <th class="columna" style="width: 20%;" mat-header-cell *matHeaderCellDef> <span class="th">Porcentaje</span>  </th>
+                            <td class='has_label_on_mobile' data-label='Titulo: '  mat-cell *matCellDef="let element"> {{element.porcentaje.toFixed(2)}}% </td>
+                        </ng-container>
+                          <tr mat-header-row *matHeaderRowDef="displayedColumnsProyectos"></tr>
+                          <tr mat-row *matRowDef="let row; columns: displayedColumnsProyectos;"></tr>
+                    </table> 
+                </div>
+   
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+</div>
+<mat-paginator [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons
+aria-label="Select page of periodic elements">
+</mat-paginator>
