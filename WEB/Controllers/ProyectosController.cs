@@ -32,17 +32,18 @@ namespace WEB.Controllers
             return await _context.Proyectos.OrderBy(x=>x.Titulo).ToListAsync();
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize]
         [Route("proyectosColaborador/{id}")]
-        public async Task<ActionResult<IEnumerable<Proyecto>>> GetProyectos(int id)
+        public async Task<ActionResult<IEnumerable<Proyecto>>> GetProyectos(int id, IntervaloFechas intervalo)
         {
             //var x = _context.Asignacion.Select(x => x.Distribuciones.Where(y => y.Asignacion.IdColaborador == id).Select(x=>x.Proyecto)).ToList();
 
-            var y = await _context.Distribucion.Where(x => x.Asignacion.IdColaborador == id).Select(y=>y.Proyecto).ToListAsync();
+            var y = await _context.Distribucion.Where(x => x.Asignacion.IdColaborador == id && (x.Fecha_Inicio.Date<=intervalo.FechaInicio.Date && x.Fecha_Final.Date>=intervalo.FechaFin.Date)).Select(y=>y.Proyecto).ToListAsync();
             
             return y; 
         }
+
 
         // GET: api/Proyectos/5
         [HttpGet("{id}")]

@@ -17,7 +17,7 @@
         </div>
         <div fxFlex="50%" fxFlex.sm="100%">
             <mat-form-field appearance="fill">
-                <mat-label>Fecha Inicio</mat-label>
+                <mat-label>Fecha Fin</mat-label>
                 <input [readonly]="true" matInput formControlName="fecha_final" [matDatepicker]="picker2" [min]="fechaFinalMin" [max]="fechaFinalMax" (dateChange)="updateFechaFinal('change', $event)">
                 <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
                 <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
@@ -25,18 +25,20 @@
               </mat-form-field>
         </div>
       </div>
+      <div fxLayout="row" fxLayout.sm="column" class="mb-5">
+        <div fxFlex="20%" fxFlex.sm="100%" fxFlexAlign="center" *ngIf="!fechaValida">
+          <div class="container">
+            <button mat-flat-button color="primary" type="button" (click)="confirmarFecha()">Confirmar</button>
+          </div>
+        </div>
+        <div fxFlex="20%" fxFlex.sm="100%" fxFlexAlign="center" *ngIf="fechaValida">
+          <div class="container">
+            <button mat-flat-button color="warn" type="button" (click)="cancelarFecha()">Cancelar</button>
+          </div>
+        </div>
+      </div>
       <div fxLayout="row" fxLayout.sm="column">
         <div fxFlex="50%" fxFlex.sm="100%">
-            <mat-form-field appearance="fill">
-                <mat-label>Colaborador</mat-label>
-                <mat-select formControlName="colaborador">
-                  <mat-option *ngFor="let colab of colaboradores" [value]="colab.id">
-                    {{colab.nombres}} {{colab.apellidos}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-        </div>
-        <div fxFlex="44%" fxFlex.sm="100%">
               <mat-form-field appearance="fill">
                 <mat-label>Proyectos</mat-label>
                 <mat-select formControlName="proyectos">

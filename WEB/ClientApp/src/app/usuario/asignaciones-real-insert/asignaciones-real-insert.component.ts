@@ -1,3 +1,4 @@
+import { ConditionalExpr } from '@angular/compiler';
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
@@ -9,6 +10,7 @@ import { tap } from 'rxjs/operators';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { IAsignacionPostReal } from 'src/app/interfaces/iasignacion-post';
 import { IColaborador } from 'src/app/interfaces/Icolaboradores';
+import { IntervaloFecha } from 'src/app/interfaces/IntervaloFechas';
 import { IProyectoAsignadoReal } from 'src/app/interfaces/iproyecto-asignado';
 import { IProyecto } from 'src/app/interfaces/IProyectos';
 import { IResponse } from 'src/app/interfaces/IResponse';
@@ -39,6 +41,11 @@ export class AsignacionesRealInsertComponent implements OnInit {
   fechaFinalMin:Date|undefined = undefined;
   fechaFinalMax:Date|undefined = undefined;
 
+  intervaloFecha:IntervaloFecha;
+
+  fechaValida:Boolean = false;
+
+
   constructor(
     @Inject(MAT_DIALOG_DATA) private data:any,
     private matDialogref: MatDialogRef<AsignacionesRealInsertComponent>,
@@ -63,28 +70,28 @@ export class AsignacionesRealInsertComponent implements OnInit {
       this.Usuario=this._authService.usuarioData;
     }
   console.log(this.Usuario);
-  this.GetColaboradores();
-  this.GetProyectos();
+  // this.GetColaboradores();
+  // this.GetProyectos();
   this.buildForm();
   }
 
-  private GetColaboradores(){
-    this._colaboradoresService.getColaboradores()
-    .pipe(
-      tap((result:IColaborador[])=>{
-        this.colaboradores=result;
-      })
-    ).subscribe();
-  }
+  // private GetColaboradores(){
+  //   this._colaboradoresService.getColaboradores()
+  //   .pipe(
+  //     tap((result:IColaborador[])=>{
+  //       this.colaboradores=result;
+  //     })
+  //   ).subscribe();
+  // }
 
-  private GetProyectos(){
-    this._proyectosService.getProyectosColaborador(this.Usuario.idUsuario)
-    .pipe(
-      tap((result:IProyecto[])=>{
-        this.Proyectos=result;
-      })
-    ).subscribe();
-  }
+  // private GetProyectos(){
+  //   this._proyectosService.getProyectosColaborador(this.Usuario.idUsuario)
+  //   .pipe(
+  //     tap((result:IProyecto[])=>{
+  //       this.Proyectos=result;
+  //     })
+  //   ).subscribe();
+  // }
 
   public eliminarProyecto(index:number){
     this.ProyectosAsignados.splice(index,1);
@@ -119,10 +126,10 @@ export class AsignacionesRealInsertComponent implements OnInit {
 
   private buildForm() {
     this.formGroup = this.formBuilder.group({
-      fecha_inicio: new FormControl("", Validators.required),
+      fecha_inicio: new FormControl({value:"", disabled:false}, Validators.required),
       fecha_final: new FormControl("", Validators.required),
-      colaborador: new FormControl({value: this.Usuario.idUsuario, disabled:true}, Validators.required),
-      proyectos: new FormControl(""),
+      // colaborador: new FormControl({value: this.Usuario.idUsuario, disabled:true}, Validators.required),
+      proyectos: new FormControl({value:"", disabled:true}),
     });
   }
 
@@ -146,7 +153,7 @@ export class AsignacionesRealInsertComponent implements OnInit {
     }
     if(this.formGroup.valid){
       let POST:IAsignacionPostReal={
-        id_colaborador:this.formGroup.controls['colaborador'].value,
+        id_colaborador:this.Usuario.idUsuario,
         fecha_inicio:this.formGroup.controls['fecha_inicio'].value,
         fecha_final:this.formGroup.controls['fecha_final'].value,
         proyectos:this.ProyectosAsignados
@@ -179,6 +186,42 @@ export class AsignacionesRealInsertComponent implements OnInit {
       this.fechaInicioMax = new Date(event.value.toISOString());
     }
    
+  }
+
+  confirmarFecha(){
+    if(this.formGroup.controls['fecha_inicio'].value && this.formGroup.controls['fecha_final'].value){
+
+      console.log(this.formGroup.controls['fecha_inicio'].value);
+      this.intervaloFecha={fechaInicio:this.formGroup.controls['fecha_inicio'].value, fechaFin:this.formGroup.controls['fecha_final'].value}
+
+      this._proyectosService.getProyectosColaborador(this.Usuario.idUsuario, this.intervaloFecha)
+    .pipe(
+      tap((result:IProyecto[])=>{
+        this.Proyectos=result;
+        this.formGroup.controls['fecha_inicio'].disable();
+      this.formGroup.controls['fecha_final'].disable();
+      this.formGroup.controls['proyectos'].enable();
+
+      this.fechaValida = true;
+      })
+    ).subscribe();
+    }
+    else{
+      this.openSnackBar("Seleccione un rango de fechas");
+    }
+  }
+
+  cancelarFecha(){
+      this.formGroup.controls['fecha_inicio'].enable();
+      this.formGroup.controls['fecha_final'].enable();
+      this.formGroup.controls['proyectos'].disable();
+      this.formGroup.controls['proyectos'].reset();
+      this.ProyectosAsignados=[];
+      this.dataSource=new MatTableDataSource<IProyectoAsignadoReal>(this.ProyectosAsignados);
+      this.dataSource.paginator=this.paginator;
+      this.fechaValida = false;
+
+
   }
 
 }

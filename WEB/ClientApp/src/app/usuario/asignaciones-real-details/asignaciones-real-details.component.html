@@ -7,7 +7,7 @@
     <form class="form item" [formGroup]="formGroup">
 <div fxLayout="row" fxLayout.sm="column">
         <div fxFlex="50%" fxFlex.sm="100%">
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="outline">
                 <mat-label>Fecha Inicio</mat-label>
                 <input matInput formControlName="fecha_inicio" [matDatepicker]="picker" [readonly]="true">
                 <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
@@ -16,8 +16,8 @@
               </mat-form-field>
         </div>
         <div fxFlex="50%" fxFlex.sm="100%">
-            <mat-form-field appearance="fill">
-                <mat-label>Fecha Inicio</mat-label>
+            <mat-form-field appearance="outline">
+                <mat-label>Fecha Fin</mat-label>
                 <input matInput formControlName="fecha_final" [matDatepicker]="picker2" [readonly]="true">
                 <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
                 <!-- <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle> -->
@@ -25,14 +25,14 @@
               </mat-form-field>
         </div>
       </div>
-      <div fxLayout="row" fxLayout.sm="column">
+      <!-- <div fxLayout="row" fxLayout.sm="column">
         <div fxFlex="50%" fxFlex.sm="100%">
             <mat-form-field appearance="fill" >
                 <mat-label>Colaborador</mat-label>
                 <input type="text" matInput [readonly]="true" formControlName="colaborador" >
             </mat-form-field>
         </div>
-      </div>
+      </div> -->
       <table mat-table [dataSource]="dataSource" class="cat-tbl-search">
   
         <ng-container matColumnDef="Proyecto">

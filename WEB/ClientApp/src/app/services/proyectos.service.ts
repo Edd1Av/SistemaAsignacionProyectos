@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { IResponse } from '../interfaces/IResponse';
 import { IProyecto } from '../interfaces/IProyectos';
 import { map } from 'rxjs/operators';
+import { IntervaloFecha } from '../interfaces/IntervaloFechas';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +26,12 @@ export class ProyectosService {
     return this.http.get<IProyecto[]>(this.urlBase + "api/proyectos");
   }
 
-  getProyectosColaborador(id:number): Observable<IProyecto[]> {
-    return this.http.get<IProyecto[]>(this.urlBase + "api/proyectos/proyectosColaborador/"+id);
+  getProyectosColaborador(id:number, intervaloFecha:IntervaloFecha): Observable<IProyecto[]> {
+    return this.http.post<IProyecto[]>(this.urlBase + "api/proyectos/proyectosColaborador/"+id,intervaloFecha);
+  }
+
+  getProyectosColaboradorUp(id:number, intervaloFecha:IntervaloFecha): Observable<IProyecto[]> {
+    return this.http.post<IProyecto[]>(this.urlBase + "api/proyectos/proyectosColaboradorUp/"+id,intervaloFecha);
   }
 
   UpdateProyecto(id:number, Proyecto:IProyecto)  {

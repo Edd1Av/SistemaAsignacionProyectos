@@ -6,12 +6,15 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { tap } from 'rxjs/operators';
+import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { IAsignacionReal } from 'src/app/interfaces/iasignacion';
 import { IAsignacionPostReal } from 'src/app/interfaces/iasignacion-post';
 import { IColaborador } from 'src/app/interfaces/Icolaboradores';
+import { IntervaloFecha } from 'src/app/interfaces/IntervaloFechas';
 import { IProyectoAsignadoReal } from 'src/app/interfaces/iproyecto-asignado';
 import { IProyecto } from 'src/app/interfaces/IProyectos';
 import { IResponse } from 'src/app/interfaces/IResponse';
+import { IUsuario } from 'src/app/interfaces/IUsuario';
 import { AsignacionesService } from 'src/app/services/asignaciones.service';
 import { ColaboradoresService } from 'src/app/services/colaboradores.service';
 import { ProyectosService } from 'src/app/services/proyectos.service';
@@ -39,13 +42,18 @@ export class AsignacionesRealUpdateComponent implements OnInit {
   fechaFinalMin:Date|undefined = undefined;
   fechaFinalMax:Date|undefined = undefined;
 
+  intervaloFecha:IntervaloFecha;
+
+  fechaValida:Boolean = true;
+
   constructor(@Inject(MAT_DIALOG_DATA) private data:any,
   private matDialogref: MatDialogRef<AsignacionesRealInsertComponent>,
   private formBuilder: FormBuilder,
   private _asignacionService: AsignacionesService,
   private _snackBar: MatSnackBar,
   private _colaboradoresService:ColaboradoresService,
-  private _proyectosService:ProyectosService) { }
+  private _proyectosService:ProyectosService,
+  private _authService:AuthorizeService) { }
 
   dataSource!: MatTableDataSource<IProyectoAsignadoReal>;
   ProyectosAsignados:IProyectoAsignadoReal[]=[];
@@ -53,36 +61,41 @@ export class AsignacionesRealUpdateComponent implements OnInit {
   Proyectos:IProyecto[]=[];
   ProyectoSeleccionado:IProyecto;
   ProyectoId:number=0;
+  Usuario:IUsuario;
 
   ngOnInit(): void {
-    this.GetColaboradores();
-    this.GetProyectos();
+    if(this._authService.usuarioData!=null){
+      this.Usuario=this._authService.usuarioData;
+    }
+    // this.GetColaboradores();
+    
     this.buildForm();
     this.rellenarCampos();
+    this.GetProyectos();
   }
 
-  private GetColaboradores(){
-    this._colaboradoresService.getColaboradores()
-    .pipe(
-      tap((result:IColaborador[])=>{
-        this.colaboradores=result;
-      })
-    ).subscribe();
-  }
+
 
   private GetProyectos(){
-    this._proyectosService.getProyectos()
-    .pipe(
-      tap((result:IProyecto[])=>{
-        this.Proyectos=result;
-      })
-    ).subscribe();
+    this.intervaloFecha={fechaInicio:this.formGroup.controls['fecha_inicio'].value, fechaFin:this.formGroup.controls['fecha_final'].value}
+    console.log(this.intervaloFecha);
+    this._proyectosService.getProyectosColaborador(this.Usuario.idUsuario, this.intervaloFecha)
+      .pipe(
+        tap((result:IProyecto[])=>{
+          this.Proyectos=result;
+          this.formGroup.controls['fecha_inicio'].disable();
+        this.formGroup.controls['fecha_final'].disable();
+        this.formGroup.controls['proyectos'].enable();
+  
+        this.fechaValida = true;
+        })
+      ).subscribe();
   }
 
   private buildForm() {
     this.formGroup = this.formBuilder.group({
-      fecha_inicio: new FormControl(this.data.asignacionReal.fecha_inicio, Validators.required),
-      fecha_final: new FormControl(this.data.asignacionReal.fecha_final, Validators.required),
+      fecha_inicio: new FormControl({value:this.data.asignacionReal.fecha_inicio, disabled:true}, Validators.required),
+      fecha_final: new FormControl({value:this.data.asignacionReal.fecha_final, disabled:true}, Validators.required),
       colaborador: new FormControl({value:this.data.asignacionReal.colaborador.id, disabled:true}, Validators.required),
       proyectos: new FormControl(""),
     });
@@ -189,6 +202,42 @@ export class AsignacionesRealUpdateComponent implements OnInit {
         this.fechaInicioMax = new Date(event.value.toISOString());
       }
      
+    }
+
+    confirmarFecha(){
+      if(this.formGroup.controls['fecha_inicio'].value && this.formGroup.controls['fecha_final'].value){
+  
+        console.log(this.formGroup.controls['fecha_inicio'].value);
+        this.intervaloFecha={fechaInicio:this.formGroup.controls['fecha_inicio'].value, fechaFin:this.formGroup.controls['fecha_final'].value}
+  
+        this._proyectosService.getProyectosColaborador(this.Usuario.idUsuario, this.intervaloFecha)
+      .pipe(
+        tap((result:IProyecto[])=>{
+          this.Proyectos=result;
+          this.formGroup.controls['fecha_inicio'].disable();
+        this.formGroup.controls['fecha_final'].disable();
+        this.formGroup.controls['proyectos'].enable();
+  
+        this.fechaValida = true;
+        })
+      ).subscribe();
+      }
+      else{
+        this.openSnackBar("Seleccione un rango de fechas");
+      }
+    }
+  
+    cancelarFecha(){
+        this.formGroup.controls['fecha_inicio'].enable();
+        this.formGroup.controls['fecha_final'].enable();
+        this.formGroup.controls['proyectos'].disable();
+        this.formGroup.controls['proyectos'].reset();
+        this.ProyectosAsignados=[];
+        this.dataSource=new MatTableDataSource<IProyectoAsignadoReal>(this.ProyectosAsignados);
+        this.dataSource.paginator=this.paginator;
+        this.fechaValida = false;
+  
+  
     }
 
 }

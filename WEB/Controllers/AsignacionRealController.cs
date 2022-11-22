@@ -125,8 +125,8 @@ namespace WEB.Controllers
                         });
                     }
 
-                    asignacionReal.Fecha_Inicio = postModel.Fecha_Inicio.ToLocalTime().Date;
-                    asignacionReal.Fecha_Final = postModel.Fecha_Final.ToLocalTime().Date;
+                    asignacionReal.Fecha_Inicio = postModel.Fecha_Inicio;
+                    asignacionReal.Fecha_Final = postModel.Fecha_Final;
 
                     _context.AsignacionReal.Attach(asignacionReal);
                     _context.Entry(asignacionReal).State = EntityState.Modified;
@@ -214,8 +214,8 @@ namespace WEB.Controllers
                     }
 
                     asignacionReal.DistribucionesReales = distribucionReal;
-                    asignacionReal.Fecha_Inicio = postModel.Fecha_Inicio.ToLocalTime().Date;
-                    asignacionReal.Fecha_Final = postModel.Fecha_Final.ToLocalTime().Date;
+                    asignacionReal.Fecha_Inicio = postModel.Fecha_Inicio;
+                    asignacionReal.Fecha_Final = postModel.Fecha_Final;
                     //asignacionPlaneada.AsignacionReal = new List<AsignacionReal>();
                     asignacionPlaneada.AsignacionReal.Add(asignacionReal);
 
