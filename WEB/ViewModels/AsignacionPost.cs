@@ -43,8 +43,8 @@
 
     public class HistoricoResponse
     {
-
         public int id { get; set; }
+        public string clave { get; set; }
         public string? titulo { get; set; }
         public int value { get; set; }
         public double porcentaje { get; set; }
@@ -63,9 +63,19 @@
             }
             return sum;
         }
+        public string id_odoo { get; set; }
         public string colaborador { get; set; }
         public List<HistoricoResponse> asignaciones { get; set; }
         public double diasTrabajados { get; set; }
         public double complete { get; set; }
     }
+    public class Excel 
+    {
+        public string A { get; set; }
+        public string B { get; set; }
+        public string C { get; set; }
+        public string D { get; set; }
+        public string E { get; set; }
+    }
+
 }

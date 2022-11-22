@@ -15,6 +15,11 @@ export class ReporteService {
     console.log(Response);
       return this.http.post<IReporte>(this.urlBase + "api/AsignacionReal/Historico",postModel);
     }
+
+    GetReporteExcel(postModel:any) {
+      console.log(Response);
+        return this.http.post<IReporte>(this.urlBase + "api/AsignacionReal/Historico",postModel);
+      }
 }
 
 

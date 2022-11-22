@@ -293,6 +293,7 @@ namespace WEB.Controllers
         }
 
 
+
         public static int DaysLeft(DateTime startDate, DateTime endDate, Boolean excludeWeekends, List<DateTime> excludeDates)
         {
             int count = 0;
@@ -318,6 +319,18 @@ namespace WEB.Controllers
             }
 
             return count;
+        }
+
+        private static double Truncate(double value, int decimales)
+        {
+            double aux_value = Math.Pow(10, decimales);
+            return (Math.Truncate(value * aux_value) / aux_value);
+        }
+
+        public static string FechaToString(DateTime value)
+        {
+            string[] meses = new string[] { "ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic" };
+            return (value.Day<10? "0"+value.Day.ToString():value.Day.ToString()) + "-" + meses[value.Month-1]+"-"+(value.Year-2000).ToString();
         }
 
 
@@ -377,6 +390,7 @@ namespace WEB.Controllers
                                 proyectos.Add(new HistoricoResponse
                                 {
                                     id = P.IdProyecto,
+                                    clave = P.Proyecto.Clave,
                                     titulo=P.Proyecto.Titulo,
                                     value = P.Porcentaje *(difFechas),
                                     dias= ((double)P.Porcentaje/(double)100) * (double)difFechas
@@ -390,20 +404,29 @@ namespace WEB.Controllers
                 for (int i = 0; i < proyectos.Count; i++)
                 {
                     var porcentaje = (int)(((double)proyectos[i].value / (double)sum) * 100);
-                    diferencia += (((double)proyectos[i].value / (double)sum) * 100)- (int)(((double)proyectos[i].value / (double)sum) * 100);
+                    diferencia += Truncate(((((double)proyectos[i].value / (double)sum) * 100)- (int)(((double)proyectos[i].value / (double)sum) * 100)),5);
                     if (i == proyectos.Count - 1)
                     {
                         proyectos[i].porcentaje = Math.Ceiling(porcentaje+diferencia);
                     }
                     else
                     {
-                        proyectos[i].porcentaje = Math.Ceiling((double)porcentaje);
+                        proyectos[i].porcentaje = Math.Floor((double)porcentaje);
                     }
 
                 }
+                if(proyectos.Count > 0)
+                {
+                        if (proyectos.Sum(x => x.porcentaje) < 100)
+                        {
+                            proyectos.FirstOrDefault().porcentaje += 100 - proyectos.Sum(x => x.porcentaje);
+                        }
+                 }
+
 
                     rest.Add(new rest
                     {
+                        id_odoo=colaborador.Id_Odoo,
                         colaborador = colaborador.Nombres + " " + colaborador.Apellidos,
                         asignaciones = proyectos,
                         diasTrabajados=proyectos.Sum(x=>x.dias),
@@ -411,12 +434,31 @@ namespace WEB.Controllers
                     });
 
                 }
-
+                List<Excel> excel = new List<Excel>();
+                excel.Add(new Excel { A = "fecha_inicio", B = FechaToString(postModel.Fecha_Inicio), C = "", D = "", E = "" });
+                excel.Add(new Excel {A= "fecha_final", B= FechaToString(postModel.Fecha_Final), C="",D="",E=""});
+                excel.Add(new Excel { A = "", B = "", C = "", D = "", E = "" });
+                excel.Add(new Excel { A = "id_recurso", B = "recurso", C = "id_proyecto", D = "proyecto", E = "porcentaje" });
+                foreach (var item in rest)
+                {
+                    foreach(var item2 in item.asignaciones)
+                    {
+                        if (item2.id == item.asignaciones.FirstOrDefault().id)
+                        {
+                            excel.Add(new Excel { A = item.id_odoo, B = item.colaborador, C = item2.clave, D = item2.titulo, E = item2.porcentaje.ToString() });
+                        }
+                        else
+                        {
+                            excel.Add(new Excel { A = "", B = "", C = item2.clave, D = item2.titulo, E = item2.porcentaje.ToString() });
+                        }
+                    }
+                }
                 dynamic datos = new System.Dynamic.ExpandoObject();
                 datos.diastotales = DaysLeft(postModel.Fecha_Inicio.Date,postModel.Fecha_Final.Date.AddDays(1), true,new List<DateTime>());
                 datos.porcentaje = ((rest.Sum(x => x.diasTrabajados)/rest.Count)
                     / DaysLeft(postModel.Fecha_Inicio.Date, postModel.Fecha_Final.Date.AddDays(1), true, new List<DateTime>()))*100;
                 datos.rest = rest;
+                datos.excel = excel;
                 response.success = true;
                 response.response = datos;
                 return Ok(response);

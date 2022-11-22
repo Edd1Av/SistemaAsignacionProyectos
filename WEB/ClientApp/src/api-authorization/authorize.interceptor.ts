@@ -25,4 +25,5 @@ export class AuthorizeInterceptor implements HttpInterceptor {
       )
     );
   }
+  
 }

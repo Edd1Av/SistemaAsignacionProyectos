@@ -17,8 +17,12 @@
             
         </mat-form-field>
         <br>
-        <button mat-flat-button (click)="Consultar()">Consultar</button>
-    </div>
+        <div style="padding: 10px;">
+            
+            <button style="margin-right: 10px;" mat-flat-button (click)="Consultar()">Consultar</button>
+      
+        </div>
+   </div>
 
     <div *ngIf="this.Reporte!=null" class="infoDates">
         <div>
@@ -44,11 +48,13 @@
 
     <table style="width: 100%;" mat-table [dataSource]="this.dataSource">
         <ng-container matColumnDef="colaborador">
-            <th class="" style="width: 60%;" mat-header-cell *matHeaderCellDef> <h2 style="color: black;font-weight: bold;">Colaboradores</h2> </th>
+            <th class="" style="width: 60%; vertical-align: bottom;" mat-header-cell *matHeaderCellDef> <h2 style="color: black;font-weight: bold;">Colaboradores 
+                <button style="margin-bottom: 10px;" mat-flat-button (click)="generateExcel()">Exportar a Excel</button>
+            </h2> </th>
             <td class='has_label_on_mobile' data-label=''  mat-cell *matCellDef="let item"> 
                 <div [ngClass]="item.complete<100 ?
                 'colaboradorRed' : 'colaborador'" >
-                    <h2 style="font-weight: bold;">{{item.colaborador}} </h2>
+                    <h2 style="font-weight: bold;">{{item.id_odoo}}&nbsp;&nbsp;-&nbsp;&nbsp;{{item.colaborador}} </h2>
                     <h3 class="diastrabajados"><span style="font-weight: bold;">Dias trabajados: </span>{{item.diasTrabajados.toFixed(2)}}</h3>
                     <br>
                     <span style="font-weight: bold; display: inline-block;">{{item.complete.toFixed(2)}}%</span>
@@ -61,8 +67,8 @@
                     <br>
                     <table *ngIf="item.asignaciones.length>0" style="width: 100%;" mat-table [dataSource]="item.asignaciones">
                         <ng-container matColumnDef="Id">
-                            <th class="columna" style="width: 20%;" mat-header-cell *matHeaderCellDef> <span class="th">Id</span> </th>
-                            <td class='has_label_on_mobile' data-label='Titulo: '  mat-cell *matCellDef="let element"> {{element.id}} </td>
+                            <th class="columna" style="width: 20%;" mat-header-cell *matHeaderCellDef> <span class="th">Clave</span> </th>
+                            <td class='has_label_on_mobile' data-label='Titulo: '  mat-cell *matCellDef="let element"> {{element.clave}} </td>
                         </ng-container>
                         <ng-container matColumnDef="Titulo">
                             <th class="columna" style="width: 20%;" mat-header-cell *matHeaderCellDef> <span class="th">Titulo</span> </th>
@@ -74,7 +80,7 @@
                         </ng-container>
                         <ng-container matColumnDef="Porcentaje">
                             <th class="columna" style="width: 20%;" mat-header-cell *matHeaderCellDef> <span class="th">Porcentaje</span>  </th>
-                            <td class='has_label_on_mobile' data-label='Titulo: '  mat-cell *matCellDef="let element"> {{element.porcentaje.toFixed(2)}} </td>
+                            <td class='has_label_on_mobile' data-label='Titulo: '  mat-cell *matCellDef="let element"> {{element.porcentaje.toFixed(2)}}% </td>
                         </ng-container>
                           <tr mat-header-row *matHeaderRowDef="displayedColumnsProyectos"></tr>
                           <tr mat-row *matRowDef="let row; columns: displayedColumnsProyectos;"></tr>
