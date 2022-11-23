@@ -47,19 +47,19 @@ export class AsignacionesService {
 
 
 
-
+ 
     //AsignacionesReales
-    getAsignacionRealById(id: number): Observable<IAsignacionReal> {
-      return this.http.get<IAsignacionReal>(this.urlBase + "api/AsignacionReal" + id);
-    }
+    // getAsignacionRealById(id: number): Observable<IAsignacionReal> {
+    //   return this.http.get<IAsignacionReal>(this.urlBase + "api/AsignacionReal" + id);
+    // }
   
     // getAsignacionRealByIdColaborador(id: number): Observable<IAsignacionGet> {
     //   return this.http.get<IAsignacionGet>(this.urlBase + "api/AsignacionReal/ByColaborador/" + id);
     // }
   
     //Historico
-    getAsignacionesReal(): Observable<IAsignacionReal[]> {
-      return this.http.get<IAsignacionReal[]>(this.urlBase + "api/AsignacionReal");
+    getAsignacionesReal(id: number): Observable<IAsignacionReal[]> {
+      return this.http.get<IAsignacionReal[]>(this.urlBase + "api/AsignacionReal/"+id);
     }
   
     UpdateAsignacionReal(id:number, Asignacion:IAsignacionPostReal)  {

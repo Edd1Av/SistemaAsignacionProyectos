@@ -5,8 +5,10 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { tap } from 'rxjs/operators';
+import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { DialogoConfirmacionComponent } from 'src/app/dialogo-confirmacion/dialogo-confirmacion.component';
 import { IAsignacionReal } from 'src/app/interfaces/iasignacion';
+import { IUsuario } from 'src/app/interfaces/IUsuario';
 import { AsignacionesService } from 'src/app/services/asignaciones.service';
 import { AsignacionesRealDetailsComponent } from '../asignaciones-real-details/asignaciones-real-details.component';
 import { AsignacionesRealInsertComponent } from '../asignaciones-real-insert/asignaciones-real-insert.component';
@@ -27,9 +29,12 @@ export class AsignacionRealComponent implements OnInit {
     "acciones"
   ];
 
+  Usuario:IUsuario;
+
   constructor(private AsignacionService: AsignacionesService, private dialog: MatDialog,
     private formBuilder: FormBuilder,
-    private snackBar: MatSnackBar) 
+    private snackBar: MatSnackBar,
+    private _authService:AuthorizeService) 
     { }
 
     Asignaciones: IAsignacionReal[]=[];
@@ -37,6 +42,9 @@ export class AsignacionRealComponent implements OnInit {
     formGroup: any;
 
   ngOnInit(): void {
+    if(this._authService.usuarioData!=null){
+      this.Usuario=this._authService.usuarioData;
+    }
     this.actualizarHistorico();
     this.buildForm();
     this.initializeFormGroup();
@@ -45,7 +53,7 @@ export class AsignacionRealComponent implements OnInit {
   actualizarHistorico() {
     console.log("entro");
     this.AsignacionService
-      .getAsignacionesReal()
+      .getAsignacionesReal(this.Usuario.idUsuario)
       .pipe(
         tap((result) => {
           console.log(result);

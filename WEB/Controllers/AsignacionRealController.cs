@@ -26,8 +26,8 @@ namespace WEB.Controllers
         }
 
         // GET: api/Asignaciones
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<AsignacionHistoricoReal>>> GetAsignacion()
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IEnumerable<AsignacionHistoricoReal>>> GetAsignacion(int id)
         {
             //var asignaciones =  _context.Asignacion.Include(x=>x.Colaborador).Include(x=>x.Distribuciones).ToList();
             var asignaciones = _context.AsignacionReal
@@ -35,7 +35,7 @@ namespace WEB.Controllers
                                                .ThenInclude(z=>z.Colaborador)
                                            .Include(i => i.DistribucionesReales)
                                                .ThenInclude(y => y.Proyecto)
-                                           .ToList();
+                                           .Where(x=>x.Asignacion.IdColaborador == id).ToList();
 
             List<AsignacionHistoricoReal> asignacionHistoricoReal = new List<AsignacionHistoricoReal>();
             foreach (var element in asignaciones)
@@ -56,18 +56,18 @@ namespace WEB.Controllers
         }
 
         // GET: api/Asignaciones/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Asignacion>> GetAsignacion(int id)
-        {
-            var asignacion = await _context.Asignacion.FindAsync(id);
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Asignacion>> GetAsignacion(int id)
+        //{
+        //    var asignacion = await _context.Asignacion.FindAsync(id);
 
-            if (asignacion == null)
-            {
-                return NotFound();
-            }
+        //    if (asignacion == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return asignacion;
-        }
+        //    return asignacion;
+        //}
 
         //[Route("ByColaborador/{id}")]
         //[HttpGet]
