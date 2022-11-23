@@ -458,7 +458,7 @@ namespace WEB.Controllers
 
                     rest.Add(new rest
                     {
-                        id_odoo=colaborador.Id_Odoo,
+                        id_odoo = colaborador.Id_Odoo.Length > 20 ? colaborador.Id_Odoo.Substring(20) : colaborador.Id_Odoo,
                         colaborador = colaborador.Nombres + " " + colaborador.Apellidos,
                         asignaciones = proyectos,
                         diasTrabajados=proyectos.Sum(x=>x.dias),
