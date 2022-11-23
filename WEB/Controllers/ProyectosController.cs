@@ -39,10 +39,16 @@ namespace WEB.Controllers
         {
             //var x = _context.Asignacion.Select(x => x.Distribuciones.Where(y => y.Asignacion.IdColaborador == id).Select(x=>x.Proyecto)).ToList();
 
-            var y = await _context.Distribucion.Where(x => x.Asignacion.IdColaborador == id && 
-            (intervalo.FechaInicio.Date.CompareTo(x.Fecha_Inicio.Date) >= 0 && intervalo.FechaInicio.Date.CompareTo(x.Fecha_Final.Date) <= 0) && 
-            (intervalo.FechaFin.Date.CompareTo(x.Fecha_Inicio.Date) >= 0 && intervalo.FechaFin.Date.CompareTo(x.Fecha_Final.Date) <= 0)).Select(y=>y.Proyecto).ToListAsync();
-            
+            var y = await _context.Distribucion.Where(x => x.Asignacion.IdColaborador == id &&
+            (((x.Fecha_Final.Date >= intervalo.FechaInicio.Date && x.Fecha_Final.Date <= intervalo.FechaFin.Date) ||
+             (x.Fecha_Inicio.Date <= intervalo.FechaFin.Date && x.Fecha_Inicio.Date >= intervalo.FechaInicio.Date)) ||
+             ((intervalo.FechaFin.Date >= x.Fecha_Inicio.Date && intervalo.FechaFin.Date <= x.Fecha_Final.Date) ||
+             (intervalo.FechaInicio.Date <= x.Fecha_Final.Date && intervalo.FechaInicio.Date >= x.Fecha_Inicio.Date)))).Select(y => y.Proyecto).ToListAsync();
+            //(intervalo.FechaInicio.Date.CompareTo(x.Fecha_Inicio.Date) >= 0 && intervalo.FechaInicio.Date.CompareTo(x.Fecha_Final.Date) <= 0) && 
+            //(intervalo.FechaFin.Date.CompareTo(x.Fecha_Inicio.Date) >= 0 && intervalo.FechaFin.Date.CompareTo(x.Fecha_Final.Date) <= 0)).Select(y=>y.Proyecto).ToListAsync();
+
+
+
             return y; 
         }
 
