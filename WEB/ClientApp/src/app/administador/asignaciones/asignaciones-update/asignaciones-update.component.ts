@@ -25,6 +25,18 @@ import { AsignacionesInsertComponent } from '../asignaciones-insert/asignaciones
 })
 export class AsignacionesUpdateComponent implements OnInit {
   formGroup!: FormGroup;
+
+  myFilter = (d: Date|null): boolean => {
+    const day = (d || new Date()).getDay();
+    // Prevent Saturday and Sunday from being selected.
+    return day !== 0 && day !== 6;
+  };
+
+  fechaInicioMin:Date|null = null;
+  fechaInicioMax:Date|null = null;
+
+  fechaFinalMin:Date|null = null;
+  fechaFinalMax:Date|null = null;
  
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   displayedColumns: string[] = [
@@ -73,10 +85,10 @@ export class AsignacionesUpdateComponent implements OnInit {
         fecha_final:x.fecha_Final,
         clave:x.proyecto.clave,
         titulo:x.proyecto.titulo,
-        fechaInicioMin:undefined,
+        fechaInicioMin:null,
         fechaInicioMax:x.fecha_Final,
         fechaFinalMin:x.fecha_Inicio,
-        fechaFinalMax:undefined,
+        fechaFinalMax:null,
       }
       this.ProyectosAsignados.push(proyecto);
       this.dataSource=new MatTableDataSource<IProyectoAsignado>(this.ProyectosAsignados);
@@ -124,12 +136,12 @@ export class AsignacionesUpdateComponent implements OnInit {
       clave:this.ProyectoSeleccionado.clave,
       id:this.ProyectoSeleccionado.id,
       titulo:this.ProyectoSeleccionado.titulo,
-      fecha_inicio:undefined,
-      fecha_final:undefined,
-      fechaInicioMin:undefined,
-      fechaInicioMax:undefined,
-      fechaFinalMin:undefined,
-      fechaFinalMax:undefined,
+      fecha_inicio:null,
+      fecha_final:null,
+      fechaInicioMin:null,
+      fechaInicioMax:null,
+      fechaFinalMin:null,
+      fechaFinalMax:null,
       // porcentaje:0
     }
 

@@ -2,13 +2,13 @@ export interface IProyectoAsignado {
     id:Number;
     clave:String;
     titulo:String;
-    fecha_inicio:Date|undefined;
-    fecha_final:Date|undefined;
+    fecha_inicio:Date|null;
+    fecha_final:Date|null;
 
-    fechaInicioMin:Date|undefined;
-    fechaInicioMax:Date|undefined;
-    fechaFinalMin:Date|undefined;
-    fechaFinalMax:Date|undefined;
+    fechaInicioMin:Date|null;
+    fechaInicioMax:Date|null;
+    fechaFinalMin:Date|null;
+    fechaFinalMax:Date|null;
 }
 
 export interface IProyectoAsignadoReal{

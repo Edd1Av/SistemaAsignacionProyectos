@@ -78,7 +78,7 @@
           <td   mat-cell *matCellDef="let element; let index = index;">            
              <mat-form-field appearance="outline">
             <mat-label>Fecha Inicio</mat-label>
-            <input [readonly]="true" matInput [(ngModel)]="ProyectosAsignados[index].fecha_inicio" [ngModelOptions]="{standalone: true}" [matDatepicker]="picker_index" [min]="ProyectosAsignados[index].fechaInicioMin"
+            <input [readonly]="true" matInput [(ngModel)]="ProyectosAsignados[index].fecha_inicio" [ngModelOptions]="{standalone: true}" [matDatepicker]="picker_index" [matDatepickerFilter]="myFilter" [min]="ProyectosAsignados[index].fechaInicioMin"
             [max]="ProyectosAsignados[index].fechaInicioMax" (dateChange)="updateFechaInicio('change', $event, index)">
             <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
             <mat-datepicker-toggle matSuffix [for]="picker_index"></mat-datepicker-toggle>
@@ -91,7 +91,7 @@
           <td   mat-cell *matCellDef="let element; let index = index;"> 
             <mat-form-field appearance="outline">
               <mat-label>Fecha Final</mat-label>
-              <input [readonly]="true" matInput [(ngModel)]="ProyectosAsignados[index].fecha_final" [ngModelOptions]="{standalone: true}"  [matDatepicker]="picker2_index" [min]="ProyectosAsignados[index].fechaFinalMin" [max]="ProyectosAsignados[index].fechaFinalMax" (dateChange)="updateFechaFinal('change', $event, index)">
+              <input [readonly]="true" matInput [(ngModel)]="ProyectosAsignados[index].fecha_final" [ngModelOptions]="{standalone: true}"  [matDatepicker]="picker2_index" [matDatepickerFilter]="myFilter" [min]="ProyectosAsignados[index].fechaFinalMin" [max]="ProyectosAsignados[index].fechaFinalMax" (dateChange)="updateFechaFinal('change', $event, index)">
               <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
               <mat-datepicker-toggle matSuffix [for]="picker2_index"></mat-datepicker-toggle>
               <mat-datepicker #picker2_index></mat-datepicker>

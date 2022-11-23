@@ -22,6 +22,18 @@ import { ProyectosService } from 'src/app/services/proyectos.service';
 })
 export class AsignacionesInsertComponent implements OnInit {
   formGroup!: FormGroup;
+
+  myFilter = (d: Date|null): boolean => {
+    const day = (d || new Date()).getDay();
+    // Prevent Saturday and Sunday from being selected.
+    return day !== 0 && day !== 6;
+  };
+
+  fechaInicioMin:Date|null = null;
+  fechaInicioMax:Date|null = null;
+
+  fechaFinalMin:Date|null = null;
+  fechaFinalMax:Date|null = null;
  
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   displayedColumns: string[] = [
@@ -32,10 +44,7 @@ export class AsignacionesInsertComponent implements OnInit {
     "acciones"
   ];
 
-  fechaInicioMin:Date|undefined = undefined;
-  fechaInicioMax:Date|undefined = undefined;
-  fechaFinalMin:Date|undefined = undefined;
-  fechaFinalMax:Date|undefined = undefined;
+ 
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data:any,
@@ -94,12 +103,12 @@ export class AsignacionesInsertComponent implements OnInit {
       clave:this.ProyectoSeleccionado.clave,
       id:this.ProyectoSeleccionado.id,
       titulo:this.ProyectoSeleccionado.titulo,
-      fecha_inicio:undefined,
-      fecha_final:undefined,
-      fechaInicioMin:undefined,
-      fechaInicioMax:undefined,
-      fechaFinalMin:undefined,
-      fechaFinalMax:undefined,
+      fecha_inicio:null,
+      fecha_final:null,
+      fechaInicioMin:null,
+      fechaInicioMax:null,
+      fechaFinalMin:null,
+      fechaFinalMax:null,
     }
 
     console.log(proyectoA);

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { tap } from 'rxjs/operators';
@@ -13,6 +13,13 @@ import { ReporteService } from 'src/app/services/reporte.service';
   styleUrls: ['./reporte.component.scss']
 })
 export class ReporteComponent implements OnInit {
+
+  myFilter = (d: Date|null): boolean => {
+    const day = (d || new Date()).getDay();
+    // Prevent Saturday and Sunday from being selected.
+    return day !== 0 && day !== 6;
+  };
+
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
   Reporte: IReporte;
   dataSource!: MatTableDataSource<Ihistorico>;
@@ -27,8 +34,8 @@ export class ReporteComponent implements OnInit {
     "Porcentaje",
   ];
   Intervalo = new FormGroup({
-    start: new FormControl(new Date()),
-    end: new FormControl(new Date()),
+    start: new FormControl("", Validators.required),
+    end: new FormControl("", Validators.required),
   });
 
   ngOnInit(): void {
@@ -37,9 +44,6 @@ export class ReporteComponent implements OnInit {
 
 
   generateExcel() {
-
-
-
     var fecha_inicio=this.Intervalo.controls['start'].value;
     var fecha_final=this.Intervalo.controls['end'].value;
     this.ReporteService
@@ -64,7 +68,7 @@ export class ReporteComponent implements OnInit {
   async actualizarHistorico() {
     var fecha_inicio=this.Intervalo.controls['start'].value;
     var fecha_final=this.Intervalo.controls['end'].value;
-    if(fecha_inicio!=null&&fecha_final!=null){
+    if(this.Intervalo.valid){
       this.ReporteService
       .GetReporte({"fecha_inicio":fecha_inicio,
       "fecha_final":fecha_final})

@@ -25,7 +25,20 @@ import { ProyectosService } from 'src/app/services/proyectos.service';
   styleUrls: ['./asignaciones-real-insert.component.css']
 })
 export class AsignacionesRealInsertComponent implements OnInit {
+  myFilter = (d: Date|null): boolean => {
+    const day = (d || new Date()).getDay();
+    // Prevent Saturday and Sunday from being selected.
+    return day !== 0 && day !== 6;
+  };
+
+  fechaInicioMin:Date|null = null;
+  fechaInicioMax:Date|null = null;
+
+  fechaFinalMin:Date|null = null;
+  fechaFinalMax:Date|null = null;
+
   formGroup!: FormGroup;
+
  
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   displayedColumns: string[] = [
@@ -36,15 +49,13 @@ export class AsignacionesRealInsertComponent implements OnInit {
   ];
 
   
-  fechaInicioMin:Date|undefined = undefined;
-  fechaInicioMax:Date|undefined = undefined;
-  fechaFinalMin:Date|undefined = undefined;
-  fechaFinalMax:Date|undefined = undefined;
+
 
   intervaloFecha:IntervaloFecha;
 
   fechaValida:Boolean = false;
 
+  
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data:any,

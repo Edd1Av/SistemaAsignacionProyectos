@@ -17,6 +17,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { AsignacionesRealDetailsComponent } from '../asignaciones-real-details/asignaciones-real-details.component';
 import { AsignacionesRealInsertComponent } from '../asignaciones-real-insert/asignaciones-real-insert.component';
 import { AsignacionesRealUpdateComponent } from '../asignaciones-real-update/asignaciones-real-update.component';
+import { MatNativeDateModule } from '@angular/material/core';
 
 
 const routes: Routes = [
@@ -45,6 +46,7 @@ const routes: Routes = [
     MatSnackBarModule,
     CommonModule,
     MatDatepickerModule,
+    MatNativeDateModule,
     RouterModule.forChild(routes)
   ]
 })

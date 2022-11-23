@@ -110,6 +110,29 @@ namespace WEB.Controllers
 
                     asignacionReal.DistribucionesReales.Clear();
 
+                    var AsignacionesReales = new List<AsignacionReal>();
+                    AsignacionesReales = _context.AsignacionReal.Include(c => c.DistribucionesReales).Include(p => p.Asignacion).Where(x => x.Asignacion.IdColaborador == postModel.Id_Colaborador).ToList();
+
+                
+                        foreach (var x in AsignacionesReales)
+                        {
+                            foreach (var y in x.DistribucionesReales)
+                            {
+                                if ((x.Fecha_Final.Date >= postModel.Fecha_Inicio.Date && x.Fecha_Final.Date <= postModel.Fecha_Final.Date) ||
+                                    (x.Fecha_Inicio.Date <= postModel.Fecha_Final.Date && x.Fecha_Inicio.Date >= postModel.Fecha_Inicio.Date) ||
+                                    (postModel.Fecha_Final.Date >= x.Fecha_Inicio.Date && postModel.Fecha_Final.Date <= x.Fecha_Final.Date) ||
+                                    (postModel.Fecha_Inicio.Date <= x.Fecha_Final.Date && postModel.Fecha_Inicio.Date >= x.Fecha_Inicio.Date))
+                                {
+                                    response.success = false;
+
+
+                                    response.response = $"Error al registrar, existe un registro de proyecto en ese intervalo de fechas";
+                                    transaction.Rollback();
+                                    return Ok(response);
+                                }
+                            }
+                        }
+                    
 
                     foreach (var item in postModel.Proyectos)
                     {
@@ -177,26 +200,26 @@ namespace WEB.Controllers
                     var AsignacionesReales = new List<AsignacionReal>();
                     AsignacionesReales = _context.AsignacionReal.Include(c => c.DistribucionesReales).Include(p=>p.Asignacion).Where(x => x.Asignacion.IdColaborador == postModel.Id_Colaborador).ToList();
                     
-                    foreach(var item in postModel.Proyectos)
-                    {
+                   
                         foreach (var x in AsignacionesReales)
                         {
                             foreach (var y in x.DistribucionesReales)
                             {
-                                if ((x.Fecha_Final.Date >= postModel.Fecha_Inicio.Date &&
-                                                     x.Fecha_Final.Date <= postModel.Fecha_Final.Date)
-                                                        || (x.Fecha_Inicio.Date <= postModel.Fecha_Final.Date &&
-                                                        x.Fecha_Inicio.Date >= postModel.Fecha_Inicio.Date))
+                                if ((x.Fecha_Final.Date >= postModel.Fecha_Inicio.Date && x.Fecha_Final.Date <= postModel.Fecha_Final.Date) || 
+                                    (x.Fecha_Inicio.Date <= postModel.Fecha_Final.Date && x.Fecha_Inicio.Date >= postModel.Fecha_Inicio.Date) ||
+                                    (postModel.Fecha_Final.Date >= x.Fecha_Inicio.Date && postModel.Fecha_Final.Date <= x.Fecha_Final.Date) ||
+                                    (postModel.Fecha_Inicio.Date <= x.Fecha_Final.Date && postModel.Fecha_Inicio.Date >= x.Fecha_Inicio.Date))
                                 {
                                     response.success = false;
 
 
                                     response.response = $"Error al registrar, existe un registro de proyecto en ese intervalo de fechas";
+                                    transaction.Rollback();
                                     return Ok(response);
                                 }
                             }
                         }
-                    }
+                    
 
 
                     foreach (var item in postModel.Proyectos)
@@ -342,23 +365,25 @@ namespace WEB.Controllers
             Response response = new Response();
             try
             {
-                var Asignaciones = new List<AsignacionReal>();
+                var AsignacionesReales = new List<AsignacionReal>();
                 if (postModel.Fecha_Inicio != null&postModel.Fecha_Final!=null)
                 {
-                    Asignaciones = _context.AsignacionReal
+                    AsignacionesReales = _context.AsignacionReal
                                                    .Include(x => x.Asignacion)
                                                        .ThenInclude(z => z.Colaborador)
                                                    .Include(i => i.DistribucionesReales)
                                                        .ThenInclude(y => y.Proyecto).
-                                                     Where(x => (x.Fecha_Final.Date >= postModel.Fecha_Inicio.Date&&
-                                                     x.Fecha_Final.Date <= postModel.Fecha_Final.Date)
-                                                        || (x.Fecha_Inicio.Date <= postModel.Fecha_Final.Date&&
-                                                        x.Fecha_Inicio.Date >= postModel.Fecha_Inicio.Date))
+                                                     Where(x =>
+                                                     (x.Fecha_Final.Date >= postModel.Fecha_Inicio.Date &&
+                                                     x.Fecha_Final.Date <= postModel.Fecha_Final.Date) ||
+                                                     (x.Fecha_Inicio.Date <= postModel.Fecha_Final.Date &&
+                                                     x.Fecha_Inicio.Date >= postModel.Fecha_Inicio.Date))
                                                    .ToList();
+
                 }
                 else
                 {
-                    Asignaciones = _context.AsignacionReal
+                    AsignacionesReales = _context.AsignacionReal
                                                    .Include(x => x.Asignacion)
                                                        .ThenInclude(z => z.Colaborador)
                                                    .Include(i => i.DistribucionesReales)
@@ -371,18 +396,23 @@ namespace WEB.Controllers
                 foreach (var colaborador in Colaboradores)
                 {
                     var proyectos = new List<HistoricoResponse>();
-                    var Lista = Asignaciones.Where(x => x.Asignacion.IdColaborador == colaborador.Id).ToList();
-                    foreach(var L in Lista)
+                    var AsignacionR = AsignacionesReales.Where(x => x.Asignacion.IdColaborador == colaborador.Id).ToList();
+
+
+                    foreach (var L in AsignacionR)
                     {
                         foreach (var P in L.DistribucionesReales)
                         {
 
+                            //int difFechas = DaysLeft(L.Fecha_Inicio.Date < postModel.Fecha_Inicio.Date ? postModel.Fecha_Inicio.Date : L.Fecha_Inicio.Date,
+                            //    L.Fecha_Final.Date.AddDays(1) > postModel.Fecha_Final.Date ? postModel.Fecha_Final.Date.AddDays(1) : L.Fecha_Final.Date.AddDays(1), true, new List<DateTime>());
+
                             int difFechas = DaysLeft(L.Fecha_Inicio.Date < postModel.Fecha_Inicio.Date ? postModel.Fecha_Inicio.Date : L.Fecha_Inicio.Date,
-                                L.Fecha_Final.Date.AddDays(1)>postModel.Fecha_Final.Date? postModel.Fecha_Final.Date.AddDays(1) : L.Fecha_Final.Date.AddDays(1), true,new List<DateTime>()); 
-                        if (proyectos.Where(x => x.id == P.IdProyecto).ToList().Count > 0)
+                                L.Fecha_Final.Date.AddDays(1) > postModel.Fecha_Final.Date ? postModel.Fecha_Final.Date.AddDays(1) : L.Fecha_Final.Date.AddDays(1), true, new List<DateTime>());
+                            if (proyectos.Where(x => x.id == P.IdProyecto).ToList().Count > 0)
                             {
                                 proyectos.Where(x => x.id == P.IdProyecto).FirstOrDefault().value += P.Porcentaje * (difFechas);
-                                proyectos.Where(x => x.id == P.IdProyecto).FirstOrDefault().dias += (difFechas)*(P.Porcentaje/100);
+                                proyectos.Where(x => x.id == P.IdProyecto).FirstOrDefault().dias += (difFechas) * (P.Porcentaje / 100);
                             }
                             else
                             {
@@ -391,15 +421,17 @@ namespace WEB.Controllers
                                 {
                                     id = P.IdProyecto,
                                     clave = P.Proyecto.Clave,
-                                    titulo=P.Proyecto.Titulo,
-                                    value = P.Porcentaje *(difFechas),
-                                    dias= ((double)P.Porcentaje/(double)100) * (double)difFechas
+                                    titulo = P.Proyecto.Titulo,
+                                    value = P.Porcentaje * (difFechas),
+                                    dias = ((double)P.Porcentaje / (double)100) * (double)difFechas
                                 });
                             }
                         }
 
                     }
-                var sum = proyectos.Sum(x => x.value);
+
+
+                    var sum = proyectos.Sum(x => x.value);
                 var diferencia=0.0;
                 for (int i = 0; i < proyectos.Count; i++)
                 {
