@@ -374,11 +374,10 @@ namespace WEB.Controllers
                                                    .Include(i => i.DistribucionesReales)
                                                        .ThenInclude(y => y.Proyecto).
                                                      Where(x =>
-                                                     (x.Fecha_Final.Date >= postModel.Fecha_Inicio.Date &&
-                                                     x.Fecha_Final.Date <= postModel.Fecha_Final.Date) ||
-                                                     (x.Fecha_Inicio.Date <= postModel.Fecha_Final.Date &&
-                                                     x.Fecha_Inicio.Date >= postModel.Fecha_Inicio.Date))
-                                                   .ToList();
+                                                     ((x.Fecha_Final.Date >= postModel.Fecha_Inicio.Date && x.Fecha_Final.Date <= postModel.Fecha_Final.Date) ||
+                                                     (x.Fecha_Inicio.Date <= postModel.Fecha_Final.Date && x.Fecha_Inicio.Date >= postModel.Fecha_Inicio.Date)) ||
+                                                      ((postModel.Fecha_Final.Date >= x.Fecha_Inicio.Date && postModel.Fecha_Final.Date <= x.Fecha_Final.Date) ||
+                                                      (postModel.Fecha_Inicio.Date <= x.Fecha_Final.Date && postModel.Fecha_Inicio.Date >= x.Fecha_Inicio.Date))).ToList();
 
                 }
                 else
