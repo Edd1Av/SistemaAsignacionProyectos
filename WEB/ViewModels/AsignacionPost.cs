@@ -35,10 +35,15 @@
         public int Porcentaje { get; set; }
     }
 
-    public class Fechas
+    public class FiltroReporte
     {
         public DateTime Fecha_Inicio { get; set; }
         public DateTime Fecha_Final { get; set; }
+        public int Id_Colaborador { get; set; }
+    }
+    public class FiltroFechasFaltantes
+    {
+        public int Id_Colaborador { get; set; }
     }
 
     public class HistoricoResponse

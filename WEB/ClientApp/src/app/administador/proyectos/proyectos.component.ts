@@ -26,12 +26,7 @@ export class ProyectosComponent implements OnInit {
     "acciones"
   ];
 
-  displayedColumnsProyectos: string[] = [
-    "Id",
-    "Titulo",
-    "Dias",
-    "Porcentaje",
-  ];
+
   
  
   constructor(private proyectosService: ProyectosService,

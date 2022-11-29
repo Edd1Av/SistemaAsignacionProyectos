@@ -344,7 +344,29 @@ namespace WEB.Controllers
             return count;
         }
 
-        private static double Truncate(double value, int decimales)
+        [HttpPost]
+        [Route("FechasFaltantes")]
+        public async Task<ActionResult<AsignacionReal>> FechasFaltantes(FiltroFechasFaltantes postModel)
+        {
+            Response response = new Response();
+            var Asignacion = _context.Asignacion.Include(x=>x.Colaborador).Include(x=>x.Distribuciones).Include(x=>x.AsignacionReal).
+                Where(x => x.IdColaborador == postModel.Id_Colaborador).ToList();
+
+            DateTime Fecha_Inicial = Asignacion.Min(x => x.Distribuciones.Min(y => y.Fecha_Inicio));
+            DateTime Fecha_Final = DateTime.Now.ToLocalTime();
+
+            var asignacionesReales = _context.AsignacionReal.Include(x => x.Asignacion)
+                                                       .ThenInclude(z => z.Colaborador)
+                                                   .Include(i => i.DistribucionesReales)
+                                                       .ThenInclude(y => y.Proyecto).
+                                                       Where(x => x.Asignacion.IdColaborador == postModel.Id_Colaborador).FirstOrDefault();
+            dynamic datos = new System.Dynamic.ExpandoObject();
+            response.success = true;
+            response.response = datos;
+            return Ok(response);
+        }
+
+            private static double Truncate(double value, int decimales)
         {
             double aux_value = Math.Pow(10, decimales);
             return (Math.Truncate(value * aux_value) / aux_value);
@@ -360,7 +382,7 @@ namespace WEB.Controllers
 
         [HttpPost]
         [Route("Historico")]
-        public async Task<ActionResult<AsignacionReal>> Historico(Fechas postModel)
+        public async Task<ActionResult<AsignacionReal>> Historico(FiltroReporte postModel)
         {
             Response response = new Response();
             try
@@ -373,6 +395,7 @@ namespace WEB.Controllers
                                                        .ThenInclude(z => z.Colaborador)
                                                    .Include(i => i.DistribucionesReales)
                                                        .ThenInclude(y => y.Proyecto).
+                                                       Where(postModel.Id_Colaborador!=0&&postModel.Id_Colaborador!=1? x=>x.Asignacion.IdColaborador==postModel.Id_Colaborador:x=>x.Id==x.Id).
                                                      Where(x =>
                                                      ((x.Fecha_Final.Date >= postModel.Fecha_Inicio.Date && x.Fecha_Final.Date <= postModel.Fecha_Final.Date) ||
                                                      (x.Fecha_Inicio.Date <= postModel.Fecha_Final.Date && x.Fecha_Inicio.Date >= postModel.Fecha_Inicio.Date)) ||
@@ -391,7 +414,7 @@ namespace WEB.Controllers
             }
 
                 var rest = new List<rest>();
-                var Colaboradores = _context.Colaboradores.Where(x=>x.Id!=1).ToList();
+                var Colaboradores = _context.Colaboradores.Where(postModel.Id_Colaborador != 0 && postModel.Id_Colaborador != 1 ? x=>x.Id==postModel.Id_Colaborador:x =>x.Id!=1).ToList();
                 foreach (var colaborador in Colaboradores)
                 {
                     var proyectos = new List<HistoricoResponse>();
@@ -463,6 +486,13 @@ namespace WEB.Controllers
                         diasTrabajados=proyectos.Sum(x=>x.dias),
                         complete= ((double)proyectos.Sum(x => x.dias)/ (double)DaysLeft(postModel.Fecha_Inicio.Date, postModel.Fecha_Final.Date.AddDays(1), true, new List<DateTime>()))*100
                     });
+                    if(rest.LastOrDefault().complete < 100)
+                    {
+                        foreach(var item in rest.LastOrDefault().asignaciones)
+                        {
+                            item.porcentaje=item.porcentaje* (rest.LastOrDefault().complete/100);
+                        }
+                    }
 
                 }
                 List<Excel> excel = new List<Excel>();
