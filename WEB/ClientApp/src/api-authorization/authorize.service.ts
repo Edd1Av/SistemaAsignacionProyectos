@@ -3,7 +3,8 @@ import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable} from 'rxjs';
 import { map} from 'rxjs/operators';
-import { ILogin } from 'src/app/interfaces/ILogin';
+import { IChangePassword, ILogin, IResetPassword } from 'src/app/interfaces/ILogin';
+import { IResponse } from 'src/app/interfaces/IResponse';
 import { IUsuario } from 'src/app/interfaces/IUsuario';
 
 
@@ -61,6 +62,14 @@ export class AuthorizeService {
     }));
   }
 
+  public ChangePassword(credenciales: IChangePassword):Observable<IResponse>{
+    return this.http.post<IResponse>(this.urlBase + "api/Identity/ChangePassword", credenciales);
+  }
+
+  public ResetPassword(credenciales: IResetPassword):Observable<IResponse>{
+    return this.http.post<IResponse>(this.urlBase + "api/Identity/ResetPassword", credenciales);
+  }
+
   public logout() {
     localStorage.removeItem("Sesion");
     this.changeLoginStatusSubject.next(null);
@@ -94,7 +103,6 @@ export class AuthorizeService {
   }
 
   public getRol(){
-    
     if(this.usuario){
       return this.usuario.rol;
     }
@@ -102,6 +110,5 @@ export class AuthorizeService {
       return false;
       //this.usuario = JSON.parse(localStorage.getItem('Sesion')||JSON.stringify(false));
     }
-    
   }
 }

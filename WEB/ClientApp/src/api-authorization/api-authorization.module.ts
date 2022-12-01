@@ -9,6 +9,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { ChangePasswordComponent } from './change-password/change-password.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
   imports: [
@@ -26,7 +28,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
       ]
     )
   ],
-  declarations: [LoginComponent],
+  declarations: [LoginComponent, ChangePasswordComponent, ResetPasswordComponent],
   exports: [LoginComponent]
 })
 export class ApiAuthorizationModule { }

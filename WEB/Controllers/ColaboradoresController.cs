@@ -183,6 +183,7 @@ namespace WEB.Controllers
                     addColaborador.Apellidos = colaborador.Apellidos.Trim();
                     addColaborador.CURP = colaborador.CURP.ToUpper().Trim();
                     addColaborador.Id_Odoo = colaborador.Id_Odoo.Trim();
+                    addColaborador.IsAdmin = colaborador.IsAdmin;
                     _context.Colaboradores.Add(addColaborador);
 
 
@@ -197,17 +198,35 @@ namespace WEB.Controllers
                     await _context.SaveChangesAsync();
                     if (x.Succeeded)
                     {
-                        var y = await _userManager.AddToRoleAsync(user, "Desarrollador");
-                        if (y.Succeeded)
+                        if(colaborador.IsAdmin == true)
                         {
-                            //Enviar Correo
+                            var y = await _userManager.AddToRoleAsync(user, "Administrador");
+                            if (y.Succeeded)
+                            {
+                                //Enviar Correo
+                            }
+                            else
+                            {
+                                transaction.Rollback();
+                                response.success = false;
+                                response.response = $"No se pudo asignar el rol Administrador";
+                                return Ok(response);
+                            }
                         }
                         else
                         {
-                            transaction.Rollback();
-                            response.success = false;
-                            response.response = $"No se pudo asignar un rol";
-                            return Ok(response);
+                            var y = await _userManager.AddToRoleAsync(user, "Desarrollador");
+                            if (y.Succeeded)
+                            {
+                                //Enviar Correo
+                            }
+                            else
+                            {
+                                transaction.Rollback();
+                                response.success = false;
+                                response.response = $"No se pudo asignar un rol";
+                                return Ok(response);
+                            }
                         }
                     }
                     else
