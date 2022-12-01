@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
+import { ChangePasswordComponent } from 'src/api-authorization/change-password/change-password.component';
 import { IUsuario } from 'src/app/interfaces/IUsuario';
 import { LoaderService } from 'src/app/loader/loader.service';
 
@@ -10,11 +12,13 @@ import { LoaderService } from 'src/app/loader/loader.service';
 })
 export class LayoutComponent implements OnInit {
 
-  constructor(private authService: AuthorizeService,
+  constructor(
+    private dialog: MatDialog,
+    private authService: AuthorizeService,
     public loaderService:LoaderService) { }
 
-  
   usuario:any;
+  
   email:string;
   usuarioLoggeado:Boolean;
   isAdmin:Boolean=false;
@@ -48,5 +52,15 @@ export class LayoutComponent implements OnInit {
 
   salir(){
     this.authService.logout();
+  }
+
+  openDialog(): void {
+    let dialog = this.dialog.open(ChangePasswordComponent, {
+      width: "400px",
+      disableClose: true,
+    });
+    dialog.afterClosed().subscribe((result) => {
+      
+    });
   }
 }

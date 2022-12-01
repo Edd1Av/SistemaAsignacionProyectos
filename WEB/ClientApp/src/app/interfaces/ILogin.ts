@@ -7,6 +7,7 @@ export interface IChangePassword{
     email: string;
     password: string;
     nPassword: string;
+    nPasswordConfirm: string;
 }
 
 export interface IResetPassword{

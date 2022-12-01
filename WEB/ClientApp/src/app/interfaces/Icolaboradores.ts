@@ -5,4 +5,5 @@ export interface IColaborador {
     curp:String;
     id_Odoo:String;
     email:string;
+    isAdmin:Boolean;
 }

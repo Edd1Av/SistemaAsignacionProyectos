@@ -8,6 +8,9 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
+using WEB.Services.Mails;
+using Microsoft.Extensions.Options;
 
 namespace WEB.Controllers
 {
@@ -19,13 +22,17 @@ namespace WEB.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IEmailSender _emailSender;
+        private EmailSenderOptions _options { get; }
 
-        public IdentityController(IConfiguration config, ApplicationDbContext context, RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+        public IdentityController(IConfiguration config, ApplicationDbContext context, RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, IEmailSender emailSender, IOptions<EmailSenderOptions> options)
         {
             SecretKey = config.GetSection("Settings").GetSection("SecretKey").ToString();
             _context = context;
             _roleManager = roleManager;
             _userManager = userManager;
+            _emailSender = emailSender;
+            _options = options.Value;
         }
 
 
@@ -37,7 +44,7 @@ namespace WEB.Controllers
             var user = await _userManager.FindByEmailAsync(credenciales.Email);
             if (user == null || !await _userManager.CheckPasswordAsync(user, credenciales.Password))
             {
-                return Unauthorized(new LocalStorage{ Success = false});
+                return Ok(new LocalStorage{ Success = false});
             }
 
             var keyBytes = Encoding.ASCII.GetBytes(SecretKey);
@@ -68,32 +75,42 @@ namespace WEB.Controllers
         [Route("ChangePassword")]
         public async Task<IActionResult> changePassword(NewPassword model)
         {
-                try
+            if(model.NPassword != model.NPasswordConfirm)
+            {
+                return Ok(new Response { success = false, response = "Las contraseñas no coinciden"});
+            }
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
+                if (user == null)
                 {
-                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    return Ok(new Response { success = false, response = "Usuario no encontrado" });
+                }
 
-                    if (user == null)
+                var colaborador = _context.Colaboradores.Include(x => x.IdentityUser).Where(x => x.IdentityUser.NormalizedEmail == model.Email.Trim().ToUpper()).First();
+
+                var result = await _userManager.ChangePasswordAsync(user, model.Password, model.NPassword);
+
+                if (result.Succeeded)
+                {
+                    string message = "<p>Hemos recibido una solicitud para cambiar su contraseña.</p><br><p>Su nueva contraseña: " + model.NPassword + "</p>";
+                    string name = colaborador.Nombres + " " + colaborador.Apellidos;
+                    try
                     {
-                        return Ok(new Response { success = false, response = "Usuario no encontrado" });
+                        await _emailSender.SendEmailAsync(user.Email, "Cambio de contraseña - SAP Plenumsoft", name, message, "").ConfigureAwait(false);
                     }
-                    //var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    //code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-                    //var Link = Url.PageLink().Split('/');
-                    //string url = Link[0] + "//" + Link[2];
-                    var result = await _userManager.ChangePasswordAsync(user,model.Password,model.NPassword);
-                    string message = "<p>Hemos recibido una solicitud para cambiar su contraseña. Su nueva contraseña: " + model.NPassword + "</p>";
-                    string name = user.Colaborador.Nombres + " " + user.Colaborador.Apellidos;
-                    //try
-                    //{
-                    //    await _emailSender.SendEmailAsync(user.Email, "Cambio de contraseña - SAP Plenumsoft", name, message, url).ConfigureAwait(false);
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    return Ok(new Response{ success = false, response = "Error: Correo});
-                    //}
+                    catch (Exception ex)
+                    {
+                        return Ok(new Response { success = false, response = "Error: Correo"});
+                    }
+                    return Ok(new Response { success = true, response = "La contraseña se ha cambiado correctamente" });
 
-                    return Ok(new Response{ success = true, response = "La contraseña se ha cambiado correctamente" });
+                }
+                else{
+                    return Ok(new Response { success = false, response = "Contraseñas invalidas" });
+                }
+                    
                 }
                 catch (Exception ex)
                 {
@@ -114,25 +131,33 @@ namespace WEB.Controllers
                     return Ok(new Response { success = false, response = "Usuario no encontrado" });
                 }
 
-                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-                //string password = GeneratePassword();
-                string password = "Pa$word2";
-                var result = await _userManager.ResetPasswordAsync(user, code, password);
+                var colaborador = _context.Colaboradores.Include(x => x.IdentityUser).Where(x => x.IdentityUser.NormalizedEmail == model.Email.Trim().ToUpper()).First();
 
-                string message = "<p>Hemos recibido una solicitud para restablecer su contraseña. Tu nueva contraseña: " + password + "</p>";
-                string name = user.Colaborador.Nombres + " " + user.Colaborador.Apellidos;
-                //try
-                //{
-                //    await _emailSender.SendEmailAsync(user.Email, "Restablecer contraseña - SAP Plenumsoft", name, message, url).ConfigureAwait(false);
-                //}
-                //catch (Exception ex)
-                //{
-                //    return Ok(new Response { success = false, response = "Error: " Correo});
-                //}
+               
 
-                return Ok(new Response { success = true, response = "La contraseña se ha cambiado correctamente" });
+                var code = await _userManager.RemovePasswordAsync(user);
+                if (code.Succeeded)
+                {
+                    string password = "Pa$word2";
+                    var result = await _userManager.AddPasswordAsync(user, password);
+
+                    if (result.Succeeded)
+                    {
+                        string message = "<p>Hemos recibido una solicitud para restablecer su contraseña.</p><br><p> Su nueva contraseña: " + password + "</p>";
+                        string name = colaborador.Nombres + " " + colaborador.Apellidos;
+                        try
+                        {
+                            await _emailSender.SendEmailAsync(user.Email, "Restablecer contraseña - SAP Plenumsoft", name, message, "").ConfigureAwait(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            return Ok(new Response { success = false, response = "Error: Email"});
+                        }
+
+                        return Ok(new Response { success = true, response = "La contraseña se ha restablecido correctamente" });
+                    }
+                }
+                return Ok(new Response { success = true, response = "Error" });
             }
             catch (Exception ex)
             {

@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
@@ -13,9 +14,11 @@ import { AuthorizeService } from '../authorize.service';
 })
 export class ResetPasswordComponent implements OnInit {
 
-  constructor(private authorizeService: AuthorizeService,
-    private activatedRoute: ActivatedRoute,
-    private router: Router, private _snackBar: MatSnackBar,
+  constructor(
+    @Inject(MAT_DIALOG_DATA) private data:any,
+    private matDialogref: MatDialogRef<ResetPasswordComponent>,
+    private authorizeService: AuthorizeService,
+    private _snackBar: MatSnackBar,
     private formBuilder: FormBuilder) { }
 
   formGroup!: FormGroup;
@@ -36,7 +39,7 @@ export class ResetPasswordComponent implements OnInit {
       this.authorizeService.ResetPassword(this.formGroup.value).pipe(tap((result: IResponse)=>{
         this.openSnackBar(result.response);
         if(result.success){
-          this.router.navigate(["/login"]);
+          this.matDialogref.close();
         }
       })).subscribe();
     }

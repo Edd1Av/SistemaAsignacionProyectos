@@ -12,6 +12,8 @@ using WEB.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Data.Entities.Enum;
+using WEB.Services.Mails;
+using Microsoft.Extensions.Options;
 
 namespace WEB.Controllers
 {
@@ -22,14 +24,17 @@ namespace WEB.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IEmailSender _emailSender;
+        private EmailSenderOptions _options { get; }
 
 
-
-        public ColaboradoresController(ApplicationDbContext context, RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+        public ColaboradoresController(ApplicationDbContext context, RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, IEmailSender emailSender, IOptions<EmailSenderOptions> options)
         {
             _context = context;
             _roleManager = roleManager;
             _userManager = userManager;
+            _emailSender = emailSender;
+            _options = options.Value;
         }
 
         // GET: api/Colaboradores
@@ -163,7 +168,7 @@ namespace WEB.Controllers
                 return Ok(response);
             }
 
-            var c = await _userManager.FindByEmailAsync(colaborador.Email);
+            var c = await _userManager.FindByEmailAsync(colaborador.Email.Trim());
 
             if (c!=null)
             {
@@ -188,13 +193,15 @@ namespace WEB.Controllers
 
 
                     ApplicationUser user = new ApplicationUser();
-                    user.Email = colaborador.Email;
-                    user.NormalizedEmail = colaborador.Email.Trim().ToUpper();
+                    user.Email = colaborador.Email.Trim();
+                    //user.NormalizedEmail = colaborador.Email.Trim().ToUpper();
                     user.Colaborador = addColaborador;
                     user.EmailConfirmed = true;
                     user.UserName = colaborador.Id_Odoo;
 
-                    var x = await _userManager.CreateAsync(user, "Pa$word1");
+                    string password = "Pa$word1"; 
+
+                    var x = await _userManager.CreateAsync(user,password);
                     await _context.SaveChangesAsync();
                     if (x.Succeeded)
                     {
@@ -203,7 +210,7 @@ namespace WEB.Controllers
                             var y = await _userManager.AddToRoleAsync(user, "Administrador");
                             if (y.Succeeded)
                             {
-                                //Enviar Correo
+                                
                             }
                             else
                             {
@@ -247,6 +254,15 @@ namespace WEB.Controllers
                     await _context.SaveChangesAsync();
                    
                     transaction.Commit();
+                    var Link = Url.PageLink().Split('/');
+                    string url = Link[0] + "//" + Link[2];
+                    string name = $"{colaborador.Nombres} {colaborador.Apellidos}";
+                    string message = "<p>Por este medio confirmamos su registro al sistema Plenumsoft y " +
+                               $"compartimos con usted sus claves de acceso:</p><p>Usuario: <span>{user.Email}" +
+                               $"</span></p><p>Contraseña: <span>{password}</span></p><p>Para ingresar " +
+                               "al sistema, dar clic en el siguiente enlace:</p><a style='color: #1B57A6' " +
+                               $"href='{url}'>{url}</a>";
+                    await _emailSender.SendEmailAsync(user.Email, "Nueva cuenta de usuario - SAP Plenumsoft", name, message, "").ConfigureAwait(false);
 
                 }
                 catch (Exception)
@@ -258,6 +274,8 @@ namespace WEB.Controllers
                 }
 
             }
+
+            
 
             response.success = true;
             response.response = "Registrado con éxito";
@@ -283,9 +301,13 @@ namespace WEB.Controllers
                 try
                 {
                     var IUser = await _userManager.FindByEmailAsync(colaborador.IdentityUser.Email);
+                    string emailU = colaborador.IdentityUser.Email;
+                    string nombreUsuarioU = $"{colaborador.Nombres} {colaborador.Apellidos}";
                     var Delete = await _userManager.DeleteAsync(IUser);
                     if (Delete.Succeeded)
                     {
+                        
+
                         _context.Colaboradores.Remove(colaborador);
                         _context.Logger.Add(new Log()
                         {
@@ -303,11 +325,15 @@ namespace WEB.Controllers
                         response.response = $"Error al eliminar el usuario";
                         return Ok(response);
                     }
-                    
-
-                    
+                   
                     await _context.SaveChangesAsync();
                     transaction.Commit();
+
+                    string messageU = $"<p>Por este medio confirmamos la eliminación de su cuenta del sistema Plenumsoft</p>";
+                    
+                    //var Link = Url.PageLink().Split('/');
+                    //string url = Link[0] + "//" + Link[2];
+                    await _emailSender.SendEmailAsync(emailU, "Baja de usuario - SAP Plenumsoft", nombreUsuarioU, messageU, "").ConfigureAwait(false);
                 }
                 catch (Exception)
                 {

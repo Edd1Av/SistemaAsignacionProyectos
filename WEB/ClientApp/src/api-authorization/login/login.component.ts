@@ -4,6 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ILogin } from 'src/app/interfaces/ILogin';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ChangePasswordComponent } from '../change-password/change-password.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ResetPasswordComponent } from '../reset-password/reset-password.component';
 
 // The main responsibility of this component is to handle the user's login process.
 // This is the starting point for the login process. Any component that needs to authenticate
@@ -17,12 +20,13 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 export class LoginComponent implements OnInit {
 
   constructor(
+    private dialog: MatDialog,
     private authorizeService: AuthorizeService,
     private activatedRoute: ActivatedRoute,
     private router: Router, private _snackBar: MatSnackBar,
     private formBuilder: FormBuilder,) { }
 
-
+   
     datos:ILogin;
     formGroup!: FormGroup;
   async ngOnInit() {
@@ -62,6 +66,16 @@ export class LoginComponent implements OnInit {
       this.openSnackBar("Rellene todos los campos");
     }
     
+  }
+
+  openDialog(): void {
+    let dialog = this.dialog.open(ResetPasswordComponent, {
+      width: "400px",
+      disableClose: true,
+    });
+    dialog.afterClosed().subscribe((result) => {
+      
+    });
   }
 
   openSnackBar(message:string) {

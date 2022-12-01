@@ -12,7 +12,7 @@ using WEB.Data;
 namespace WEB.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221031231933_ModelosIniciales")]
+    [Migration("20221201220247_ModelosIniciales")]
     partial class ModelosIniciales
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -195,14 +195,14 @@ namespace WEB.Migrations
                         new
                         {
                             Id = "2c5e174e-3b0e-446f-86af-483d56fd7210",
-                            ConcurrencyStamp = "a18d0f63-9443-4336-adc7-4f1b9e6194a7",
+                            ConcurrencyStamp = "12eb91ce-822b-415c-8c80-31d46f0bfdbb",
                             Name = "Administrador",
                             NormalizedName = "ADMINISTRADOR"
                         },
                         new
                         {
                             Id = "3c6e284e-4b1e-557f-97af-594d67fd8321",
-                            ConcurrencyStamp = "10f4c021-8e32-4aef-9dbf-fa49c017e7ad",
+                            ConcurrencyStamp = "cc4f2c35-6619-4ee7-b3ce-31e582c273bc",
                             Name = "Desarrollador",
                             NormalizedName = "DESARROLLADOR"
                         });
@@ -396,16 +396,18 @@ namespace WEB.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a2a2b3a3-8157-491b-afe1-2919433b0a03",
+                            ConcurrencyStamp = "d63aa557-6004-480f-97a5-8bdd862e249b",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             IdColaborador = 1,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEAnOhhmObgKngFYx4aM7/6U4sP/cc+lZjX/Xkc4Khzrmrha/fDpktje5gLgy8+LOwg==",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAEAACcQAAAAELLiO72+jHKHuf8Tdhwialg3iWyDKMAbnT0xbx9WZODFf269FL/wRiCqf7g0OQOvCA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "58abf16a-99d4-47a5-8941-c7411b92dc03",
-                            TwoFactorEnabled = false
+                            SecurityStamp = "eabb17b4-78d3-43c4-82a2-05fa447e2432",
+                            TwoFactorEnabled = false,
+                            UserName = "Admin"
                         });
                 });
 
@@ -422,7 +424,8 @@ namespace WEB.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdColaborador");
+                    b.HasIndex("IdColaborador")
+                        .IsUnique();
 
                     b.ToTable("Asignaciones", "app");
                 });
@@ -474,6 +477,9 @@ namespace WEB.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Nombres")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -493,9 +499,10 @@ namespace WEB.Migrations
                         new
                         {
                             Id = 1,
-                            Apellidos = "n/a",
+                            Apellidos = "admin",
                             CURP = "n/a",
                             Id_Odoo = "n/a",
+                            IsAdmin = true,
                             Nombres = "admin"
                         });
                 });
@@ -554,6 +561,38 @@ namespace WEB.Migrations
                     b.HasIndex("IdProyecto");
 
                     b.ToTable("DistribucionAsignacionReal", "app");
+                });
+
+            modelBuilder.Entity("WEB.Models.Log", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Accion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Id_User")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("User")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Logger", "app");
                 });
 
             modelBuilder.Entity("WEB.Models.Proyecto", b =>
@@ -647,8 +686,8 @@ namespace WEB.Migrations
             modelBuilder.Entity("WEB.Models.Asignacion", b =>
                 {
                     b.HasOne("WEB.Models.Colaborador", "Colaborador")
-                        .WithMany()
-                        .HasForeignKey("IdColaborador")
+                        .WithOne("Asignacion")
+                        .HasForeignKey("WEB.Models.Asignacion", "IdColaborador")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -718,6 +757,9 @@ namespace WEB.Migrations
 
             modelBuilder.Entity("WEB.Models.Colaborador", b =>
                 {
+                    b.Navigation("Asignacion")
+                        .IsRequired();
+
                     b.Navigation("IdentityUser")
                         .IsRequired();
                 });

@@ -17,7 +17,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import {MatTableModule,} from "@angular/material/table";
 import { MatFormFieldModule } from '@angular/material/form-field';
-import {MatIconModule} from '@angular/material/icon';
+import {MatIcon, MatIconModule} from '@angular/material/icon';
 import { DialogoConfirmacionComponent } from './dialogo-confirmacion/dialogo-confirmacion.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
@@ -27,6 +27,11 @@ import { LoginComponent } from 'src/api-authorization/login/login.component';
 import { AuthorizeGuardDesarrollador } from 'src/api-authorization/authorizeDesarrollador.guard';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import {MatProgressBarModule} from '@angular/material/progress-bar'
+import {MatMenuModule} from '@angular/material/menu';
+import { ChangePasswordComponent } from 'src/api-authorization/change-password/change-password.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { CommonModule } from '@angular/common';
 
 
 
@@ -56,6 +61,11 @@ import {MatProgressBarModule} from '@angular/material/progress-bar'
     FlexLayoutModule,
     MatNativeDateModule,
     MatProgressBarModule,
+    MatIconModule,
+    MatMenuModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    MatDatepickerModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, canActivate:[AuthorizeGuardAdministrador] },
       { path: 'home', component: HomeComponent, canActivate:[AuthorizeGuardAdministrador] },

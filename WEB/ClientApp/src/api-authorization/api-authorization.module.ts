@@ -11,6 +11,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @NgModule({
   imports: [
@@ -22,13 +28,19 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     MatButtonModule,
     MatInputModule,
     MatSnackBarModule,
+    MatIconModule,
+    MatDialogModule,
+    MatPaginatorModule,
+    MatTableModule,
+    FlexLayoutModule,
+    MatDatepickerModule,
     RouterModule.forChild(
       [
        
       ]
     )
   ],
-  declarations: [LoginComponent, ChangePasswordComponent, ResetPasswordComponent],
+  declarations: [LoginComponent, ResetPasswordComponent, ChangePasswordComponent],
   exports: [LoginComponent]
 })
 export class ApiAuthorizationModule { }

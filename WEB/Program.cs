@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using WEB.Data;
 using WEB.Models;
+using WEB.Services.Mails;
 
 var builder = WebApplication.CreateBuilder(args);
 string MiCors = "MiCors";
@@ -35,6 +36,10 @@ builder.Services.AddIdentityServer()
 builder.Services.AddAuthentication()
     .AddIdentityServerJwt();
 
+
+// AG: HU062 - Envio de correo personalizado
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.Configure<EmailSenderOptions>(builder.Configuration.GetSection("EmailSenderOptions"));
 
 //builder.Configuration.AddJsonFile("appsettings.json");
 var secretkey = builder.Configuration.GetSection("Settings").GetSection("SecretKey").ToString();

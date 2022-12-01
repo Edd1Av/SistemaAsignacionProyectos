@@ -32,10 +32,11 @@ namespace WEB.Data
             var userData = new Colaborador()
             {
                 Id = 1,
-                Apellidos = "n/a",
+                Apellidos = "admin",
                 Nombres = "admin",
                 CURP = "n/a",
-                Id_Odoo = "n/a"
+                Id_Odoo = "n/a",
+                IsAdmin = true,
             };
 
             var user = new ApplicationUser()
@@ -45,6 +46,8 @@ namespace WEB.Data
                 Email = "admin@admin.com",
                 EmailConfirmed = true,
                 NormalizedEmail = "ADMIN@ADMIN.COM",
+                UserName = "Admin",
+                NormalizedUserName = "ADMIN",
                 PasswordHash = hasher.HashPassword(null, "Pa$word1")
             };
 

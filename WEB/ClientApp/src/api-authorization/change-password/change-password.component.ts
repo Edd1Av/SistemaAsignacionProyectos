@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { IResponse } from 'src/app/interfaces/IResponse';
 import { IUsuario } from 'src/app/interfaces/IUsuario';
@@ -14,14 +14,18 @@ import { AuthorizeService } from '../authorize.service';
 })
 export class ChangePasswordComponent implements OnInit {
 
-  constructor(private authorizeService: AuthorizeService,
-    private activatedRoute: ActivatedRoute,
-    private router: Router, private _snackBar: MatSnackBar,
-    private formBuilder: FormBuilder,) { }
+  constructor(
+    @Inject(MAT_DIALOG_DATA) private data:any,
+    private matDialogref: MatDialogRef<ChangePasswordComponent>,
+    private authorizeService: AuthorizeService,
+    private _snackBar: MatSnackBar,
+    private formBuilder: FormBuilder,
+) { }
 
   formGroup!: FormGroup;
   Usuario:IUsuario;
-  async ngOnInit() {
+
+  ngOnInit() {
     if(this.authorizeService.usuarioData!=null){
       this.Usuario=this.authorizeService.usuarioData;
     }
@@ -32,7 +36,8 @@ export class ChangePasswordComponent implements OnInit {
     this.formGroup = this.formBuilder.group({
       email: new FormControl(this.Usuario.correo, Validators.required),
       password: new FormControl("", Validators.required),
-      npassword: new FormControl("", Validators.required),
+      nPassword: new FormControl("", Validators.required),
+      nPasswordConfirm: new FormControl("", Validators.required),
     });
   }
 
@@ -41,7 +46,7 @@ export class ChangePasswordComponent implements OnInit {
       this.authorizeService.ChangePassword(this.formGroup.value).pipe(tap((result: IResponse)=>{
         this.openSnackBar(result.response);
         if(result.success){
-          this.router.navigate(["/home"]);
+          this.matDialogref.close();
         }
       })).subscribe();
     }

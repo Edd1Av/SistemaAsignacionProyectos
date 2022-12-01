@@ -193,14 +193,14 @@ namespace WEB.Migrations
                         new
                         {
                             Id = "2c5e174e-3b0e-446f-86af-483d56fd7210",
-                            ConcurrencyStamp = "13c5f6bc-ce60-4daf-96cf-b9774c35d9b0",
+                            ConcurrencyStamp = "12eb91ce-822b-415c-8c80-31d46f0bfdbb",
                             Name = "Administrador",
                             NormalizedName = "ADMINISTRADOR"
                         },
                         new
                         {
                             Id = "3c6e284e-4b1e-557f-97af-594d67fd8321",
-                            ConcurrencyStamp = "ce6ddedb-4e70-451b-9000-94410fa251e0",
+                            ConcurrencyStamp = "cc4f2c35-6619-4ee7-b3ce-31e582c273bc",
                             Name = "Desarrollador",
                             NormalizedName = "DESARROLLADOR"
                         });
@@ -394,16 +394,18 @@ namespace WEB.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "854ff6b9-e056-41ef-85b9-0f5cbb62e7c7",
+                            ConcurrencyStamp = "d63aa557-6004-480f-97a5-8bdd862e249b",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             IdColaborador = 1,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBPfpb48QoCy5XibZI3jcVrl7aquONCj1ZS91cistA8KXTRFgJMQ6dcR2phe4QeMSA==",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAEAACcQAAAAELLiO72+jHKHuf8Tdhwialg3iWyDKMAbnT0xbx9WZODFf269FL/wRiCqf7g0OQOvCA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "06ee17aa-1687-4a05-8add-70b7e003de58",
-                            TwoFactorEnabled = false
+                            SecurityStamp = "eabb17b4-78d3-43c4-82a2-05fa447e2432",
+                            TwoFactorEnabled = false,
+                            UserName = "Admin"
                         });
                 });
 
@@ -473,6 +475,9 @@ namespace WEB.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Nombres")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -492,9 +497,10 @@ namespace WEB.Migrations
                         new
                         {
                             Id = 1,
-                            Apellidos = "n/a",
+                            Apellidos = "admin",
                             CURP = "n/a",
                             Id_Odoo = "n/a",
+                            IsAdmin = true,
                             Nombres = "admin"
                         });
                 });

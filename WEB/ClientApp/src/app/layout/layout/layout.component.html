@@ -42,7 +42,26 @@
               </div>
               <div fxFlex="20%" fxFlex.sm="100%">
                 <div>
-                  <button class="btn" type="button" (click)="salir()"><mat-icon color="primary">exit_to_app</mat-icon></button>
+ 
+
+
+                  <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                    <mat-icon color="primary">more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button *ngIf="isAdmin" mat-menu-item (click)="openDialog()">
+                      <mat-icon>vpn_key</mat-icon>
+                      <span>Cambiar contraseña A</span>
+                    </button>
+                    <button *ngIf="isDevelop" mat-menu-item (click)="openDialog()">
+                      <mat-icon>vpn_key</mat-icon>
+                      <span>Cambiar contraseña D</span>
+                    </button>
+                    <button mat-menu-item (click)="salir()">
+                      <mat-icon>exit_to_app</mat-icon>
+                      <span>Cerrar sesión</span>
+                    </button>
+                  </mat-menu>
                 </div>
             </div>
             </div>

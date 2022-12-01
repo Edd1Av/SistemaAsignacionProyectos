@@ -11,6 +11,7 @@ import { DialogoConfirmacionComponent } from '../../dialogo-confirmacion/dialogo
 import { ColaboradorUpdateComponent } from './colaborador-update/colaborador-update.component';
 import { ColaboradorInsertComponent } from './colaborador-insert/colaborador-insert.component';
 import { ColaboradorDetailsComponent } from './colaborador-details/colaborador-details.component';
+import { ChangePasswordComponent } from 'src/api-authorization/change-password/change-password.component';
 
 @Component({
   selector: 'app-colaboradores',
@@ -110,6 +111,7 @@ export class ColaboradoresComponent implements OnInit {
       this.filtrarTabla();
     });
   }
+
 
   openDialogInsert(): void {
     let dialog = this.dialog.open(ColaboradorInsertComponent, {
