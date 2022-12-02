@@ -1,9 +1,24 @@
 <div class="container">
-  <div style="width: 20%; display:inline-block; vertical-align: top;">
-    <h1>Dias faltantes</h1>
+
+  <div>
+    <div [ngClass]="this.daysSelected.length ?
+    'labelfaltantes' : 'labelok'">
+      <p style="display:inline-block; width: 90%; margin: 0; font-size: 16px;">
+        {{this.daysSelected.length  ? 'Existen días sin asignación' : 'Estás al día'}}
+      </p>
+      <i *ngIf="!this.daysSelected.length" style="float:right;" class="material-icons">check</i>
+      <button *ngIf="this.daysSelected.length" style="display:inline-block;" mat-button [matMenuTriggerFor]="menu">Calendario</button>
+    </div>
+   <mat-menu #menu="matMenu">
+      <div style="width: 270px;" (click)="$event.stopPropagation()">
+        <mat-calendar [dateClass]="isSelected"
+            >
+        </mat-calendar>
+    </div>
+    </mat-menu>
   </div>
 
-  <div  style="width: 80%; display:inline-block; vertical-align: top;">
+  <div >
     <br>
     <div class="row">
       <div class="col-md-6 align-self-center">

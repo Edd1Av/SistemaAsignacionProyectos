@@ -46,6 +46,12 @@
         public int Id_Colaborador { get; set; }
     }
 
+    public class DiasFaltantes
+    {
+        public DateTime inicio { get; set; }
+        public DateTime? final { get; set; }
+    }
+
     public class HistoricoResponse
     {
         public int id { get; set; }
@@ -71,6 +77,7 @@
         public string id_odoo { get; set; }
         public string colaborador { get; set; }
         public List<HistoricoResponse> asignaciones { get; set; }
+        public List<DiasFaltantes> diasfaltantes { get; set; }
         public double diasTrabajados { get; set; }
         public double complete { get; set; }
     }

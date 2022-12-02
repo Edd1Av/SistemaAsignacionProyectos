@@ -59,7 +59,8 @@
             <td class='has_label_on_mobile' data-label='' mat-cell *matCellDef="let item">
                 <div [ngClass]="item.complete<100 ?
                 'colaboradorRed' : 'colaborador'" class="pe-5 ps-5 pt-4 pb-4">
-                    <h2 style="font-weight: bold;">{{item.id_odoo}}&nbsp;&nbsp;-&nbsp;&nbsp;{{item.colaborador}} </h2>
+                    <h2 style="font-weight: bold;" [ngClass]="item.complete<100 ?
+                    'textWarn' : ''">{{item.id_odoo}}&nbsp;&nbsp;-&nbsp;&nbsp;{{item.colaborador}} </h2>
                     <h3 class="diastrabajados"><span style="font-weight: bold;">Dias trabajados:
                         </span>{{item.diasTrabajados.toFixed(2)}}</h3>
                     <br>
@@ -100,6 +101,40 @@
                             <tr mat-row *matRowDef="let row; columns: displayedColumnsProyectos;"></tr>
                         </table>
                     </div>
+                    <mat-accordion *ngIf="item.diasfaltantes.length>0" >
+                        <mat-expansion-panel class="accordion" (opened)="panelOpenState = true"
+                                             (closed)="panelOpenState = false">
+                          <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <p class="textWarn">Días sin asignación</p>
+                                
+                            </mat-panel-title>
+                            <mat-panel-description>
+                              {{panelOpenState ? '' : ''}}
+                            </mat-panel-description>
+                          </mat-expansion-panel-header>
+                          <div class="ps-5 pe-5 pt-4 pb-3">
+                            <table *ngIf="item.diasfaltantes.length>0" style="width: 100%;" mat-table
+                                [dataSource]="item.diasfaltantes" class="p-5">
+                                <ng-container matColumnDef="Inicio">
+                                    <th class="columna" style="width: 20%;" mat-header-cell *matHeaderCellDef> <span
+                                            class="th">Inicio</span> </th>
+                                    <td class='has_label_on_mobile' data-label='Titulo: ' mat-cell *matCellDef="let element">
+                                        {{element.inicio!=null? element.inicio.getDate()+"-"+(element.inicio.getMonth() + 1)+"-"+element.inicio.getFullYear():""}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="Final">
+                                    <th class="columna" style="width: 20%;" mat-header-cell *matHeaderCellDef> <span
+                                            class="th">Final</span> </th>
+                                    <td class='has_label_on_mobile' data-label='Titulo: ' mat-cell *matCellDef="let element">
+                                        {{element.final!=null? element.final.getDate()+"-"+(element.final.getMonth() + 1)+"-"+element.final.getFullYear():""}} </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedColumnsDiasFaltantes"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumnsDiasFaltantes;"></tr>
+                            </table>
+                        </div>
+                        </mat-expansion-panel>
+                      </mat-accordion>
+
                 </div>
 
             </td>

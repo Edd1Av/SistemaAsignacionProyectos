@@ -34,7 +34,13 @@ export class ReporteComponent implements OnInit {
     "Dias",
     "Porcentaje",
   ];
+  displayedColumnsDiasFaltantes: string[] = [
+    "Inicio",
+    "Final",
+  ];
+  panelOpenState = false;
   email:string;
+  
   isAdmin:Boolean=false;
   isDevelop:Boolean=false;
   idusuario:number=0;
@@ -106,10 +112,18 @@ export class ReporteComponent implements OnInit {
       .pipe(
         tap((result) => {
           this.Reporte = result;
+          this.Reporte.response.rest.forEach(element => {
+            element.diasfaltantes.forEach(d => {
+              d.inicio=new Date(d.inicio);
+              if(d.final!=null){
+                d.final=new Date(d.final);
+              }
+
+            });
+          });
           this.dataSource = new MatTableDataSource<Ihistorico>(this.Reporte.response.rest);
           this.dataSource.paginator = this.paginator;
-          console.log(this.paginator);
-          console.log(this.dataSource);
+          console.log(this.Reporte.response);
         })
       )
       .subscribe();

@@ -9,7 +9,7 @@ import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-
+import {MatExpansionModule} from '@angular/material/expansion';
 
 const routes: Routes = [
   { path: '', component: ReporteComponent }
@@ -29,6 +29,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     MatDatepickerModule,
     MatIconModule,
+    MatExpansionModule,
     RouterModule.forChild(routes)
   ]
 })

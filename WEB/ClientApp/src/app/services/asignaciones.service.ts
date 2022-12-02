@@ -70,8 +70,15 @@ export class AsignacionesService {
       console.log(Asignacion);
         return this.http.post<IResponse>(this.urlBase + "api/AsignacionReal",Asignacion);
       }
+
+      
   
     DeleteAsignacionReal(id: number): Observable<IResponse> {
         return this.http.delete<IResponse>(this.urlBase + "api/AsignacionReal/"+id);
     }
+
+    GetFechasFaltantes(postModel:any)  {
+      console.log(Response);
+        return this.http.post<any>(this.urlBase + "api/AsignacionReal/FechasFaltantes",postModel);
+      }
 }
