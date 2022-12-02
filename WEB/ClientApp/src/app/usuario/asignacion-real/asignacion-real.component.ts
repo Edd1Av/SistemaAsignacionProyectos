@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
+import { MatCalendar } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -17,10 +18,12 @@ import { AsignacionesRealUpdateComponent } from '../asignaciones-real-update/asi
 @Component({
   selector: 'app-asignacion-real',
   templateUrl: './asignacion-real.component.html',
-  styleUrls: ['./asignacion-real.component.css']
+  styleUrls: ['./asignacion-real.component.css'],
+  encapsulation:ViewEncapsulation.None
 })
 export class AsignacionRealComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatCalendar) calendar: MatCalendar<Date>;
   displayedColumns: string[] = [
     "Colaborador",
     "Proyectos",
@@ -28,9 +31,33 @@ export class AsignacionRealComponent implements OnInit {
     "Fecha_Final",
     "acciones"
   ];
-
+  daysSelected: any[] = [];
+  startDate:Date;
+  event: any;
   Usuario:IUsuario;
-
+  isSelected = (event: any) => {
+    const date =
+      event.getFullYear() +
+      "-" +
+      ("00" + (event.getMonth() + 1)).slice(-2) +
+      "-" +
+      ("00" + event.getDate()).slice(-2);
+    return this.daysSelected.find(x => x == date) ? "selected" : "";
+  };
+  
+  select(event: any, calendar: any) {
+    const date =
+      event.getFullYear() +
+      "-" +
+      ("00" + (event.getMonth() + 1)).slice(-2) +
+      "-" +
+      ("00" + event.getDate()).slice(-2);
+    const index = this.daysSelected.findIndex(x => x == date);
+    if (index < 0) this.daysSelected.push(date);
+    else this.daysSelected.splice(index, 1);
+    console.log(this.daysSelected);
+    calendar.updateTodaysDate();
+  }
   constructor(private AsignacionService: AsignacionesService, private dialog: MatDialog,
     private formBuilder: FormBuilder,
     private snackBar: MatSnackBar,
@@ -41,7 +68,10 @@ export class AsignacionRealComponent implements OnInit {
     dataSource!: MatTableDataSource<IAsignacionReal>;
     formGroup: any;
 
+
+
   ngOnInit(): void {
+
     if(this._authService.usuarioData!=null){
       this.Usuario=this._authService.usuarioData;
     }
@@ -50,8 +80,26 @@ export class AsignacionRealComponent implements OnInit {
     this.initializeFormGroup();
   }
 
+  getFechas() {
+    let days: String[]=[];
+    this.AsignacionService
+      .GetFechasFaltantes({"id_colaborador":2})
+      .subscribe((result) => {
+        console.log(result.response);
+        result.response.forEach(function (value:Date) {
+          days.push(value.toString().substring(0,10));
+      });
+      console.log(days);
+      this.daysSelected=days;
+      this.startDate = new Date(this.daysSelected[0]);
+      
+      this.calendar._goToDateInView(this.startDate,"month")
+      this.calendar.updateTodaysDate();
+
+      })
+  }
+
   actualizarHistorico() {
-    console.log("entro");
     this.AsignacionService
       .getAsignacionesReal(this.Usuario.idUsuario)
       .pipe(
@@ -64,6 +112,7 @@ export class AsignacionRealComponent implements OnInit {
         })
       )
       .subscribe();
+      this.getFechas();
   }
 
   private buildForm() {

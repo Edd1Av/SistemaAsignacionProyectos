@@ -1,0 +1,23 @@
+.mat-calendar-body-cell.selected
+{
+  background-color:rgb(189, 68, 68)!important;
+  border-radius: 50%
+}
+.drop-calendar
+{
+  width:30rem
+}
+
+.labelfaltantes{
+  padding: 11px;
+  border-radius: 5px;
+  align-items: center;
+  background-color: rgba(179, 66, 66, 0.63);
+}
+
+.labelok{
+  padding: 11px;
+  border-radius: 5px;
+  align-items: center;
+  background-color: rgba(92, 179, 66, 0.63);
+}

@@ -18,8 +18,7 @@ import { AsignacionesRealDetailsComponent } from '../asignaciones-real-details/a
 import { AsignacionesRealInsertComponent } from '../asignaciones-real-insert/asignaciones-real-insert.component';
 import { AsignacionesRealUpdateComponent } from '../asignaciones-real-update/asignaciones-real-update.component';
 import { MatNativeDateModule } from '@angular/material/core';
-
-
+import {MatMenuModule} from '@angular/material/menu';
 const routes: Routes = [
   { path: '', component: AsignacionRealComponent }
 ];
@@ -47,6 +46,7 @@ const routes: Routes = [
     CommonModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatMenuModule,
     RouterModule.forChild(routes)
   ]
 })

@@ -24,7 +24,12 @@ export interface Ihistorico {
     asignaciones:IProyectosHistorico[];
     diasTrabajados:number;
     complete:number;
-    
+    diasfaltantes:diasFaltantes[];
+}
+
+export interface diasFaltantes{
+    inicio:Date;
+    final:Date;
 }
 
 export interface IProyectosHistorico {

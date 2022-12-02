@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using WEB.Data;
 using WEB.Models;
 using WEB.ViewModels;
@@ -361,21 +362,49 @@ namespace WEB.Controllers
         public async Task<ActionResult<AsignacionReal>> FechasFaltantes(FiltroFechasFaltantes postModel)
         {
             Response response = new Response();
-            var Asignacion = _context.Asignacion.Include(x=>x.Colaborador).Include(x=>x.Distribuciones).Include(x=>x.AsignacionReal).
-                Where(x => x.IdColaborador == postModel.Id_Colaborador).ToList();
+            try
+            {
+                List<DateTime> Fechas = new List<DateTime>();
 
-            DateTime Fecha_Inicial = Asignacion.Min(x => x.Distribuciones.Min(y => y.Fecha_Inicio));
-            DateTime Fecha_Final = DateTime.Now.ToLocalTime();
+                var Asignacion = _context.Asignacion.Include(x => x.Colaborador).Include(x => x.Distribuciones).Include(x => x.AsignacionReal).
+                    Where(x => x.IdColaborador == postModel.Id_Colaborador).ToList();
 
-            var asignacionesReales = _context.AsignacionReal.Include(x => x.Asignacion)
-                                                       .ThenInclude(z => z.Colaborador)
-                                                   .Include(i => i.DistribucionesReales)
-                                                       .ThenInclude(y => y.Proyecto).
-                                                       Where(x => x.Asignacion.IdColaborador == postModel.Id_Colaborador).FirstOrDefault();
-            dynamic datos = new System.Dynamic.ExpandoObject();
-            response.success = true;
-            response.response = datos;
-            return Ok(response);
+
+                DateTime Fecha_Inicial = DateTime.Now.ToLocalTime().Date.AddMonths(-1);
+                //DateTime Fecha_Inicial = Asignacion.Min(x => x.Distribuciones.Min(y => y.Fecha_Inicio)).Date;
+                DateTime Fecha_Final = DateTime.Now.ToLocalTime().Date;
+
+                var asignacionesReales = _context.AsignacionReal.Include(x => x.Asignacion)
+                                                           .ThenInclude(z => z.Colaborador)
+                                                       .Include(i => i.DistribucionesReales)
+                                                           .ThenInclude(y => y.Proyecto).
+                                                           Where(x => x.Asignacion.IdColaborador == postModel.Id_Colaborador).ToList();
+
+                foreach (var item in asignacionesReales)
+                {
+                    for (DateTime i = Fecha_Inicial.Date; i < Fecha_Final.Date.AddDays(1); i = i.AddDays(1))
+                    {
+                        if (i.DayOfWeek != DayOfWeek.Sunday && i.DayOfWeek != DayOfWeek.Saturday && !(i.Date <= item.Fecha_Final.Date && i.Date >= item.Fecha_Inicio.Date))
+                        {
+                            Fechas.Add(i);
+                        }
+                    }
+                }
+
+                response.success = true;
+                response.response = Fechas.GroupBy(x => x)
+                            .Where(g => g.Count() == asignacionesReales.Count)
+                            .Select(x => x.Key)
+                            .ToList();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.success = false;
+                response.response = $"Error al consultar";
+                return Ok(response);
+            }
+
         }
 
             private static double Truncate(double value, int decimales)
@@ -431,7 +460,17 @@ namespace WEB.Controllers
                 {
                     var proyectos = new List<HistoricoResponse>();
                     var AsignacionR = AsignacionesReales.Where(x => x.Asignacion.IdColaborador == colaborador.Id).ToList();
-
+                    List<DateTime> FechasFaltantes = new List<DateTime>();
+                    foreach (var item in AsignacionR)
+                    {
+                        for (DateTime i = postModel.Fecha_Inicio.Date; i < postModel.Fecha_Final.Date.AddDays(1); i = i.AddDays(1))
+                        {
+                            if (i.DayOfWeek != DayOfWeek.Sunday && i.DayOfWeek != DayOfWeek.Saturday && !(i.Date <= item.Fecha_Final.Date && i.Date >= item.Fecha_Inicio.Date))
+                            {
+                                FechasFaltantes.Add(i);
+                            }
+                        }
+                    }
 
                     foreach (var L in AsignacionR)
                     {
@@ -488,14 +527,56 @@ namespace WEB.Controllers
                             proyectos.FirstOrDefault().porcentaje += 100 - proyectos.Sum(x => x.porcentaje);
                         }
                  }
+                    List<DateTime> faltantes = FechasFaltantes.GroupBy(x => x)
+                            .Where(g => g.Count() == AsignacionR.Count)
+                            .Select(x => x.Key)
+                            .ToList();
+                    List<DiasFaltantes> list = new List<DiasFaltantes>();
+                    foreach(DateTime d in faltantes)
+                    {
+                        if (list.Where(x => x.final >= d.Date && x.inicio <= d.Date).ToList().Count == 0)
+                        {
+                            DateTime final = new DateTime();
 
+                            var temp = list.Where(x => x.inicio <= d.Date && x.final >= d.Date).ToList();
+                            Console.WriteLine(temp);
+                            for (var i = 0; i < faltantes.Count; i++)
+                            {
+                                if (list.Where(x => x.final == faltantes[i]).ToList().Count == 0)
+                                {
+                                    if ((i + 1) == faltantes.Count)
+                                    {
+                                        final = faltantes[i].Date;
+                                    }
+                                    else
+                                    {
+                                        var d1 = faltantes[i].Date.AddDays(1);
+                                        if (faltantes[i + 1].Date > d1 && faltantes[i].Date >= d)
+                                        {
+                                            final = faltantes[i].Date;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            list.Add(new DiasFaltantes
+                            {
+                                inicio = d.Date,
+                                final = d.Date== final? null:final,
+                            }
+                            );
+                        }
+
+                        
+                    }
 
                     rest.Add(new rest
                     {
                         id_odoo = colaborador.Id_Odoo.Length > 20 ? colaborador.Id_Odoo.Substring(20) : colaborador.Id_Odoo,
                         colaborador = colaborador.Nombres + " " + colaborador.Apellidos,
                         asignaciones = proyectos,
-                        diasTrabajados=proyectos.Sum(x=>x.dias),
+                        diasfaltantes = list,
+                        diasTrabajados =proyectos.Sum(x=>x.dias),
                         complete= ((double)proyectos.Sum(x => x.dias)/ (double)DaysLeft(postModel.Fecha_Inicio.Date, postModel.Fecha_Final.Date.AddDays(1), true, new List<DateTime>()))*100
                     });
                     if(rest.LastOrDefault().complete < 100)
@@ -518,11 +599,11 @@ namespace WEB.Controllers
                     {
                         if (item2.id == item.asignaciones.FirstOrDefault().id)
                         {
-                            excel.Add(new Excel { A = item.id_odoo, B = item.colaborador, C = item2.clave, D = item2.titulo, E = item2.porcentaje.ToString() });
+                            excel.Add(new Excel { A = item.id_odoo, B = item.colaborador, C = item2.clave, D = item2.titulo, E =  Truncate(item2.porcentaje,3).ToString() });
                         }
                         else
                         {
-                            excel.Add(new Excel { A = "", B = "", C = item2.clave, D = item2.titulo, E = item2.porcentaje.ToString() });
+                            excel.Add(new Excel { A = "", B = "", C = item2.clave, D = item2.titulo, E = Truncate(item2.porcentaje, 3).ToString() });
                         }
                     }
                 }
