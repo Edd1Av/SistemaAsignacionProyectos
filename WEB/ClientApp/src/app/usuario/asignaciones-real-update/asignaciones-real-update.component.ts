@@ -171,30 +171,33 @@ export class AsignacionesRealUpdateComponent implements OnInit {
         total+=element.porcentaje;
       });
       if(total!=100){
-        this.openSnackBar("El porcentaje de asignación a proyectos debe sumar 100");
+        this.openSnackBar("El porcentaje de asignación a proyectos debe sumar 100 aaa");
         return;
       }
-      if(this.formGroup.valid){
-        let POST:IAsignacionPostReal={
-          id_colaborador:this.formGroup.controls['colaborador'].value,
-          fecha_inicio:this.formGroup.controls['fecha_inicio'].value,
-          fecha_final:this.formGroup.controls['fecha_final'].value,
-          proyectos:this.ProyectosAsignados
+    
+        if(this.formGroup.valid){
+          let POST:IAsignacionPostReal={
+            id_colaborador:this.formGroup.controls['colaborador'].value,
+            fecha_inicio:this.formGroup.controls['fecha_inicio'].value,
+            fecha_final:this.formGroup.controls['fecha_final'].value,
+            proyectos:this.ProyectosAsignados
+          }
+            this._asignacionService
+              .UpdateAsignacionReal(this.data.asignacionReal.id, POST)
+              .pipe(
+                tap((result: IResponse) => {
+                  this.openSnackBar(result.response);
+                  if (result.success) {
+                    this.matDialogref.close();
+                  }
+                })
+              )
+              .subscribe(); 
+        }else{
+          this.openSnackBar("Introduzca los campos faltantes");
         }
-          this._asignacionService
-            .UpdateAsignacionReal(this.data.asignacionReal.id, POST)
-            .pipe(
-              tap((result: IResponse) => {
-                this.openSnackBar(result.response);
-                if (result.success) {
-                  this.matDialogref.close();
-                }
-              })
-            )
-            .subscribe(); 
-      }else{
-        this.openSnackBar("Introduzca los campos faltantes");
-      }
+      
+
     }
 
     updateFechaInicio(type: string, event: MatDatepickerInputEvent<Date>) {

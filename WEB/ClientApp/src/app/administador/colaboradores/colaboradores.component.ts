@@ -142,6 +142,7 @@ export class ColaboradoresComponent implements OnInit {
               }
             },
             (error) => {
+              this.actualizarHistorico();
               this.openSnackBar(error.response);
             }
           );

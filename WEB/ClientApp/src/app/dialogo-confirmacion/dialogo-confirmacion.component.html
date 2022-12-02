@@ -5,6 +5,6 @@
     <p>{{mensaje}}</p>
   </div>
   <div mat-dialog-actions align="end">
-    <button mat-raised-button mat-dialog-close color="default">No</button>
-    <button mat-raised-button (click)="confirmado()" color="warn" cdkFocusInitial>Sí</button>
+    <button mat-button mat-dialog-close cdkFocusInitial >No</button>
+    <button mat-button color="warn" (click)="confirmado()">Sí</button>
   </div>

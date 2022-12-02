@@ -262,7 +262,14 @@ namespace WEB.Controllers
                                $"</span></p><p>Contraseña: <span>{password}</span></p><p>Para ingresar " +
                                "al sistema, dar clic en el siguiente enlace:</p><a style='color: #1B57A6' " +
                                $"href='{url}'>{url}</a>";
-                    await _emailSender.SendEmailAsync(user.Email, "Nueva cuenta de usuario - SAP Plenumsoft", name, message, "").ConfigureAwait(false);
+                    try
+                    {
+                        await _emailSender.SendEmailAsync(user.Email, "Nueva cuenta de usuario - SAP Plenumsoft", name, message, "").ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Ok(new Response { success = true, response = "Error: Email" });
+                    }
 
                 }
                 catch (Exception)
@@ -306,7 +313,7 @@ namespace WEB.Controllers
                     var Delete = await _userManager.DeleteAsync(IUser);
                     if (Delete.Succeeded)
                     {
-                        
+
 
                         _context.Colaboradores.Remove(colaborador);
                         _context.Logger.Add(new Log()
@@ -325,15 +332,21 @@ namespace WEB.Controllers
                         response.response = $"Error al eliminar el usuario";
                         return Ok(response);
                     }
-                   
+
                     await _context.SaveChangesAsync();
                     transaction.Commit();
 
                     string messageU = $"<p>Por este medio confirmamos la eliminación de su cuenta del sistema Plenumsoft</p>";
-                    
+
                     //var Link = Url.PageLink().Split('/');
                     //string url = Link[0] + "//" + Link[2];
-                    await _emailSender.SendEmailAsync(emailU, "Baja de usuario - SAP Plenumsoft", nombreUsuarioU, messageU, "").ConfigureAwait(false);
+                    try { 
+                        await _emailSender.SendEmailAsync(emailU, "Baja de usuario - SAP Plenumsoft", nombreUsuarioU, messageU, "").ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Ok(new Response { success = true, response = "Error: Email" });
+                    }
                 }
                 catch (Exception)
                 {

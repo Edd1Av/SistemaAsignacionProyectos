@@ -119,10 +119,10 @@
     </form>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <button mat-raised-button color="warn" mat-dialog-close>
+    <button mat-button mat-dialog-close>
       Cancelar
     </button>
-    <button mat-raised-button color="primary" (click)="onSubmit()">
+    <button mat-button color="primary" cdkFocusInitial (click)="onSubmit()">
       <mat-icon>save</mat-icon>
       Guardar
     </button>

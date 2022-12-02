@@ -102,7 +102,7 @@ namespace WEB.Controllers
                     }
                     catch (Exception ex)
                     {
-                        return Ok(new Response { success = false, response = "Error: Correo"});
+                        return Ok(new Response { success = true, response = "Error: Email"});
                     }
                     return Ok(new Response { success = true, response = "La contraseña se ha cambiado correctamente" });
 
@@ -151,7 +151,7 @@ namespace WEB.Controllers
                         }
                         catch (Exception ex)
                         {
-                            return Ok(new Response { success = false, response = "Error: Email"});
+                            return Ok(new Response { success = true, response = "Error: Email"});
                         }
 
                         return Ok(new Response { success = true, response = "La contraseña se ha restablecido correctamente" });

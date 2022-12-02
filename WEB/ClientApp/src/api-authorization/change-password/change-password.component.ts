@@ -5,6 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { tap } from 'rxjs/operators';
 import { IResponse } from 'src/app/interfaces/IResponse';
 import { IUsuario } from 'src/app/interfaces/IUsuario';
+import { PasswordValidationService } from 'src/app/services/password.service';
 import { AuthorizeService } from '../authorize.service';
 
 @Component({
@@ -20,6 +21,7 @@ export class ChangePasswordComponent implements OnInit {
     private authorizeService: AuthorizeService,
     private _snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
+    private passwordValidator: PasswordValidationService,
 ) { }
 
   formGroup!: FormGroup;
@@ -33,11 +35,26 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   buildForm(){
+    // this.formGroup = this.formBuilder.group({
+    //   email: new FormControl(this.Usuario.correo, Validators.required),
+    //   password: new FormControl("", Validators.required),
+    //   nPassword: new FormControl("", Validators.required),
+    //   nPasswordConfirm: new FormControl("", Validators.required),
+    // });
+
     this.formGroup = this.formBuilder.group({
       email: new FormControl(this.Usuario.correo, Validators.required),
       password: new FormControl("", Validators.required),
-      nPassword: new FormControl("", Validators.required),
-      nPasswordConfirm: new FormControl("", Validators.required),
+      nPassword: new FormControl("",
+        [Validators.required,
+        this.passwordValidator.patternValidator(/\d/, { hasNumber: true }),
+        this.passwordValidator.patternValidator(/[A-Z]/, { hasCapitalCase: true }),
+        this.passwordValidator.patternValidator(/(?=.*[?!@#$%^&*])/, { hasSpecialCharacters: true }),
+        Validators.minLength(8)
+        ]),
+      nPasswordConfirm: new FormControl("", Validators.required)
+    }, {
+      validator: this.passwordValidator.passwordMatchValidator("nPassword", "nPasswordConfirm")
     });
   }
 

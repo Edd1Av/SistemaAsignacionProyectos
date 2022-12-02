@@ -82,7 +82,7 @@ export class ProyectosComponent implements OnInit {
 
   openDialogUpdate(proyecto:IProyecto): void {
     let dialog = this.dialog.open(ProyectosUpdateComponent, {
-      width: "800px",
+      width: "500px",
       data: {
         proyecto: proyecto
       },
@@ -95,7 +95,7 @@ export class ProyectosComponent implements OnInit {
 
   openDialogDetalle(proyecto:IProyecto): void {
     let dialog = this.dialog.open(ProyectosDetailsComponent, {
-      width: "800px",
+      width: "500px",
       data: {
         proyecto: proyecto
       },
@@ -108,7 +108,7 @@ export class ProyectosComponent implements OnInit {
 
   openDialogInsert(): void {
     let dialog = this.dialog.open(ProyectosInsertComponent, {
-      width: "800px",
+      width: "500px",
       disableClose: true,
     });
     dialog.afterClosed().subscribe((result) => {

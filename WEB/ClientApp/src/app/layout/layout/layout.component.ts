@@ -56,7 +56,7 @@ export class LayoutComponent implements OnInit {
 
   openDialog(): void {
     let dialog = this.dialog.open(ChangePasswordComponent, {
-      width: "400px",
+      width: "500px",
       disableClose: true,
     });
     dialog.afterClosed().subscribe((result) => {

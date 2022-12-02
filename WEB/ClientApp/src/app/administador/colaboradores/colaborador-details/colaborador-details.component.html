@@ -40,6 +40,9 @@
             <input [readonly]="true" matInput maxlength="100" formControlName="email" />
           </mat-form-field>
         </div>
+        <div fxFlex="50%" fxFlex.sm="100%">
+          <mat-checkbox formControlName="isAdmin" [disabled]="true" class="example-margin">Es administrador</mat-checkbox>
+        </div>
       </div>
     </form>
   </mat-dialog-content>
@@ -99,7 +102,7 @@
 
 
   <mat-dialog-actions align="end">
-    <button  mat-raised-button color="warn" mat-dialog-close>
+    <button mat-button mat-dialog-close color="primary" cdkFocusInitial>
         Cerrar
       </button>
   </mat-dialog-actions>

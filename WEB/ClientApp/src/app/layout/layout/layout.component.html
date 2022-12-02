@@ -7,9 +7,9 @@
         </button>
         <div class="collapse navbar-collapse" id="mynavbar">
             <ul *ngIf="isAdmin" class="navbar-nav me-auto">
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                   <a routerLink="/" class="nav-link active"><mat-icon>home</mat-icon></a>
-                </li>
+                </li> -->
                 <li class="nav-item">
                   <a routerLink="/colaboradores" class="nav-link active">Colaboradores</a>
                 </li>
@@ -24,9 +24,9 @@
                 </li>
             </ul>
             <ul *ngIf="isDevelop" class="navbar-nav me-auto">
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <a routerLink="/" class="nav-link active"><mat-icon>home</mat-icon></a>
-              </li>
+              </li> -->
               <li class="nav-item">
                 <a routerLink="/asignacionReal" class="nav-link active">Asignacion Real</a>
               </li>
@@ -46,16 +46,16 @@
 
 
                   <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-                    <mat-icon color="primary">more_vert</mat-icon>
+                    <mat-icon color="primary">expand_more</mat-icon>
                   </button>
                   <mat-menu #menu="matMenu">
                     <button *ngIf="isAdmin" mat-menu-item (click)="openDialog()">
                       <mat-icon>vpn_key</mat-icon>
-                      <span>Cambiar contraseña A</span>
+                      <span>Cambiar contraseña</span>
                     </button>
                     <button *ngIf="isDevelop" mat-menu-item (click)="openDialog()">
                       <mat-icon>vpn_key</mat-icon>
-                      <span>Cambiar contraseña D</span>
+                      <span>Cambiar contraseña</span>
                     </button>
                     <button mat-menu-item (click)="salir()">
                       <mat-icon>exit_to_app</mat-icon>

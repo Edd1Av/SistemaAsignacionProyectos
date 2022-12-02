@@ -93,6 +93,12 @@ namespace WEB.Controllers
         public async Task<IActionResult> PutAsignacion(int id, AsignacionPost postModel)
         {
             Response response = new Response();
+            if (postModel.Proyectos.Count == 0)
+            {
+                response.success = false;
+                response.response = $"Seleccione algún proyecto";
+                return Ok(response);
+            }
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
@@ -183,6 +189,13 @@ namespace WEB.Controllers
         public async Task<ActionResult<Asignacion>> PostAsignacion(AsignacionPost postModel)
         {
             Response response = new Response();
+            if (postModel.Proyectos.Count == 0)
+            {
+                response.success = false;
+                response.response = $"Seleccione algún proyecto";
+                return Ok(response);
+            }
+            
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try

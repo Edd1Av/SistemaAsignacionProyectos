@@ -38,17 +38,20 @@
         <div fxFlex="50%" fxFlex.sm="100%">
           <mat-form-field appearance="fill">
             <mat-label>Email</mat-label>
-            <input matInput maxlength="100" formControlName="email" />
+            <input matInput type="email" maxlength="100" formControlName="email" email/>
           </mat-form-field>
+        </div>
+        <div fxFlex="50%" fxFlex.sm="100%">
+          <mat-checkbox formControlName="isAdmin" class="example-margin">Es administrador</mat-checkbox>
         </div>
       </div>
     </form>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <button mat-raised-button color="warn" mat-dialog-close>
+    <button mat-button mat-dialog-close>
       Cancelar
     </button>
-    <button mat-raised-button color="primary" (click)="onSubmit()">
+    <button mat-button color="primary" cdkFocusInitial (click)="onSubmit()">
       <mat-icon>save</mat-icon>
       Guardar
     </button>

@@ -51,7 +51,7 @@ displayedColumns: string[] = [
   this.formGroup.controls.curp.setValue(this.data.colaborador.curp);
   this.formGroup.controls.id_odoo.setValue(this.data.colaborador.id_Odoo);
   this.formGroup.controls.email.setValue(this.data.colaborador.email);
-
+  this.formGroup.controls.isAdmin.setValue(this.data.colaborador.isAdmin);
   }
 
   // private RellenarAsignacion(){
@@ -88,6 +88,7 @@ displayedColumns: string[] = [
       curp: new FormControl("", Validators.required),
       id_odoo: new FormControl("", Validators.required),
       email: new FormControl("", Validators.required),
+      isAdmin: new FormControl(true, Validators.required)
       // fecha_Inicio: new FormControl("", Validators.required),
       // fecha_Final: new FormControl("", Validators.required),
     });
