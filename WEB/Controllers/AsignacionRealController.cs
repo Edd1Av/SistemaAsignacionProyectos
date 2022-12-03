@@ -370,32 +370,48 @@ namespace WEB.Controllers
                     Where(x => x.IdColaborador == postModel.Id_Colaborador).ToList();
 
 
-                DateTime Fecha_Inicial = DateTime.Now.ToLocalTime().Date.AddMonths(-1);
+                DateTime Fecha_Inicial = DateTime.Now.ToLocalTime().Date.AddMonths(-1)<Asignacion.Min(x => x.Distribuciones.Min(y => y.Fecha_Inicio)).Date?
+                    Asignacion.Min(x => x.Distribuciones.Min(y => y.Fecha_Inicio)).Date: DateTime.Now.ToLocalTime().Date.AddMonths(-1);
                 //DateTime Fecha_Inicial = Asignacion.Min(x => x.Distribuciones.Min(y => y.Fecha_Inicio)).Date;
-                DateTime Fecha_Final = DateTime.Now.ToLocalTime().Date;
+                DateTime Fecha_Final = DateTime.Now.ToLocalTime() > Asignacion.Max(x => x.Distribuciones.Max(y => y.Fecha_Final)).Date ?
+                    Asignacion.Max(x => x.Distribuciones.Max(y => y.Fecha_Inicio)).Date : DateTime.Now.ToLocalTime().Date;
 
                 var asignacionesReales = _context.AsignacionReal.Include(x => x.Asignacion)
                                                            .ThenInclude(z => z.Colaborador)
                                                        .Include(i => i.DistribucionesReales)
                                                            .ThenInclude(y => y.Proyecto).
-                                                           Where(x => x.Asignacion.IdColaborador == postModel.Id_Colaborador).ToList();
-
-                foreach (var item in asignacionesReales)
+                                                           Where(x => x.Asignacion.IdColaborador == postModel.Id_Colaborador).
+                                                           Where(x=>x.Fecha_Inicio>Fecha_Inicial).ToList();
+                if (asignacionesReales.Count > 0)
                 {
-                    for (DateTime i = Fecha_Inicial.Date; i < Fecha_Final.Date.AddDays(1); i = i.AddDays(1))
+                    foreach (var item in asignacionesReales)
                     {
-                        if (i.DayOfWeek != DayOfWeek.Sunday && i.DayOfWeek != DayOfWeek.Saturday && !(i.Date <= item.Fecha_Final.Date && i.Date >= item.Fecha_Inicio.Date))
+                        for (DateTime i = Fecha_Inicial.Date; i < Fecha_Final.Date.AddDays(1); i = i.AddDays(1))
                         {
-                            Fechas.Add(i);
+                            if (i.DayOfWeek != DayOfWeek.Sunday && i.DayOfWeek != DayOfWeek.Saturday && !(i.Date <= item.Fecha_Final.Date && i.Date >= item.Fecha_Inicio.Date))
+                            {
+                                Fechas.Add(i);
+                            }
                         }
                     }
                 }
+                else
+                {
+                        for (DateTime i = Fecha_Inicial.Date; i < Fecha_Final.Date.AddDays(1); i = i.AddDays(1))
+                        {
+                            if (i.DayOfWeek != DayOfWeek.Sunday && i.DayOfWeek != DayOfWeek.Saturday)
+                            {
+                                Fechas.Add(i);
+                            }
+                        }
+                }
+
 
                 response.success = true;
-                response.response = Fechas.GroupBy(x => x)
+                response.response = asignacionesReales.Count > 0 ? Fechas.GroupBy(x => x)
                             .Where(g => g.Count() == asignacionesReales.Count)
                             .Select(x => x.Key)
-                            .ToList();
+                            .ToList() : Fechas;
                 return Ok(response);
             }
             catch (Exception ex)
@@ -589,32 +605,37 @@ namespace WEB.Controllers
 
                 }
                 List<Excel> excel = new List<Excel>();
-                excel.Add(new Excel { A = "fecha_inicio", B = FechaToString(postModel.Fecha_Inicio), C = "", D = "", E = "" });
-                excel.Add(new Excel {A= "fecha_final", B= FechaToString(postModel.Fecha_Final), C="",D="",E=""});
-                excel.Add(new Excel { A = "", B = "", C = "", D = "", E = "" });
-                excel.Add(new Excel { A = "id_recurso", B = "recurso", C = "id_proyecto", D = "proyecto", E = "porcentaje" });
-                foreach (var item in rest)
+                if (rest.Count > 0)
                 {
-                    foreach(var item2 in item.asignaciones)
+                    
+                    excel.Add(new Excel { A = "fecha_inicio", B = FechaToString(postModel.Fecha_Inicio), C = "", D = "", E = "" });
+                    excel.Add(new Excel { A = "fecha_final", B = FechaToString(postModel.Fecha_Final), C = "", D = "", E = "" });
+                    excel.Add(new Excel { A = "", B = "", C = "", D = "", E = "" });
+                    excel.Add(new Excel { A = "id_recurso", B = "recurso", C = "id_proyecto", D = "proyecto", E = "porcentaje" });
+                    foreach (var item in rest)
                     {
-                        if (item2.id == item.asignaciones.FirstOrDefault().id)
+                        foreach (var item2 in item.asignaciones)
                         {
-                            excel.Add(new Excel { A = item.id_odoo, B = item.colaborador, C = item2.clave, D = item2.titulo, E =  Truncate(item2.porcentaje,3).ToString() });
-                        }
-                        else
-                        {
-                            excel.Add(new Excel { A = "", B = "", C = item2.clave, D = item2.titulo, E = Truncate(item2.porcentaje, 3).ToString() });
+                            if (item2.id == item.asignaciones.FirstOrDefault().id)
+                            {
+                                excel.Add(new Excel { A = item.id_odoo, B = item.colaborador, C = item2.clave, D = item2.titulo, E = Truncate(item2.porcentaje, 3).ToString() });
+                            }
+                            else
+                            {
+                                excel.Add(new Excel { A = "", B = "", C = item2.clave, D = item2.titulo, E = Truncate(item2.porcentaje, 3).ToString() });
+                            }
                         }
                     }
                 }
+                
                 dynamic datos = new System.Dynamic.ExpandoObject();
                 datos.diastotales = DaysLeft(postModel.Fecha_Inicio.Date,postModel.Fecha_Final.Date.AddDays(1), true,new List<DateTime>());
                 datos.porcentaje = ((rest.Sum(x => x.diasTrabajados)/rest.Count)
                     / DaysLeft(postModel.Fecha_Inicio.Date, postModel.Fecha_Final.Date.AddDays(1), true, new List<DateTime>()))*100;
                 datos.rest = rest;
                 datos.excel = excel;
-                response.success = true;
-                response.response = datos;
+                response.success = (rest.Count > 0 && excel.Count > 0&& rest.Sum(x => x.asignaciones.Count)>0) ? true:false;
+                response.response = (rest.Count > 0 && excel.Count > 0&& rest.Sum(x => x.asignaciones.Count)>0) ? datos:$"Sin registros";
                 return Ok(response);
         }
             catch (Exception ex)

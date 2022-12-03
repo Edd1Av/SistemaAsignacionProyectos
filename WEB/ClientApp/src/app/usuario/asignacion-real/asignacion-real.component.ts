@@ -90,11 +90,16 @@ export class AsignacionRealComponent implements OnInit {
           days.push(value.toString().substring(0,10));
       });
       console.log(days);
-      this.daysSelected=days;
-      this.startDate = new Date(this.daysSelected[0]);
-      
-      this.calendar._goToDateInView(this.startDate,"month")
-      this.calendar.updateTodaysDate();
+      if(days.length>0){
+        this.daysSelected=days;
+        console.log(this.daysSelected);
+        this.startDate = new Date(this.daysSelected[0]);
+        this.startDate.setMinutes(this.startDate.getMinutes() + this.startDate.getTimezoneOffset())
+        console.log(this.startDate);
+        this.calendar._goToDateInView(this.startDate,"month")
+        this.calendar.updateTodaysDate();
+      }
+
 
       })
   }
@@ -107,6 +112,7 @@ export class AsignacionRealComponent implements OnInit {
           console.log(result);
 
           this.Asignaciones = result;
+          
           this.dataSource = new MatTableDataSource<IAsignacionReal>(this.Asignaciones);
           this.dataSource.paginator = this.paginator;
         })

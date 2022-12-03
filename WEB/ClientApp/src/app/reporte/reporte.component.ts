@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { tap } from 'rxjs/operators';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
@@ -24,7 +25,7 @@ export class ReporteComponent implements OnInit {
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
   Reporte: IReporte;
   dataSource!: MatTableDataSource<Ihistorico>;
-  constructor(private authService: AuthorizeService,private ReporteService: ReporteService,private excelService: ExcelService) { }
+  constructor(private _snackBar: MatSnackBar,private authService: AuthorizeService,private ReporteService: ReporteService,private excelService: ExcelService) { }
   displayedColumns: string[] = [
     "colaborador",
   ];
@@ -111,19 +112,28 @@ export class ReporteComponent implements OnInit {
       "fecha_final":fecha_final,"id_colaborador":this.idusuario})
       .pipe(
         tap((result) => {
-          this.Reporte = result;
-          this.Reporte.response.rest.forEach(element => {
-            element.diasfaltantes.forEach(d => {
-              d.inicio=new Date(d.inicio);
-              if(d.final!=null){
-                d.final=new Date(d.final);
-              }
-
+          if(result.success==true){
+            this.Reporte = result;
+            this.Reporte.response.rest.forEach(element => {
+              element.diasfaltantes.forEach(d => {
+                d.inicio=new Date(d.inicio);
+                d.inicio.setMinutes(d.inicio.getMinutes() + d.inicio.getTimezoneOffset());
+                if(d.final!=null){
+                  d.final=new Date(d.final);
+                  d.final.setMinutes(d.final.getMinutes() + d.final.getTimezoneOffset());
+                }
+  
+              });
             });
-          });
-          this.dataSource = new MatTableDataSource<Ihistorico>(this.Reporte.response.rest);
-          this.dataSource.paginator = this.paginator;
-          console.log(this.Reporte.response);
+            this.dataSource = new MatTableDataSource<Ihistorico>(this.Reporte.response.rest);
+            this.dataSource.paginator = this.paginator;
+            console.log(this.Reporte.response);
+          }else{
+            this._snackBar.open(result.response.toString(),"",{
+              duration: 3000
+            });
+          }
+
         })
       )
       .subscribe();
