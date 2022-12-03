@@ -77,13 +77,24 @@ export class AsignacionesRealUpdateComponent implements OnInit {
     // this.GetColaboradores();
     
     this.buildForm();
+    this.limitDates();
     this.rellenarCampos();
     this.GetProyectos();
   }
 
+  limitDates() {
+    this._asignacionService
+      .GetFechasLimite(this.Usuario.idUsuario)
+      .subscribe((result) => {
+        console.log(result);
+        this.fechaInicioMin = result.fechaInicio;
+        this.fechaInicioMax = result.fechaFin;
+        this.fechaFinalMin = result.fechaInicio;
+        this.fechaFinalMax = result.fechaFin;
+      });
+  }
 
-
-  private GetProyectos(){
+  GetProyectos(){
     this.intervaloFecha={fechaInicio:this.formGroup.controls['fecha_inicio'].value, fechaFin:this.formGroup.controls['fecha_final'].value}
     console.log(this.intervaloFecha);
     this._proyectosService.getProyectosColaborador(this.Usuario.idUsuario, this.intervaloFecha)
@@ -108,7 +119,7 @@ export class AsignacionesRealUpdateComponent implements OnInit {
     });
   }
 
-  private rellenarCampos(){
+  rellenarCampos(){
     let AsignacionReal:IAsignacionReal=this.data.asignacionReal;
     this.fechaInicioMax=AsignacionReal.fecha_final,
     this.fechaFinalMin=AsignacionReal.fecha_inicio,

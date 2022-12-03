@@ -83,7 +83,7 @@ export class AsignacionRealComponent implements OnInit {
   getFechas() {
     let days: String[]=[];
     this.AsignacionService
-      .GetFechasFaltantes({"id_colaborador":2})
+      .GetFechasFaltantes({"id_colaborador":this.Usuario.idUsuario})
       .subscribe((result) => {
         console.log(result.response);
         result.response.forEach(function (value:Date) {

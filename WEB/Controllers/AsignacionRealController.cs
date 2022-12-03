@@ -100,6 +100,14 @@ namespace WEB.Controllers
                 response.response = $"Seleccione algún proyecto";
                 return Ok(response);
             }
+
+            if (postModel.Fecha_Inicio > postModel.Fecha_Final)
+            {
+                response.success = false;
+                response.response = $"Fechas inválidas";
+                return Ok(response);
+            }
+
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
@@ -197,6 +205,14 @@ namespace WEB.Controllers
                 response.response = $"Seleccione algún proyecto";
                 return Ok(response);
             }
+
+            if (postModel.Fecha_Inicio > postModel.Fecha_Final)
+            {
+                response.success = false;
+                response.response = $"Fechas inválidas";
+                return Ok(response);
+            }
+
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
@@ -435,6 +451,34 @@ namespace WEB.Controllers
             return (value.Day<10? "0"+value.Day.ToString():value.Day.ToString()) + "-" + meses[value.Month-1]+"-"+(value.Year-2000).ToString();
         }
 
+
+        [HttpGet]
+        [Route("FechasLimite/{id}")]
+        public async Task<ActionResult<IntervaloFechas>> FechasLimite(int id)
+        {
+            IntervaloFechas intervaloFechas = new IntervaloFechas();
+            intervaloFechas.FechaFin = DateTime.Now.Date;
+
+            var asignacionPlaneada = _context.Asignacion.Include(z => z.Colaborador)
+                        .Include(z => z.Distribuciones)
+                        .ThenInclude(z => z.Proyecto)
+                        .Include(i => i.AsignacionReal)
+                        .ThenInclude(c => c.DistribucionesReales)
+                        .ThenInclude(v => v.Proyecto)
+                        .Where(x => x.IdColaborador == id).First();
+
+            //if (asignacionPlaneada.AsignacionReal.Count == 0)
+            //{
+                intervaloFechas.FechaInicio = asignacionPlaneada.Distribuciones.Min(x => x.Fecha_Inicio.Date);
+            //}
+            //else
+            //{
+            //    intervaloFechas.FechaInicio = asignacionPlaneada.AsignacionReal.Max(x => x.Fecha_Final.Date.AddDays(1));
+            //}
+
+
+            return Ok(intervaloFechas);
+        }
 
 
         [HttpPost]

@@ -9,6 +9,8 @@
       <div fxFlex="50%" fxFlex.sm="100%">
         <mat-form-field appearance="outline">
           <mat-label>Fecha Inicio</mat-label>
+          <!-- <input [readonly]="true" matInput formControlName="fecha_inicio" [matDatepicker]="picker"
+          [matDatepickerFilter]="myFilter" [min]="fechaInicioMin" [max]="fechaInicioMax" (dateChange)="updateFechaInicio('change', $event)"> -->
           <input [readonly]="true" matInput formControlName="fecha_inicio" [matDatepicker]="picker"
           [matDatepickerFilter]="myFilter" [min]="fechaInicioMin" [max]="fechaInicioMax" (dateChange)="updateFechaInicio('change', $event)">
           <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->
@@ -19,6 +21,8 @@
       <div fxFlex="50%" fxFlex.sm="100%">
         <mat-form-field appearance="outline">
           <mat-label>Fecha Final</mat-label>
+          <!-- <input [readonly]="true" matInput formControlName="fecha_final" [matDatepicker]="picker2"
+          [matDatepickerFilter]="myFilter" [min]="fechaFinalMin" [max]="fechaFinalMax" (dateChange)="updateFechaFinal('change', $event)"> -->
           <input [readonly]="true" matInput formControlName="fecha_final" [matDatepicker]="picker2"
           [matDatepickerFilter]="myFilter" [min]="fechaFinalMin" [max]="fechaFinalMax" (dateChange)="updateFechaFinal('change', $event)">
           <!-- <mat-hint>MM/DD/YYYY</mat-hint> -->

@@ -1,6 +1,12 @@
+import { getLocaleExtraDayPeriodRules } from '@angular/common';
 import { ConditionalExpr } from '@angular/compiler';
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
@@ -22,68 +28,65 @@ import { ProyectosService } from 'src/app/services/proyectos.service';
 @Component({
   selector: 'app-asignaciones-real-insert',
   templateUrl: './asignaciones-real-insert.component.html',
-  styleUrls: ['./asignaciones-real-insert.component.css']
+  styleUrls: ['./asignaciones-real-insert.component.css'],
 })
 export class AsignacionesRealInsertComponent implements OnInit {
-  myFilter = (d: Date|null): boolean => {
+  myFilter = (d: Date | null): boolean => {
     const day = (d || new Date()).getDay();
     // Prevent Saturday and Sunday from being selected.
     return day !== 0 && day !== 6;
   };
 
-  fechaInicioMin:Date|null = null;
-  fechaInicioMax:Date|null = null;
+  fechaInicioMin: Date | null = null;
 
-  fechaFinalMin:Date|null = null;
-  fechaFinalMax:Date|null = null;
+  //--
+  fechaInicioMax: Date | null = null;
+  //--
+  fechaFinalMin: Date | null = null;
+
+  fechaFinalMax: Date | null = null;
 
   formGroup!: FormGroup;
 
- 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   displayedColumns: string[] = [
-    "Proyecto", 
-    "Clave_Odoo",
-    "Porcentaje",
-    "acciones"
+    'Proyecto',
+    'Clave_Odoo',
+    'Porcentaje',
+    'acciones',
   ];
 
-  
-
-
-  intervaloFecha:IntervaloFecha;
-
-  fechaValida:Boolean = false;
-
-  
+  intervaloFecha: IntervaloFecha;
+  fechaLimite: IntervaloFecha;
+  fechaValida: Boolean = false;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) private data:any,
+    @Inject(MAT_DIALOG_DATA) private data: any,
     private matDialogref: MatDialogRef<AsignacionesRealInsertComponent>,
     private formBuilder: FormBuilder,
     private _asignacionService: AsignacionesService,
     private _snackBar: MatSnackBar,
-    private _colaboradoresService:ColaboradoresService,
-    private _proyectosService:ProyectosService,
-    private _authService:AuthorizeService
-  ) { }
-  
-  dataSource!: MatTableDataSource<IProyectoAsignadoReal>;
-  ProyectosAsignados:IProyectoAsignadoReal[]=[];
-  colaboradores: IColaborador[]=[];
-  Proyectos:IProyecto[]=[];
-  ProyectoSeleccionado:IProyecto;
-  ProyectoId:number=0;
-  Usuario:IUsuario;
-  ngOnInit(): void {
+    private _colaboradoresService: ColaboradoresService,
+    private _proyectosService: ProyectosService,
+    private _authService: AuthorizeService
+  ) {}
 
-    if(this._authService.usuarioData!=null){
-      this.Usuario=this._authService.usuarioData;
+  dataSource!: MatTableDataSource<IProyectoAsignadoReal>;
+  ProyectosAsignados: IProyectoAsignadoReal[] = [];
+  colaboradores: IColaborador[] = [];
+  Proyectos: IProyecto[] = [];
+  ProyectoSeleccionado: IProyecto;
+  ProyectoId: number = 0;
+  Usuario: IUsuario;
+  ngOnInit(): void {
+    if (this._authService.usuarioData != null) {
+      this.Usuario = this._authService.usuarioData;
     }
-  console.log(this.Usuario);
-  // this.GetColaboradores();
-  // this.GetProyectos();
-  this.buildForm();
+    console.log(this.Usuario);
+    // this.GetColaboradores();
+    // this.GetProyectos();
+    this.buildForm();
+    this.limitDates();
   }
 
   // private GetColaboradores(){
@@ -104,135 +107,161 @@ export class AsignacionesRealInsertComponent implements OnInit {
   //   ).subscribe();
   // }
 
-  public eliminarProyecto(index:number){
-    this.ProyectosAsignados.splice(index,1);
-    this.dataSource=new MatTableDataSource<IProyectoAsignadoReal>(this.ProyectosAsignados);
+  public eliminarProyecto(index: number) {
+    this.ProyectosAsignados.splice(index, 1);
+    this.dataSource = new MatTableDataSource<IProyectoAsignadoReal>(
+      this.ProyectosAsignados
+    );
   }
-  public agregarProyecto(){
-    if(this.ProyectosAsignados.find(x=>x.id==this.formGroup.controls['proyectos'].value)){
-      this.openSnackBar("No se pueden repetir los proyectos");
+  public agregarProyecto() {
+    if (
+      this.ProyectosAsignados.find(
+        (x) => x.id == this.formGroup.controls['proyectos'].value
+      )
+    ) {
+      this.openSnackBar('No se pueden repetir los proyectos');
       return;
     }
 
-    this.ProyectoSeleccionado=this.Proyectos.filter(x=>x.id==this.formGroup.controls['proyectos'].value)[0];
-    
+    this.ProyectoSeleccionado = this.Proyectos.filter(
+      (x) => x.id == this.formGroup.controls['proyectos'].value
+    )[0];
+
     console.log(this.ProyectoSeleccionado);
-    let proyectoA:IProyectoAsignadoReal={
-      clave:this.ProyectoSeleccionado.clave,
-      id:this.ProyectoSeleccionado.id,
-      titulo:this.ProyectoSeleccionado.titulo,
-      porcentaje:0,
+    let proyectoA: IProyectoAsignadoReal = {
+      clave: this.ProyectoSeleccionado.clave,
+      id: this.ProyectoSeleccionado.id,
+      titulo: this.ProyectoSeleccionado.titulo,
+      porcentaje: 0,
       // fecha_inicio:new Date(),
       // fecha_final:new Date(),
-    }
+    };
 
     console.log(proyectoA);
 
-
     this.ProyectosAsignados.push(proyectoA);
     console.log(this.ProyectosAsignados);
-    this.dataSource=new MatTableDataSource<IProyectoAsignadoReal>(this.ProyectosAsignados);
-    this.dataSource.paginator=this.paginator;
+    this.dataSource = new MatTableDataSource<IProyectoAsignadoReal>(
+      this.ProyectosAsignados
+    );
+    this.dataSource.paginator = this.paginator;
   }
 
   private buildForm() {
     this.formGroup = this.formBuilder.group({
-      fecha_inicio: new FormControl({value:"", disabled:false}, Validators.required),
-      fecha_final: new FormControl("", Validators.required),
+      fecha_inicio: new FormControl(
+        { value: '', disabled: false },
+        Validators.required
+      ),
+      fecha_final: new FormControl('', Validators.required),
       // colaborador: new FormControl({value: this.Usuario.idUsuario, disabled:true}, Validators.required),
-      proyectos: new FormControl({value:"", disabled:true}),
+      proyectos: new FormControl({ value: '', disabled: true }),
     });
   }
 
+  limitDates() {
+    this._asignacionService
+      .GetFechasLimite(this.Usuario.idUsuario)
+      .subscribe((result) => {
+        console.log(result);
+        this.fechaInicioMin = result.fechaInicio;
+        this.fechaInicioMax = result.fechaFin;
+        this.fechaFinalMin = result.fechaInicio;
+        this.fechaFinalMax = result.fechaFin;
+      });
+  }
 
-
-
-  openSnackBar(message:string) {
+  openSnackBar(message: string) {
     this._snackBar.open(message, undefined, {
       duration: 2000,
     });
   }
 
   onSubmit() {
-    let total:number=0;
-    this.ProyectosAsignados.forEach(element => {
-      total+=element.porcentaje;
+    let total: number = 0;
+    this.ProyectosAsignados.forEach((element) => {
+      total += element.porcentaje;
     });
-    if(total!=100){
-      this.openSnackBar("El porcentaje de asignación a proyectos debe sumar 100");
+    if (total != 100) {
+      this.openSnackBar(
+        'El porcentaje de asignación a proyectos debe sumar 100'
+      );
       return;
     }
-    if(this.formGroup.valid){
-      let POST:IAsignacionPostReal={
-        id_colaborador:this.Usuario.idUsuario,
-        fecha_inicio:this.formGroup.controls['fecha_inicio'].value,
-        fecha_final:this.formGroup.controls['fecha_final'].value,
-        proyectos:this.ProyectosAsignados
-      }
-        this._asignacionService
-          .SetAsignacionReal(POST)
-          .pipe(
-            tap((result: IResponse) => {
-              this.openSnackBar(result.response);
-              if (result.success) {
-                this.matDialogref.close();
-              }
-            })
-          )
-          .subscribe(); 
-    }else{
-      this.openSnackBar("Introduzca los campos faltantes");
+    if (this.formGroup.valid) {
+      let POST: IAsignacionPostReal = {
+        id_colaborador: this.Usuario.idUsuario,
+        fecha_inicio: this.formGroup.controls['fecha_inicio'].value,
+        fecha_final: this.formGroup.controls['fecha_final'].value,
+        proyectos: this.ProyectosAsignados,
+      };
+      this._asignacionService
+        .SetAsignacionReal(POST)
+        .pipe(
+          tap((result: IResponse) => {
+            this.openSnackBar(result.response);
+            if (result.success) {
+              this.matDialogref.close();
+            }
+          })
+        )
+        .subscribe();
+    } else {
+      this.openSnackBar('Introduzca los campos faltantes');
     }
   }
 
   updateFechaInicio(type: string, event: MatDatepickerInputEvent<Date>) {
-    if(event.value!=null){
+    if (event.value != null) {
       this.fechaFinalMin = new Date(event.value.toISOString());
     }
-
   }
 
   updateFechaFinal(type: string, event: MatDatepickerInputEvent<Date>) {
-    if(event.value!=null){
+    if (event.value != null) {
       this.fechaInicioMax = new Date(event.value.toISOString());
     }
-   
   }
 
-  confirmarFecha(){
-    if(this.formGroup.controls['fecha_inicio'].value && this.formGroup.controls['fecha_final'].value){
-
+  confirmarFecha() {
+    if (
+      this.formGroup.controls['fecha_inicio'].value &&
+      this.formGroup.controls['fecha_final'].value
+    ) {
       console.log(this.formGroup.controls['fecha_inicio'].value);
-      this.intervaloFecha={fechaInicio:this.formGroup.controls['fecha_inicio'].value, fechaFin:this.formGroup.controls['fecha_final'].value}
+      this.intervaloFecha = {
+        fechaInicio: this.formGroup.controls['fecha_inicio'].value,
+        fechaFin: this.formGroup.controls['fecha_final'].value,
+      };
 
-      this._proyectosService.getProyectosColaborador(this.Usuario.idUsuario, this.intervaloFecha)
-    .pipe(
-      tap((result:IProyecto[])=>{
-        this.Proyectos=result;
-        this.formGroup.controls['fecha_inicio'].disable();
-      this.formGroup.controls['fecha_final'].disable();
-      this.formGroup.controls['proyectos'].enable();
+      this._proyectosService
+        .getProyectosColaborador(this.Usuario.idUsuario, this.intervaloFecha)
+        .pipe(
+          tap((result: IProyecto[]) => {
+            this.Proyectos = result;
+            this.formGroup.controls['fecha_inicio'].disable();
+            this.formGroup.controls['fecha_final'].disable();
+            this.formGroup.controls['proyectos'].enable();
 
-      this.fechaValida = true;
-      })
-    ).subscribe();
-    }
-    else{
-      this.openSnackBar("Seleccione un rango de fechas");
+            this.fechaValida = true;
+          })
+        )
+        .subscribe();
+    } else {
+      this.openSnackBar('Seleccione un rango de fechas');
     }
   }
 
-  cancelarFecha(){
-      this.formGroup.controls['fecha_inicio'].enable();
-      this.formGroup.controls['fecha_final'].enable();
-      this.formGroup.controls['proyectos'].disable();
-      this.formGroup.controls['proyectos'].reset();
-      this.ProyectosAsignados=[];
-      this.dataSource=new MatTableDataSource<IProyectoAsignadoReal>(this.ProyectosAsignados);
-      this.dataSource.paginator=this.paginator;
-      this.fechaValida = false;
-
-
+  cancelarFecha() {
+    this.formGroup.controls['fecha_inicio'].enable();
+    this.formGroup.controls['fecha_final'].enable();
+    this.formGroup.controls['proyectos'].disable();
+    this.formGroup.controls['proyectos'].reset();
+    this.ProyectosAsignados = [];
+    this.dataSource = new MatTableDataSource<IProyectoAsignadoReal>(
+      this.ProyectosAsignados
+    );
+    this.dataSource.paginator = this.paginator;
+    this.fechaValida = false;
   }
-
 }

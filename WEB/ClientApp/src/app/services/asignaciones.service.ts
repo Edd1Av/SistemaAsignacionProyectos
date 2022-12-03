@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IAsignacionReal, IAsignacionGet, IAsignacion } from '../interfaces/iasignacion';
 import { IAsignacionPost, IAsignacionPostReal } from '../interfaces/iasignacion-post';
+import { IntervaloFecha } from '../interfaces/IntervaloFechas';
 import { IResponse } from '../interfaces/IResponse';
 
 
@@ -80,5 +81,9 @@ export class AsignacionesService {
     GetFechasFaltantes(postModel:any)  {
       console.log(Response);
         return this.http.post<any>(this.urlBase + "api/AsignacionReal/FechasFaltantes",postModel);
-      }
+    }
+
+    GetFechasLimite(id:number){
+      return this.http.get<IntervaloFecha>(this.urlBase+"api/AsignacionReal/FechasLimite/"+id);
+    }
 }
