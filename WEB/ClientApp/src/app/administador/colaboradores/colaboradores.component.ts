@@ -58,6 +58,7 @@ export class ColaboradoresComponent implements OnInit {
       .pipe(
         tap((result) => {
           this.colaboradores = result;
+          console.log(this.colaboradores);
           this.dataSource = new MatTableDataSource<IColaborador>(this.colaboradores);
           this.dataSource.paginator = this.paginator;
           // this.dataSource.filterPredicate = (data, filter: string) => {

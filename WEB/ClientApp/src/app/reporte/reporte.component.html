@@ -61,7 +61,7 @@
                 'colaboradorRed' : 'colaborador'" class="pe-5 ps-5 pt-4 pb-4">
                     <h2 style="font-weight: bold;" [ngClass]="item.complete<100 ?
                     'textWarn' : ''">{{item.id_odoo}}&nbsp;&nbsp;-&nbsp;&nbsp;{{item.colaborador}} </h2>
-                    <h3 class="diastrabajados"><span style="font-weight: bold;">Dias trabajados:
+                    <h3 class="diastrabajados"><span style="font-weight: bold;">Dias reportados:
                         </span>{{item.diasTrabajados.toFixed(2)}}</h3>
                     <br>
                     <span style="font-weight: bold; display: inline-block;">{{item.complete.toFixed(2)}}%</span>
@@ -87,7 +87,7 @@
                             </ng-container>
                             <ng-container matColumnDef="Dias">
                                 <th class="columna" style="width: 20%;" mat-header-cell *matHeaderCellDef> <span
-                                        class="th">Dias trabajados</span> </th>
+                                        class="th">Dias reportados</span> </th>
                                 <td class='has_label_on_mobile' data-label='Titulo: ' mat-cell *matCellDef="let element">
                                     {{element.dias.toFixed(2)}} </td>
                             </ng-container>
@@ -106,7 +106,7 @@
                                              (closed)="panelOpenState = false">
                           <mat-expansion-panel-header>
                             <mat-panel-title>
-                                <p class="textWarn">Días sin asignación</p>
+                                <p class="textWarn">Periodos no reportados</p>
                                 
                             </mat-panel-title>
                             <mat-panel-description>

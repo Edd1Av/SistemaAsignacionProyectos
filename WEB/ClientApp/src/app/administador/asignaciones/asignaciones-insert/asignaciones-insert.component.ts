@@ -69,7 +69,7 @@ export class AsignacionesInsertComponent implements OnInit {
   }
 
   private GetColaboradores(){
-    this._colaboradoresService.getColaboradores()
+    this._colaboradoresService.getDesarrolladores()
     .pipe(
       tap((result:IColaborador[])=>{
         this.colaboradores=result;

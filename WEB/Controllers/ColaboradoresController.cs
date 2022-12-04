@@ -55,6 +55,7 @@ namespace WEB.Controllers
                 colaborador.CURP = element.CURP;
                 colaborador.Id_Odoo = element.Id_Odoo;
                 colaborador.Id = element.Id;
+                colaborador.IsAdmin = element.IsAdmin;
                 IdentityColaborador.Add(colaborador);
             }
             //var rolDesarrollador = _roleManager.FindByNameAsync("Desarrollador");
@@ -75,6 +76,33 @@ namespace WEB.Controllers
             }
 
             return Ok(colaborador);
+        }
+
+
+        [HttpGet]
+        [Authorize]
+        [Route("Desarrolladores")]
+        public async Task<ActionResult<IEnumerable<ColaboradorPost>>> GetDesarrolladores()
+        {
+            //var x = await _userManager.GetUsersInRoleAsync("Desarrollador");
+
+            var colaboradores = await _context.Colaboradores.Include(x => x.IdentityUser).Where(x => x.IsAdmin == false).ToListAsync();
+            List<ColaboradorPost> IdentityColaborador = new List<ColaboradorPost>();
+            foreach (var element in colaboradores)
+            {
+                ColaboradorPost colaborador = new ColaboradorPost();
+                colaborador.Nombres = element.Nombres;
+                colaborador.Apellidos = element.Apellidos;
+                colaborador.Email = element.IdentityUser.Email;
+                colaborador.CURP = element.CURP;
+                colaborador.Id_Odoo = element.Id_Odoo;
+                colaborador.Id = element.Id;
+                colaborador.IsAdmin = element.IsAdmin;
+                IdentityColaborador.Add(colaborador);
+            }
+            //var rolDesarrollador = _roleManager.FindByNameAsync("Desarrollador");
+            //var colaboradores = await _context.Colaboradores.Where(x =>x.IdentityUser.Roles.Any(y => y.RoleId == rolDesarrollador.Result.Id)).OrderBy(x => x.Id_Odoo).ToListAsync();
+            return IdentityColaborador;
         }
 
         // PUT: api/Colaboradores/5

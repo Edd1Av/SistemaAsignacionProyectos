@@ -94,7 +94,7 @@ namespace WEB.Controllers
 
                 if (result.Succeeded)
                 {
-                    string message = "<p>Hemos recibido una solicitud para cambiar su contraseña.</p><br><p>Su nueva contraseña: " + model.NPassword + "</p>";
+                    string message = "<p>Hemos recibido una solicitud para cambiar su contraseña.</p><p>Su nueva contraseña: " + model.NPassword + "</p>";
                     string name = colaborador.Nombres + " " + colaborador.Apellidos;
                     try
                     {
@@ -143,7 +143,7 @@ namespace WEB.Controllers
 
                     if (result.Succeeded)
                     {
-                        string message = "<p>Hemos recibido una solicitud para restablecer su contraseña.</p><br><p> Su nueva contraseña: " + password + "</p>";
+                        string message = "<p>Hemos recibido una solicitud para restablecer su contraseña.</p><p> Su nueva contraseña: " + password + "</p>";
                         string name = colaborador.Nombres + " " + colaborador.Apellidos;
                         try
                         {

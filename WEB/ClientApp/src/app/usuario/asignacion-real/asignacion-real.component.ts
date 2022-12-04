@@ -86,9 +86,14 @@ export class AsignacionRealComponent implements OnInit {
       .GetFechasFaltantes({"id_colaborador":this.Usuario.idUsuario})
       .subscribe((result) => {
         console.log(result.response);
-        result.response.forEach(function (value:Date) {
-          days.push(value.toString().substring(0,10));
-      });
+        if(result.success==true ){
+          result.response.forEach(function (value:Date) {
+            days.push(value.toString().substring(0,10));
+        });
+        }
+        else{
+          this.snackBar.open(result.response);
+        }
       console.log(days);
       if(days.length>0){
         this.daysSelected=days;
@@ -99,9 +104,7 @@ export class AsignacionRealComponent implements OnInit {
         this.calendar._goToDateInView(this.startDate,"month")
         this.calendar.updateTodaysDate();
       }
-
-
-      })
+      });
   }
 
   actualizarHistorico() {

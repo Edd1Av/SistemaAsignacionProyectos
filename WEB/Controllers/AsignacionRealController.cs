@@ -383,14 +383,25 @@ namespace WEB.Controllers
                 List<DateTime> Fechas = new List<DateTime>();
 
                 var Asignacion = _context.Asignacion.Include(x => x.Colaborador).Include(x => x.Distribuciones).Include(x => x.AsignacionReal).
-                    Where(x => x.IdColaborador == postModel.Id_Colaborador).ToList();
+                    Where(x => x.IdColaborador == postModel.Id_Colaborador).FirstOrDefault();
+
+                if (Asignacion == null)
+                {
+                    response.success = false;
+                    response.response = $"Sin proyetos asignados";
+                    return Ok(response);
+                }
 
 
-                DateTime Fecha_Inicial = DateTime.Now.ToLocalTime().Date.AddMonths(-1)<Asignacion.Min(x => x.Distribuciones.Min(y => y.Fecha_Inicio)).Date?
-                    Asignacion.Min(x => x.Distribuciones.Min(y => y.Fecha_Inicio)).Date: DateTime.Now.ToLocalTime().Date.AddMonths(-1);
+                //DateTime Fecha_Inicial = DateTime.Now.ToLocalTime().Date.AddMonths(-1)<Asignacion.Distribuciones.Min(y => y.Fecha_Inicio).Date?
+                //    Asignacion.Distribuciones.Min(y => y.Fecha_Inicio).Date: DateTime.Now.ToLocalTime().Date.AddMonths(-1);
                 //DateTime Fecha_Inicial = Asignacion.Min(x => x.Distribuciones.Min(y => y.Fecha_Inicio)).Date;
-                DateTime Fecha_Final = DateTime.Now.ToLocalTime() > Asignacion.Max(x => x.Distribuciones.Max(y => y.Fecha_Final)).Date ?
-                    Asignacion.Max(x => x.Distribuciones.Max(y => y.Fecha_Inicio)).Date : DateTime.Now.ToLocalTime().Date;
+                //DateTime Fecha_Final = DateTime.Now.ToLocalTime() > Asignacion.Distribuciones.Max(y => y.Fecha_Final).Date ?
+                //    Asignacion.Distribuciones.Max(y => y.Fecha_Inicio).Date : DateTime.Now.ToLocalTime().Date;
+
+                DateTime Fecha_Inicial = Asignacion.Distribuciones.Min(y => y.Fecha_Inicio).Date;
+                DateTime Fecha_Final = DateTime.Now.Date > Asignacion.Distribuciones.Max(y => y.Fecha_Final).Date ?
+                    Asignacion.Distribuciones.Max(y => y.Fecha_Final).Date : DateTime.Now.Date;
 
                 var asignacionesReales = _context.AsignacionReal.Include(x => x.Asignacion)
                                                            .ThenInclude(z => z.Colaborador)
@@ -459,6 +470,13 @@ namespace WEB.Controllers
             IntervaloFechas intervaloFechas = new IntervaloFechas();
             intervaloFechas.FechaFin = DateTime.Now.Date;
 
+            var asignacion = _context.Colaboradores.Include(x => x.Asignacion).Where(x => x.Id == id).First();
+            if (asignacion.Asignacion == null)
+            {
+                intervaloFechas.FechaInicio = DateTime.Now.Date; 
+                return Ok(intervaloFechas);
+            }
+
             var asignacionPlaneada = _context.Asignacion.Include(z => z.Colaborador)
                         .Include(z => z.Distribuciones)
                         .ThenInclude(z => z.Proyecto)
@@ -489,6 +507,8 @@ namespace WEB.Controllers
             try
             {
                 var AsignacionesReales = new List<AsignacionReal>();
+                var usuario = _context.Colaboradores.Where(x => x.Id == postModel.Id_Colaborador).First();
+
                 if (postModel.Fecha_Inicio != null&postModel.Fecha_Final!=null)
                 {
                     AsignacionesReales = _context.AsignacionReal
@@ -496,7 +516,7 @@ namespace WEB.Controllers
                                                        .ThenInclude(z => z.Colaborador)
                                                    .Include(i => i.DistribucionesReales)
                                                        .ThenInclude(y => y.Proyecto).
-                                                       Where(postModel.Id_Colaborador!=0&&postModel.Id_Colaborador!=1? x=>x.Asignacion.IdColaborador==postModel.Id_Colaborador:x=>x.Id==x.Id).
+                                                       Where(usuario.IsAdmin==false ? x=>x.Asignacion.IdColaborador==postModel.Id_Colaborador : x=>x.Asignacion.Colaborador.IsAdmin==false).
                                                      Where(x =>
                                                      ((x.Fecha_Final.Date >= postModel.Fecha_Inicio.Date && x.Fecha_Final.Date <= postModel.Fecha_Final.Date) ||
                                                      (x.Fecha_Inicio.Date <= postModel.Fecha_Final.Date && x.Fecha_Inicio.Date >= postModel.Fecha_Inicio.Date)) ||
@@ -515,7 +535,7 @@ namespace WEB.Controllers
             }
 
                 var rest = new List<rest>();
-                var Colaboradores = _context.Colaboradores.Where(postModel.Id_Colaborador != 0 && postModel.Id_Colaborador != 1 ? x=>x.Id==postModel.Id_Colaborador:x =>x.Id!=1).ToList();
+                var Colaboradores = _context.Colaboradores.Where(usuario.IsAdmin==false ? x => x.Id == postModel.Id_Colaborador : x => x.IsAdmin==false).ToList();
                 foreach (var colaborador in Colaboradores)
                 {
                     var proyectos = new List<HistoricoResponse>();

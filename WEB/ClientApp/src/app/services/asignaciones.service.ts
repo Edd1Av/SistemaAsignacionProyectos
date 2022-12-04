@@ -80,7 +80,7 @@ export class AsignacionesService {
 
     GetFechasFaltantes(postModel:any)  {
       console.log(Response);
-        return this.http.post<any>(this.urlBase + "api/AsignacionReal/FechasFaltantes",postModel);
+        return this.http.post<IResponse>(this.urlBase + "api/AsignacionReal/FechasFaltantes",postModel);
     }
 
     GetFechasLimite(id:number){

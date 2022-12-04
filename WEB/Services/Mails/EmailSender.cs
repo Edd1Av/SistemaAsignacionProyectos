@@ -28,11 +28,11 @@ namespace WEB.Services.Mails
             ////////
             ///////
 
-            string srcImg = url + "/img/SANITRAZAB.png";
-            string img = $"<img width='120' style='width: 120px !important' src='{srcImg}'>";
+            string srcImg = _options.Img;
+            string img = $"<img width='200' style='width: 200px !important' src='{srcImg}'>";
             //////
-            string bodyhtml = "<div style='width: 800px !important; letter-spacing: 1px;margin: 0px;font-family: Helvetica;" +
-                " color: #555555 !important;'><div style='font-size: 12px; width: 100%; padding: 25px; background-color: #f2f2f2 !important; border: 2px #e1e1e1 " +
+            string bodyhtml = "<div style='width: 600px !important; margin: 0px;" +
+                " color: #000000 !important;'><div style='font-size: 16px; width: 100%; padding: 25px; background-color: #f2f2f2 !important; border: 2px #e1e1e1 " +
                 $"solid;'><div style='width: 120px !important;'>{img}</div><p class='font'><br> " +
                 "Estimado/a usuario: <span>" + name + "</span></p><br>" + message +
                 "<br><p style='font-size: 9px;'> " +
