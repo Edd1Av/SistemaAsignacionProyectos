@@ -1,5 +1,6 @@
 import { getLocaleExtraDayPeriodRules } from '@angular/common';
 import { ConditionalExpr } from '@angular/compiler';
+import { INT_TYPE } from '@angular/compiler/src/output/output_ast';
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {
   FormBuilder,
@@ -89,23 +90,6 @@ export class AsignacionesRealInsertComponent implements OnInit {
     this.limitDates();
   }
 
-  // private GetColaboradores(){
-  //   this._colaboradoresService.getColaboradores()
-  //   .pipe(
-  //     tap((result:IColaborador[])=>{
-  //       this.colaboradores=result;
-  //     })
-  //   ).subscribe();
-  // }
-
-  // private GetProyectos(){
-  //   this._proyectosService.getProyectosColaborador(this.Usuario.idUsuario)
-  //   .pipe(
-  //     tap((result:IProyecto[])=>{
-  //       this.Proyectos=result;
-  //     })
-  //   ).subscribe();
-  // }
 
   public eliminarProyecto(index: number) {
     this.ProyectosAsignados.splice(index, 1);
@@ -113,6 +97,8 @@ export class AsignacionesRealInsertComponent implements OnInit {
       this.ProyectosAsignados
     );
   }
+
+
   public agregarProyecto() {
     if (
       this.ProyectosAsignados.find(
@@ -141,6 +127,30 @@ export class AsignacionesRealInsertComponent implements OnInit {
 
     this.ProyectosAsignados.push(proyectoA);
     console.log(this.ProyectosAsignados);
+    this.dataSource = new MatTableDataSource<IProyectoAsignadoReal>(
+      this.ProyectosAsignados
+    );
+    this.dataSource.paginator = this.paginator;
+  }
+
+  automatico(){
+    console.log(this.Proyectos.length);
+    this.ProyectosAsignados = [];
+    let residuo:number = 100%this.Proyectos.length;
+    this.Proyectos.forEach((element)=>{
+      let proyectoA: IProyectoAsignadoReal = {
+        clave: element.clave,
+        id: element.id,
+        titulo: element.titulo,
+        porcentaje: Number.parseInt((100/this.Proyectos.length).toString()),
+      };  
+      this.ProyectosAsignados.push(proyectoA);
+    });
+    
+    if(this.ProyectosAsignados.length>=1){
+      this.ProyectosAsignados[0].porcentaje+=residuo;
+    }
+    
     this.dataSource = new MatTableDataSource<IProyectoAsignadoReal>(
       this.ProyectosAsignados
     );
@@ -264,4 +274,6 @@ export class AsignacionesRealInsertComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.fechaValida = false;
   }
+
+ 
 }

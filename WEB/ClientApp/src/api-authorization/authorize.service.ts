@@ -29,14 +29,23 @@ export class AuthorizeService {
     this.changeLoginStatusSubject = new BehaviorSubject<IUsuario|null>(JSON.parse(usuario));
     this.changeLoginStatus = this.changeLoginStatusSubject.asObservable();
     
+    this.validarExp();
+    
+    
+  }
+
+  public validarExp(){
     if(this.changeLoginStatusSubject.value !=null){
       let user:IUsuario = this.changeLoginStatusSubject.value;
-      let now:Date = new Date;
-      if(now >= user.expiration){
+      let now:Date = new Date();
+      let exp:Date = new Date(user.expiration);
+      console.log("Ahora",now);
+      console.log("Expiración", exp);
+      if(now > exp){
+        console.log("DEBE SALIR")
         this.logout();
       }
     }
-    
   }
 
   public get usuarioData(){
@@ -55,7 +64,6 @@ export class AuthorizeService {
       if(result.success==true){
         localStorage.setItem("Sesion", JSON.stringify(result));
         this.changeLoginStatusSubject.next(result);
-       
         //this.router.navigate(["/home"]);
       }
        return result;

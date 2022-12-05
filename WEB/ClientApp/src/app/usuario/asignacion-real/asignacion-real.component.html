@@ -4,7 +4,7 @@
     <div [ngClass]="this.daysSelected.length ?
     'labelfaltantes' : 'labelok'">
       <p style="display:inline-block; width: 90%; margin: 0; font-size: 16px;">
-        {{this.daysSelected.length  ? 'Existen días sin asignación' : 'Estás al día'}}
+        {{this.daysSelected.length  ? 'Existen días no reportados' : 'Estás al día'}}
       </p>
       <i *ngIf="!this.daysSelected.length" style="float:right;" class="material-icons">check</i>
       <button *ngIf="this.daysSelected.length" style="display:inline-block;" mat-button [matMenuTriggerFor]="menu"><mat-icon color="basic">calendar_today</mat-icon></button>

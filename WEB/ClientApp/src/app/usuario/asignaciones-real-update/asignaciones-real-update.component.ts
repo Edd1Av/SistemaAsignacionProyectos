@@ -170,6 +170,30 @@ export class AsignacionesRealUpdateComponent implements OnInit {
       this.dataSource.paginator=this.paginator;
     }
 
+    automatico(){
+      console.log(this.Proyectos.length);
+      this.ProyectosAsignados = [];
+      let residuo:number = 100%this.Proyectos.length;
+      this.Proyectos.forEach((element)=>{
+        let proyectoA: IProyectoAsignadoReal = {
+          clave: element.clave,
+          id: element.id,
+          titulo: element.titulo,
+          porcentaje: Number.parseInt((100/this.Proyectos.length).toString()),
+        };  
+        this.ProyectosAsignados.push(proyectoA);
+      });
+      
+      if(this.ProyectosAsignados.length>=1){
+        this.ProyectosAsignados[0].porcentaje+=residuo;
+      }
+      
+      this.dataSource = new MatTableDataSource<IProyectoAsignadoReal>(
+        this.ProyectosAsignados
+      );
+      this.dataSource.paginator = this.paginator;
+    }
+
     openSnackBar(message:string) {
       this._snackBar.open(message, undefined, {
         duration: 2000,
