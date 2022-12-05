@@ -113,3 +113,18 @@ table{
     color: #800000;
     margin: 0 !important;
   }
+
+  .dFaltante{
+    display: inline-block;
+    margin: 0px;
+  }
+
+  .divDFaltantes{
+    display: inline-block;
+    padding: 10px;
+    font-size: 14px;
+    background-color: #ffffff;
+    border-radius: 7px;
+    margin: 5px;
+    width: fit-content;
+  }

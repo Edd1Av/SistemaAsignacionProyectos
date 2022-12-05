@@ -67,5 +67,5 @@
     </ItemGroup>
   </Target>
   
-  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="https://github.com/ansible/schemas/raw/main/f/ansible-argument-specs.json" /></VisualStudio></ProjectExtensions>
 </Project>

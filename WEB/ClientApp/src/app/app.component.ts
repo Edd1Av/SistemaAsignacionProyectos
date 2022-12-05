@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { IUsuario } from './interfaces/IUsuario';
 import { LoaderService } from './loader/loader.service';
@@ -6,7 +6,8 @@ import { LoaderService } from './loader/loader.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class AppComponent {
@@ -29,7 +30,7 @@ export class AppComponent {
         this.usuarioLoggeado = false;
       }
       
-    })
+    });
   }
 
   ngAfterViewChecked(){

@@ -81,6 +81,7 @@ export class AsignacionRealComponent implements OnInit {
   }
 
   getFechas() {
+    this.daysSelected = [];
     let days: String[]=[];
     this.AsignacionService
       .GetFechasFaltantes({"id_colaborador":this.Usuario.idUsuario})

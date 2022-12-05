@@ -27,13 +27,17 @@ displayedColumns: string[] = [
   "Clave_Odoo",
   "Porcentaje",
 ];
+displayedColumnsProyectos: string[] = [
+  "Titulo",
+  "Clave",
+];
   asignacion:IAsignacionGet;
   dataSource!: MatTableDataSource<IProyectoAsignado>;
   ProyectosAsignados:IProyectoAsignado[]=[];
   formGroup!: FormGroup;
   nombre_colaborador:string=this.data.colaborador.nombres;
   constructor(
-    @Inject(MAT_DIALOG_DATA) private data:any,
+    @Inject(MAT_DIALOG_DATA) public data:any,
     private matDialogref: MatDialogRef<ColaboradorUpdateComponent>,
     private formBuilder: FormBuilder,
     private _colaboradorService: ColaboradoresService,

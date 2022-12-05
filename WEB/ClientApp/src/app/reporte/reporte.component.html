@@ -113,24 +113,13 @@
                               {{panelOpenState ? '' : ''}}
                             </mat-panel-description>
                           </mat-expansion-panel-header>
-                          <div class="ps-5 pe-5 pt-4 pb-3">
-                            <table *ngIf="item.diasfaltantes.length>0" style="width: 100%;" mat-table
-                                [dataSource]="item.diasfaltantes" class="p-5">
-                                <ng-container matColumnDef="Inicio">
-                                    <th class="columna" style="width: 20%;" mat-header-cell *matHeaderCellDef> <span
-                                            class="th">Inicio</span> </th>
-                                    <td class='has_label_on_mobile' data-label='Titulo: ' mat-cell *matCellDef="let element">
-                                        {{element.inicio!=null? element.inicio.getDate()+"-"+(element.inicio.getMonth() + 1)+"-"+element.inicio.getFullYear():""}} </td>
-                                </ng-container>
-                                <ng-container matColumnDef="Final">
-                                    <th class="columna" style="width: 20%;" mat-header-cell *matHeaderCellDef> <span
-                                            class="th">Final</span> </th>
-                                    <td class='has_label_on_mobile' data-label='Titulo: ' mat-cell *matCellDef="let element">
-                                        {{element.final!=null? element.final.getDate()+"-"+(element.final.getMonth() + 1)+"-"+element.final.getFullYear():""}} </td>
-                                </ng-container>
-                                <tr mat-header-row *matHeaderRowDef="displayedColumnsDiasFaltantes"></tr>
-                                <tr mat-row *matRowDef="let row; columns: displayedColumnsDiasFaltantes;"></tr>
-                            </table>
+                          <div style="text-align: center;">
+                           <div *ngFor="let element of item.diasfaltantes" style="width:fit-content; display:inline-block;">
+                            <div class="divDFaltantes">
+                                <p class="dFaltante">{{element.inicio!=null? element.inicio.getDate()+"-"+(element.inicio.getMonth() + 1)+"-"+element.inicio.getFullYear():""}}</p>
+                                <p class="dFaltante">{{element.final!=null? "&nbsp;-&nbsp;"+ element.final.getDate()+"-"+(element.final.getMonth() + 1)+"-"+element.final.getFullYear():""}}</p>
+                            </div>
+                           </div>
                         </div>
                         </mat-expansion-panel>
                       </mat-accordion>

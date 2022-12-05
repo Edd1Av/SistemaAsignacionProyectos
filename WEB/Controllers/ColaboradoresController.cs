@@ -48,6 +48,13 @@ namespace WEB.Controllers
             List<ColaboradorPost> IdentityColaborador = new List<ColaboradorPost>();
             foreach (var element in colaboradores)
             {
+                List<ProyectosPost> Proyectos = new List<ProyectosPost>();
+                var temp = _context.Distribucion.Include(x => x.Asignacion).ThenInclude(x => x.Colaborador).Include(x => x.Proyecto)
+                .Where(x => x.Asignacion.IdColaborador == element.Id && x.Fecha_Final >= DateTime.Now.Date).ToList();
+                foreach (var i in temp)
+                {
+                    Proyectos.Add(new ProyectosPost { Titulo = i.Proyecto.Titulo, Clave = i.Proyecto.Clave });
+                }
                 ColaboradorPost colaborador = new ColaboradorPost();
                 colaborador.Nombres = element.Nombres;
                 colaborador.Apellidos = element.Apellidos;
@@ -56,6 +63,7 @@ namespace WEB.Controllers
                 colaborador.Id_Odoo = element.Id_Odoo;
                 colaborador.Id = element.Id;
                 colaborador.IsAdmin = element.IsAdmin;
+                colaborador.Proyectos = Proyectos.Count > 0 ? Proyectos : null;
                 IdentityColaborador.Add(colaborador);
             }
             //var rolDesarrollador = _roleManager.FindByNameAsync("Desarrollador");
@@ -97,7 +105,7 @@ namespace WEB.Controllers
                 colaborador.CURP = element.CURP;
                 colaborador.Id_Odoo = element.Id_Odoo;
                 colaborador.Id = element.Id;
-                colaborador.IsAdmin = element.IsAdmin;
+
                 IdentityColaborador.Add(colaborador);
             }
             //var rolDesarrollador = _roleManager.FindByNameAsync("Desarrollador");

@@ -14,5 +14,14 @@
         public string Email { get; set; }
 
         public bool IsAdmin { get; set; }
+
+        public List<ProyectosPost>? Proyectos { get; set; }
     }
+
+    public class ProyectosPost 
+    { 
+        public string Titulo { get; set; }
+        public string Clave { get; set; }
+    }
+
 }

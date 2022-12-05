@@ -6,4 +6,11 @@ export interface IColaborador {
     id_Odoo:String;
     email:string;
     isAdmin:Boolean;
+    proyectos:ProyectosPost[];
 }
+
+export interface ProyectosPost {
+    titulo:String;
+    clave:String;
+}
+
