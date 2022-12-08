@@ -35,7 +35,7 @@ export class AddAdministradorComponent implements OnInit {
 
   onSubmit(){
     if(this.formGroup.valid){
-      this.authorizeService.ResetPassword(this.formGroup.value).pipe(tap((result: IResponse)=>{
+      this.authorizeService.AddAdmin(this.formGroup.value).pipe(tap((result: IResponse)=>{
         this.openSnackBar(result.response);
         if(result.success){
           this.matDialogref.close();

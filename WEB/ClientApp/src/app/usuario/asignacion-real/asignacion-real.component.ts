@@ -74,6 +74,7 @@ export class AsignacionRealComponent implements OnInit {
 
     if(this._authService.usuarioData!=null){
       this.Usuario=this._authService.usuarioData;
+      console.log(this.Usuario);
     }
     this.actualizarHistorico();
     this.buildForm();
@@ -93,7 +94,7 @@ export class AsignacionRealComponent implements OnInit {
         });
         }
         else{
-          this.snackBar.open(result.response);
+          this.openSnackBar(result.response);
         }
       console.log(days);
       if(days.length>0){
@@ -206,6 +207,7 @@ export class AsignacionRealComponent implements OnInit {
         }
       });
   }
+
 
   openSnackBar(message:string) {
     this.snackBar.open(message, undefined, {
