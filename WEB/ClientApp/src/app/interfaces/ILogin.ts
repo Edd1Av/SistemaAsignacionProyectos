@@ -13,3 +13,7 @@ export interface IChangePassword{
 export interface IResetPassword{
     email: string;
 }
+
+export interface IPostAdmin{
+    email: string;
+}

@@ -193,14 +193,14 @@ namespace WEB.Migrations
                         new
                         {
                             Id = "2c5e174e-3b0e-446f-86af-483d56fd7210",
-                            ConcurrencyStamp = "12eb91ce-822b-415c-8c80-31d46f0bfdbb",
+                            ConcurrencyStamp = "0cec78f0-f6d9-40e8-b62a-9c19b749319a",
                             Name = "Administrador",
                             NormalizedName = "ADMINISTRADOR"
                         },
                         new
                         {
                             Id = "3c6e284e-4b1e-557f-97af-594d67fd8321",
-                            ConcurrencyStamp = "cc4f2c35-6619-4ee7-b3ce-31e582c273bc",
+                            ConcurrencyStamp = "81988f3a-f47b-48d2-b381-229c647cd357",
                             Name = "Desarrollador",
                             NormalizedName = "DESARROLLADOR"
                         });
@@ -338,7 +338,7 @@ namespace WEB.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int>("IdColaborador")
+                    b.Property<int?>("IdColaborador")
                         .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
@@ -377,7 +377,8 @@ namespace WEB.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("IdColaborador")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[IdColaborador] IS NOT NULL");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -394,16 +395,15 @@ namespace WEB.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d63aa557-6004-480f-97a5-8bdd862e249b",
+                            ConcurrencyStamp = "7f7520ea-5fd4-4e59-b1cc-6d450abe9be2",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
-                            IdColaborador = 1,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAELLiO72+jHKHuf8Tdhwialg3iWyDKMAbnT0xbx9WZODFf269FL/wRiCqf7g0OQOvCA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJ8YBLWpHSn/7YrtJa1tirBjzuL97+8lIAdsvyy0LFDE+TIs28/lvJAHj8ELHKH9Gw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "eabb17b4-78d3-43c4-82a2-05fa447e2432",
+                            SecurityStamp = "a0511189-b2ea-4c0a-b7e2-65b4106dd737",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         });
@@ -475,9 +475,6 @@ namespace WEB.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Nombres")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -492,17 +489,6 @@ namespace WEB.Migrations
                         .IsUnique();
 
                     b.ToTable("Colaboradores", "app");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Apellidos = "admin",
-                            CURP = "n/a",
-                            Id_Odoo = "n/a",
-                            IsAdmin = true,
-                            Nombres = "admin"
-                        });
                 });
 
             modelBuilder.Entity("WEB.Models.Distribucion", b =>
@@ -674,9 +660,7 @@ namespace WEB.Migrations
                 {
                     b.HasOne("WEB.Models.Colaborador", "Colaborador")
                         .WithOne("IdentityUser")
-                        .HasForeignKey("WEB.Models.ApplicationUser", "IdColaborador")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("WEB.Models.ApplicationUser", "IdColaborador");
 
                     b.Navigation("Colaborador");
                 });

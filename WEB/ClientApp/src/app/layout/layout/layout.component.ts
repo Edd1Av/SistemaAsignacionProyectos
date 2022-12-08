@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { AddAdministradorComponent } from 'src/api-authorization/add-administrador/add-administrador.component';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { ChangePasswordComponent } from 'src/api-authorization/change-password/change-password.component';
 import { IUsuario } from 'src/app/interfaces/IUsuario';
@@ -57,6 +58,16 @@ export class LayoutComponent implements OnInit {
   openDialog(): void {
     let dialog = this.dialog.open(ChangePasswordComponent, {
       width: "500px",
+      disableClose: true,
+    });
+    dialog.afterClosed().subscribe((result) => {
+      
+    });
+  }
+
+  openDialogAdmin(): void {
+    let dialog = this.dialog.open(AddAdministradorComponent, {
+      width: "400px",
       disableClose: true,
     });
     dialog.afterClosed().subscribe((result) => {

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using WEB.Services.Mails;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WEB.Controllers
 {
@@ -66,8 +67,96 @@ namespace WEB.Controllers
 
             var rol = _userManager.GetRolesAsync(user);
 
-            LocalStorage localS = new LocalStorage{IdUsuario=user.IdColaborador, Correo=user.Email, Token=Token, Expiration=expiration, Rol=rol.Result.First(), Success=true};
+            LocalStorage localS = new LocalStorage{IdUsuario= (int)(user.IdColaborador!= null ? user.IdColaborador: 0), Correo=user.Email, Token=Token, Expiration=expiration, Rol=rol.Result.First(), Success=true};
             return Ok(localS);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("AddAdmin")]
+        public async Task<IActionResult> PostAdministrador(AddAdmin admin)
+        {
+            Response response = new Response();
+            
+            var c = await _userManager.FindByEmailAsync(admin.Email.Trim());
+
+            if (c != null)
+            {
+                response.success = false;
+                response.response = $"Ya existe un administrador con ese Email";
+                return Ok(response);
+            }
+
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    ApplicationUser user = new ApplicationUser();
+                    user.Email = admin.Email.Trim();
+                    //user.NormalizedEmail = colaborador.Email.Trim().ToUpper();
+                    user.EmailConfirmed = true;
+                    user.UserName = admin.Email.Trim();
+
+                    string password = "Pa$word1";
+
+                    var x = await _userManager.CreateAsync(user, password);
+                    await _context.SaveChangesAsync();
+                    if (x.Succeeded)
+                    {
+                            var y = await _userManager.AddToRoleAsync(user, "Administrador");
+                            if (y.Succeeded)
+                            {
+
+                            }
+                            else
+                            {
+                                transaction.Rollback();
+                                response.success = false;
+                                response.response = $"No se pudo asignar el rol Administrador";
+                                return Ok(response);
+                            }
+                    }
+                    else
+                    {
+                        transaction.Rollback();
+                        response.success = false;
+                        response.response = $"No se pudo crear el usuario";
+                        return Ok(response);
+                    }
+                   
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+
+                    var Link = Url.PageLink().Split('/');
+                    string url = Link[0] + "//" + Link[2];
+                    string name = $"";
+                    string message = "<p>Por este medio confirmamos su registro al sistema Plenumsoft y " +
+                               $"compartimos con usted sus claves de acceso:</p><p>Usuario: <span>{user.Email}" +
+                               $"</span></p><p>Contraseña: <span>{password}</span></p><p>Para ingresar " +
+                               "al sistema, dar clic en el siguiente enlace:</p><a style='color: #1B57A6' " +
+                               $"href='{url}'>{url}</a>";
+                    try
+                    {
+                        await _emailSender.SendEmailAsync(user.Email, "Nuevo Administrador - SAP Plenumsoft", name, message, "").ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Ok(new Response { success = true, response = "Error: Email" });
+                    }
+
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    response.success = false;
+                    response.response = $"Error al registrar";
+                    return Ok(response);
+                }
+
+            }
+            response.success = true;
+            response.response = "Registrado con éxito";
+            return Ok(response);
         }
 
 
@@ -88,17 +177,17 @@ namespace WEB.Controllers
                     return Ok(new Response { success = false, response = "Usuario no encontrado" });
                 }
 
-                var colaborador = _context.Colaboradores.Include(x => x.IdentityUser).Where(x => x.IdentityUser.NormalizedEmail == model.Email.Trim().ToUpper()).First();
+                //var colaborador = _context.Colaboradores.Include(x => x.IdentityUser).Where(x => x.IdentityUser.NormalizedEmail == model.Email.Trim().ToUpper()).First();
 
                 var result = await _userManager.ChangePasswordAsync(user, model.Password, model.NPassword);
 
                 if (result.Succeeded)
                 {
                     string message = "<p>Hemos recibido una solicitud para cambiar su contraseña.</p><p>Su nueva contraseña: " + model.NPassword + "</p>";
-                    string name = colaborador.Nombres + " " + colaborador.Apellidos;
+                    //string name = colaborador.Nombres + " " + colaborador.Apellidos;
                     try
                     {
-                        await _emailSender.SendEmailAsync(user.Email, "Cambio de contraseña - SAP Plenumsoft", name, message, "").ConfigureAwait(false);
+                        await _emailSender.SendEmailAsync(user.Email, "Cambio de contraseña - SAP Plenumsoft", "", message, "").ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
@@ -131,7 +220,7 @@ namespace WEB.Controllers
                     return Ok(new Response { success = false, response = "Usuario no encontrado" });
                 }
 
-                var colaborador = _context.Colaboradores.Include(x => x.IdentityUser).Where(x => x.IdentityUser.NormalizedEmail == model.Email.Trim().ToUpper()).First();
+                //var colaborador = _context.Colaboradores.Include(x => x.IdentityUser).Where(x => x.IdentityUser.NormalizedEmail == model.Email.Trim().ToUpper()).First();
 
                
 
@@ -144,10 +233,10 @@ namespace WEB.Controllers
                     if (result.Succeeded)
                     {
                         string message = "<p>Hemos recibido una solicitud para restablecer su contraseña.</p><p> Su nueva contraseña: " + password + "</p>";
-                        string name = colaborador.Nombres + " " + colaborador.Apellidos;
+                        //string name = colaborador.Nombres + " " + colaborador.Apellidos;
                         try
                         {
-                            await _emailSender.SendEmailAsync(user.Email, "Restablecer contraseña - SAP Plenumsoft", name, message, "").ConfigureAwait(false);
+                            await _emailSender.SendEmailAsync(user.Email, "Restablecer contraseña - SAP Plenumsoft", "", message, "").ConfigureAwait(false);
                         }
                         catch (Exception ex)
                         {

@@ -507,7 +507,7 @@ namespace WEB.Controllers
             try
             {
                 var AsignacionesReales = new List<AsignacionReal>();
-                var usuario = _context.Colaboradores.Where(x => x.Id == postModel.Id_Colaborador).First();
+                var usuario = _context.Colaboradores.Where(x => x.Id == postModel.Id_Colaborador).FirstOrDefault();
 
                 if (postModel.Fecha_Inicio != null&postModel.Fecha_Final!=null)
                 {
@@ -516,7 +516,7 @@ namespace WEB.Controllers
                                                        .ThenInclude(z => z.Colaborador)
                                                    .Include(i => i.DistribucionesReales)
                                                        .ThenInclude(y => y.Proyecto).
-                                                       Where(usuario.IsAdmin==false ? x=>x.Asignacion.IdColaborador==postModel.Id_Colaborador : x=>x.Asignacion.Colaborador.IsAdmin==false).
+                                                       Where(usuario!=null ? x=>x.Asignacion.IdColaborador==postModel.Id_Colaborador: x=>x.Asignacion.IdColaborador==x.Asignacion.IdColaborador).
                                                      Where(x =>
                                                      ((x.Fecha_Final.Date >= postModel.Fecha_Inicio.Date && x.Fecha_Final.Date <= postModel.Fecha_Final.Date) ||
                                                      (x.Fecha_Inicio.Date <= postModel.Fecha_Final.Date && x.Fecha_Inicio.Date >= postModel.Fecha_Inicio.Date)) ||
@@ -531,11 +531,13 @@ namespace WEB.Controllers
                                                        .ThenInclude(z => z.Colaborador)
                                                    .Include(i => i.DistribucionesReales)
                                                        .ThenInclude(y => y.Proyecto)
+                                                       .Where(usuario != null ? x => x.Asignacion.IdColaborador == postModel.Id_Colaborador : x => x.Asignacion.IdColaborador == x.Asignacion.IdColaborador)
                                                    .ToList();
             }
 
                 var rest = new List<rest>();
-                var Colaboradores = _context.Colaboradores.Where(usuario.IsAdmin==false ? x => x.Id == postModel.Id_Colaborador : x => x.IsAdmin==false).ToList();
+                //var Colaboradores = _context.Colaboradores.Where(usuario.IsAdmin==false ? x => x.Id == postModel.Id_Colaborador : x => x.IsAdmin==false).ToList();
+                var Colaboradores = _context.Colaboradores.Where(usuario != null ? x => x.Asignacion.IdColaborador == postModel.Id_Colaborador : x => x.Asignacion.IdColaborador == x.Asignacion.IdColaborador).ToList();
                 foreach (var colaborador in Colaboradores)
                 {
                     var proyectos = new List<HistoricoResponse>();

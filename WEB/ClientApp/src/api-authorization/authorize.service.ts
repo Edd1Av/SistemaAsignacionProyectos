@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable} from 'rxjs';
 import { map} from 'rxjs/operators';
-import { IChangePassword, ILogin, IResetPassword } from 'src/app/interfaces/ILogin';
+import { IChangePassword, ILogin, IPostAdmin, IResetPassword } from 'src/app/interfaces/ILogin';
 import { IResponse } from 'src/app/interfaces/IResponse';
 import { IUsuario } from 'src/app/interfaces/IUsuario';
 
@@ -76,6 +76,10 @@ export class AuthorizeService {
 
   public ResetPassword(credenciales: IResetPassword):Observable<IResponse>{
     return this.http.post<IResponse>(this.urlBase + "api/Identity/ResetPassword", credenciales);
+  }
+
+  public AddAdmin(credenciales: IPostAdmin):Observable<IResponse>{
+    return this.http.post<IResponse>(this.urlBase + "api/Identity/AddAdmin", credenciales);
   }
 
   public logout() {

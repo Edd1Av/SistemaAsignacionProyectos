@@ -36,8 +36,7 @@ namespace WEB.Migrations
                     Nombres = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Apellidos = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CURP = table.Column<string>(type: "nvarchar(18)", maxLength: 18, nullable: false),
-                    Id_Odoo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    IsAdmin = table.Column<bool>(type: "bit", nullable: false)
+                    Id_Odoo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -181,7 +180,7 @@ namespace WEB.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    IdColaborador = table.Column<int>(type: "int", nullable: false),
+                    IdColaborador = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -205,8 +204,7 @@ namespace WEB.Migrations
                         column: x => x.IdColaborador,
                         principalSchema: "app",
                         principalTable: "Colaboradores",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -381,23 +379,17 @@ namespace WEB.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "2c5e174e-3b0e-446f-86af-483d56fd7210", "12eb91ce-822b-415c-8c80-31d46f0bfdbb", "Administrador", "ADMINISTRADOR" });
+                values: new object[] { "2c5e174e-3b0e-446f-86af-483d56fd7210", "0cec78f0-f6d9-40e8-b62a-9c19b749319a", "Administrador", "ADMINISTRADOR" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "3c6e284e-4b1e-557f-97af-594d67fd8321", "cc4f2c35-6619-4ee7-b3ce-31e582c273bc", "Desarrollador", "DESARROLLADOR" });
-
-            migrationBuilder.InsertData(
-                schema: "app",
-                table: "Colaboradores",
-                columns: new[] { "Id", "Apellidos", "CURP", "Id_Odoo", "IsAdmin", "Nombres" },
-                values: new object[] { 1, "admin", "n/a", "n/a", true, "admin" });
+                values: new object[] { "3c6e284e-4b1e-557f-97af-594d67fd8321", "81988f3a-f47b-48d2-b381-229c647cd357", "Desarrollador", "DESARROLLADOR" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "IdColaborador", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "d63aa557-6004-480f-97a5-8bdd862e249b", "admin@admin.com", true, 1, false, null, "ADMIN@ADMIN.COM", "ADMIN", "AQAAAAEAACcQAAAAELLiO72+jHKHuf8Tdhwialg3iWyDKMAbnT0xbx9WZODFf269FL/wRiCqf7g0OQOvCA==", null, false, "eabb17b4-78d3-43c4-82a2-05fa447e2432", false, "Admin" });
+                values: new object[] { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "7f7520ea-5fd4-4e59-b1cc-6d450abe9be2", "admin@admin.com", true, null, false, null, "ADMIN@ADMIN.COM", "ADMIN", "AQAAAAEAACcQAAAAEJ8YBLWpHSn/7YrtJa1tirBjzuL97+8lIAdsvyy0LFDE+TIs28/lvJAHj8ELHKH9Gw==", null, false, "a0511189-b2ea-4c0a-b7e2-65b4106dd737", false, "Admin" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -453,7 +445,8 @@ namespace WEB.Migrations
                 name: "IX_AspNetUsers_IdColaborador",
                 table: "AspNetUsers",
                 column: "IdColaborador",
-                unique: true);
+                unique: true,
+                filter: "[IdColaborador] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",

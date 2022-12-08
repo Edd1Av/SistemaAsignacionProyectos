@@ -12,4 +12,9 @@
     {
         public string Email { get; set; }
     }
+
+    public class AddAdmin
+    {
+        public string Email { get; set; }
+    }
 }

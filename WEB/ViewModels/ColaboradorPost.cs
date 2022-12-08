@@ -13,7 +13,7 @@
 
         public string Email { get; set; }
 
-        public bool IsAdmin { get; set; }
+     
 
         public List<ProyectosPost>? Proyectos { get; set; }
     }

@@ -5,9 +5,9 @@ namespace WEB.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        public int IdColaborador { get; set; }
+        public int? IdColaborador { get; set; }
         [ForeignKey("IdColaborador")]
-        public Colaborador Colaborador { get; set; }
+        public Colaborador? Colaborador { get; set; }
 
         
 

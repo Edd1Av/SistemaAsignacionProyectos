@@ -53,6 +53,10 @@
                       <mat-icon>vpn_key</mat-icon>
                       <span>Cambiar contraseña</span>
                     </button>
+                    <button *ngIf="isAdmin" mat-menu-item (click)="openDialogAdmin()">
+                      <mat-icon>supervisor_account</mat-icon>
+                      <span>Agregar Administrador</span>
+                    </button>
                     <button *ngIf="isDevelop" mat-menu-item (click)="openDialog()">
                       <mat-icon>vpn_key</mat-icon>
                       <span>Cambiar contraseña</span>
