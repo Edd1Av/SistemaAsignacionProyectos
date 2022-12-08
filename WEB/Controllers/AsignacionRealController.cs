@@ -589,7 +589,7 @@ namespace WEB.Controllers
                 for (int i = 0; i < proyectos.Count; i++)
                 {
                     var porcentaje = (int)(((double)proyectos[i].value / (double)sum) * 100);
-                    diferencia += Truncate(((((double)proyectos[i].value / (double)sum) * 100)- (int)(((double)proyectos[i].value / (double)sum) * 100)),5);
+                    diferencia += Truncate(((((double)proyectos[i].value / (double)sum) * 100)- (int)(((double)proyectos[i].value / (double)sum) * 100)),2);
                     if (i == proyectos.Count - 1)
                     {
                         proyectos[i].porcentaje = Math.Ceiling(porcentaje+diferencia);
@@ -598,6 +598,7 @@ namespace WEB.Controllers
                     {
                         proyectos[i].porcentaje = Math.Floor((double)porcentaje);
                     }
+
 
                 }
                 if(proyectos.Count > 0)
@@ -666,6 +667,13 @@ namespace WEB.Controllers
                             item.porcentaje=item.porcentaje* (rest.LastOrDefault().complete/100);
                         }
                     }
+                    //if(rest.LastOrDefault().complete == 100)
+                    //{
+                    //    if (rest.LastOrDefault().asignaciones.Sum(x => x.porcentaje) < 100)
+                    //    {
+                    //        rest.LastOrDefault().asignaciones.LastOrDefault().porcentaje = 100 - rest.LastOrDefault().asignaciones.Sum(x => x.porcentaje);
+                    //    }
+                    //}
 
                 }
                 List<Excel> excel = new List<Excel>();
@@ -682,11 +690,11 @@ namespace WEB.Controllers
                         {
                             if (item2.id == item.asignaciones.FirstOrDefault().id)
                             {
-                                excel.Add(new Excel { A = item.id_odoo, B = item.colaborador, C = item2.clave, D = item2.titulo, E = Truncate(item2.porcentaje, 3).ToString() });
+                                excel.Add(new Excel { A = item.id_odoo, B = item.colaborador, C = item2.clave, D = item2.titulo, E = Truncate(item2.porcentaje, 2).ToString() });
                             }
                             else
                             {
-                                excel.Add(new Excel { A = "", B = "", C = item2.clave, D = item2.titulo, E = Truncate(item2.porcentaje, 3).ToString() });
+                                excel.Add(new Excel { A = "", B = "", C = item2.clave, D = item2.titulo, E = Truncate(item2.porcentaje, 2).ToString() });
                             }
                         }
                     }
@@ -694,8 +702,8 @@ namespace WEB.Controllers
                 
                 dynamic datos = new System.Dynamic.ExpandoObject();
                 datos.diastotales = DaysLeft(postModel.Fecha_Inicio.Date,postModel.Fecha_Final.Date.AddDays(1), true,new List<DateTime>());
-                datos.porcentaje = ((rest.Sum(x => x.diasTrabajados)/rest.Count)
-                    / DaysLeft(postModel.Fecha_Inicio.Date, postModel.Fecha_Final.Date.AddDays(1), true, new List<DateTime>()))*100;
+                datos.porcentaje = Truncate( ((rest.Sum(x => x.diasTrabajados)/rest.Count)
+                    / DaysLeft(postModel.Fecha_Inicio.Date, postModel.Fecha_Final.Date.AddDays(1), true, new List<DateTime>()))*100,2);
                 datos.rest = rest;
                 datos.excel = excel;
                 response.success = (rest.Count > 0 && excel.Count > 0&& rest.Sum(x => x.asignaciones.Count)>0) ? true:false;
