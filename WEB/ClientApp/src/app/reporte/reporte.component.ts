@@ -8,6 +8,7 @@ import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import {Ihistorico, IReporte } from 'src/app/interfaces/ireporte';
 import { ExcelService } from 'src/app/services/excel.service';
 import { ReporteService } from 'src/app/services/reporte.service';
+import { IUsuario } from '../interfaces/IUsuario';
 
 @Component({
   selector: 'app-reporte',
@@ -44,39 +45,29 @@ export class ReporteComponent implements OnInit {
   
   isAdmin:Boolean=false;
   isDevelop:Boolean=false;
-  idusuario:number=0;
-  usuarioLoggeado:Boolean=false;
+  //idusuario:number=0;
+  usuario:IUsuario;
+  //usuarioLoggeado:Boolean=false;
   Intervalo = new FormGroup({
     start: new FormControl("", Validators.required),
     end: new FormControl("", Validators.required),
   });
 
   ngOnInit(): void {
-    this.usuarioLoggeado = this.authService.isLogged();
-    this.authService.changeLoginStatus.subscribe((value)=>{
-      if(value){
-        this.usuarioLoggeado=true;
-        this.email=value.correo;
-        if(value.rol=="Administrador"){
-          this.isAdmin=true;
-          this.isDevelop=false;
-          this.idusuario=value.idUsuario;
-        }
-        if(value.rol=="Desarrollador"){
-          this.isAdmin=false;
-          this.isDevelop=true;
-          this.idusuario=value.idUsuario;
-        }
+    if(this.authService.usuarioData!=null){
+      this.usuario=this.authService.usuarioData;
+      this.email=this.usuario.correo;
+      if(this.usuario.rol=="Administrador"){
+        this.isAdmin=true;
+            this.isDevelop=false;
       }
-      else{
-        this.usuarioLoggeado = false;
+      else if(this.usuario.rol=="Desarrollador"){
         this.isAdmin=false;
-        this.isDevelop=false;
-
+        this.isDevelop=true;
       }
-      
-    })
-    // this.actualizarHistorico();
+    }
+
+   
   }
 
 
@@ -86,7 +77,7 @@ export class ReporteComponent implements OnInit {
     var fecha_final=this.Intervalo.controls['end'].value;
     this.ReporteService
       .GetReporte({"fecha_inicio":fecha_inicio,
-      "fecha_final":fecha_final,"id_colaborador":this.idusuario})
+      "fecha_final":fecha_final,"id_colaborador":this.usuario.idUsuario})
       .subscribe((result) => {
         var headers = [[result.response.excel[0].a,result.response.excel[0].b,"","",""]];
         var temp=result.response.excel.shift();
@@ -109,7 +100,7 @@ export class ReporteComponent implements OnInit {
     if(this.Intervalo.valid){
       this.ReporteService
       .GetReporte({"fecha_inicio":fecha_inicio,
-      "fecha_final":fecha_final,"id_colaborador":this.idusuario})
+      "fecha_final":fecha_final,"id_colaborador":this.usuario.idUsuario})
       .pipe(
         tap((result) => {
           if(result.success==true){
@@ -137,9 +128,7 @@ export class ReporteComponent implements OnInit {
         })
       )
       .subscribe();
-    }
-    console.log(this.idusuario);
- 
+    } 
   }
 
 }

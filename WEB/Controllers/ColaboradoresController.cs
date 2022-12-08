@@ -44,7 +44,7 @@ namespace WEB.Controllers
         {
             var x = await _userManager.GetUsersInRoleAsync("Desarrollador");
 
-            var colaboradores = await _context.Colaboradores.Include(x=>x.IdentityUser).Where(x => x.Id != 1).ToListAsync();
+            var colaboradores = await _context.Colaboradores.Include(x=>x.IdentityUser).ToListAsync();
             List<ColaboradorPost> IdentityColaborador = new List<ColaboradorPost>();
             foreach (var element in colaboradores)
             {
@@ -62,7 +62,6 @@ namespace WEB.Controllers
                 colaborador.CURP = element.CURP;
                 colaborador.Id_Odoo = element.Id_Odoo;
                 colaborador.Id = element.Id;
-                colaborador.IsAdmin = element.IsAdmin;
                 colaborador.Proyectos = Proyectos.Count > 0 ? Proyectos : null;
                 IdentityColaborador.Add(colaborador);
             }
@@ -94,7 +93,7 @@ namespace WEB.Controllers
         {
             //var x = await _userManager.GetUsersInRoleAsync("Desarrollador");
 
-            var colaboradores = await _context.Colaboradores.Include(x => x.IdentityUser).Where(x => x.IsAdmin == false).ToListAsync();
+            var colaboradores = await _context.Colaboradores.Include(x => x.IdentityUser).ToListAsync();
             List<ColaboradorPost> IdentityColaborador = new List<ColaboradorPost>();
             foreach (var element in colaboradores)
             {
@@ -105,7 +104,7 @@ namespace WEB.Controllers
                 colaborador.CURP = element.CURP;
                 colaborador.Id_Odoo = element.Id_Odoo;
                 colaborador.Id = element.Id;
-
+                
                 IdentityColaborador.Add(colaborador);
             }
             //var rolDesarrollador = _roleManager.FindByNameAsync("Desarrollador");
@@ -224,7 +223,6 @@ namespace WEB.Controllers
                     addColaborador.Apellidos = colaborador.Apellidos.Trim();
                     addColaborador.CURP = colaborador.CURP.ToUpper().Trim();
                     addColaborador.Id_Odoo = colaborador.Id_Odoo.Trim();
-                    addColaborador.IsAdmin = colaborador.IsAdmin;
                     _context.Colaboradores.Add(addColaborador);
 
 
@@ -241,23 +239,23 @@ namespace WEB.Controllers
                     await _context.SaveChangesAsync();
                     if (x.Succeeded)
                     {
-                        if(colaborador.IsAdmin == true)
-                        {
-                            var y = await _userManager.AddToRoleAsync(user, "Administrador");
-                            if (y.Succeeded)
-                            {
+                        //if(colaborador.IsAdmin == true)
+                        //{
+                        //    var y = await _userManager.AddToRoleAsync(user, "Administrador");
+                        //    if (y.Succeeded)
+                        //    {
                                 
-                            }
-                            else
-                            {
-                                transaction.Rollback();
-                                response.success = false;
-                                response.response = $"No se pudo asignar el rol Administrador";
-                                return Ok(response);
-                            }
-                        }
-                        else
-                        {
+                        //    }
+                        //    else
+                        //    {
+                        //        transaction.Rollback();
+                        //        response.success = false;
+                        //        response.response = $"No se pudo asignar el rol Administrador";
+                        //        return Ok(response);
+                        //    }
+                        //}
+                        //else
+                        //{
                             var y = await _userManager.AddToRoleAsync(user, "Desarrollador");
                             if (y.Succeeded)
                             {
@@ -270,7 +268,7 @@ namespace WEB.Controllers
                                 response.response = $"No se pudo asignar un rol";
                                 return Ok(response);
                             }
-                        }
+                        //}
                     }
                     else
                     {

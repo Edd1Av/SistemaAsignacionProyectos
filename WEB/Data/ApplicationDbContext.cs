@@ -29,20 +29,20 @@ namespace WEB.Data
 
             var hasher = new PasswordHasher<IdentityUser>();
 
-            var userData = new Colaborador()
-            {
-                Id = 1,
-                Apellidos = "admin",
-                Nombres = "admin",
-                CURP = "n/a",
-                Id_Odoo = "n/a",
-                IsAdmin = true,
-            };
+            //var userData = new Colaborador()
+            //{
+            //    Id = 1,
+            //    Apellidos = "admin",
+            //    Nombres = "admin",
+            //    CURP = "n/a",
+            //    Id_Odoo = "n/a",
+            //    IsAdmin = true,
+            //};
 
             var user = new ApplicationUser()
             {
                 Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
-                IdColaborador = 1,
+                //IdColaborador = 1,
                 Email = "admin@admin.com",
                 EmailConfirmed = true,
                 NormalizedEmail = "ADMIN@ADMIN.COM",
@@ -65,7 +65,7 @@ namespace WEB.Data
                 NormalizedName = "DESARROLLADOR"
             };
 
-            modelBuilder.Entity<Colaborador>().HasData(userData);
+            //modelBuilder.Entity<Colaborador>().HasData(userData);
             modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole[] { rolAdmin, rolDesarrollador });
             modelBuilder.Entity<ApplicationUser>().HasData(user);
             modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
