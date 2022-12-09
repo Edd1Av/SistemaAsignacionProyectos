@@ -11,9 +11,9 @@ import { DialogoConfirmacionComponent } from 'src/app/dialogo-confirmacion/dialo
 import { IAsignacion, IAsignacionReal } from 'src/app/interfaces/iasignacion';
 import { IUsuario } from 'src/app/interfaces/IUsuario';
 import { AsignacionesService } from 'src/app/services/asignaciones.service';
-import { AsignacionesRealDetailsComponent } from '../asignaciones-real-details/asignaciones-real-details.component';
-import { AsignacionesRealInsertComponent } from '../asignaciones-real-insert/asignaciones-real-insert.component';
-import { AsignacionesRealUpdateComponent } from '../asignaciones-real-update/asignaciones-real-update.component';
+import { AsignacionesRealDetailsComponent } from './asignaciones-real-details/asignaciones-real-details.component';
+import { AsignacionesRealInsertComponent } from './asignaciones-real-insert/asignaciones-real-insert.component';
+import { AsignacionesRealUpdateComponent } from './asignaciones-real-update/asignaciones-real-update.component';
 
 @Component({
   selector: 'app-asignacion-real',
