@@ -432,13 +432,29 @@ namespace WEB.Controllers
                             }
                         }
                 }
-
-
-                response.success = true;
-                response.response = asignacionesReales.Count > 0 ? Fechas.GroupBy(x => x)
+                List<Distribucion> Dis = _context.Distribucion.Include(x => x.Asignacion).ThenInclude(x => x.Colaborador).Include(x => x.Proyecto).
+                Where(x => x.Fecha_Final.Date >= DateTime.Now.Date && x.Fecha_Inicio <= DateTime.Now.Date && x.Asignacion.IdColaborador == postModel.Id_Colaborador).ToList();
+                List<AsignacionesResponse> asignaciones = new List<AsignacionesResponse>();
+                foreach (Distribucion item in Dis)
+                {
+                    asignaciones.Add(new AsignacionesResponse
+                    {
+                        id = item.IdProyecto,
+                        clave = item.Proyecto.Clave,
+                        titulo = item.Proyecto.Titulo,
+                        fecha_inicio = item.Fecha_Inicio,
+                        fecha_final = item.Fecha_Final,
+                    }
+                    );
+                }
+                dynamic datos = new System.Dynamic.ExpandoObject();
+                datos.Fechas= asignacionesReales.Count > 0 ? Fechas.GroupBy(x => x)
                             .Where(g => g.Count() == asignacionesReales.Count)
                             .Select(x => x.Key)
                             .ToList() : Fechas;
+                datos.asignaciones = asignaciones;
+                response.success = true;
+                response.response = datos;
                 return Ok(response);
             }
             catch (Exception ex)

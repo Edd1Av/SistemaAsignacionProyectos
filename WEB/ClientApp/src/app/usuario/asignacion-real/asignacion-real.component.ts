@@ -8,7 +8,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { tap } from 'rxjs/operators';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { DialogoConfirmacionComponent } from 'src/app/dialogo-confirmacion/dialogo-confirmacion.component';
-import { IAsignacionReal } from 'src/app/interfaces/iasignacion';
+import { IAsignacion, IAsignacionReal } from 'src/app/interfaces/iasignacion';
 import { IUsuario } from 'src/app/interfaces/IUsuario';
 import { AsignacionesService } from 'src/app/services/asignaciones.service';
 import { AsignacionesRealDetailsComponent } from '../asignaciones-real-details/asignaciones-real-details.component';
@@ -63,7 +63,7 @@ export class AsignacionRealComponent implements OnInit {
     private snackBar: MatSnackBar,
     private _authService:AuthorizeService) 
     { }
-
+    LstAsig:IAsignacion[];
     Asignaciones: IAsignacionReal[]=[];
     dataSource!: MatTableDataSource<IAsignacionReal>;
     formGroup: any;
@@ -88,8 +88,18 @@ export class AsignacionRealComponent implements OnInit {
       .GetFechasFaltantes({"id_colaborador":this.Usuario.idUsuario})
       .subscribe((result) => {
         console.log(result.response);
+        this.LstAsig=result.response.asignaciones;
+        if(this.LstAsig!=null){
+          this.LstAsig.forEach(element => {
+            element.fecha_inicio=new Date(element.fecha_inicio);
+            element.fecha_final=new Date(element.fecha_final);
+            element.fecha_inicio.setMinutes(element.fecha_inicio.getMinutes() +element.fecha_inicio.getTimezoneOffset())
+            element.fecha_final.setMinutes(element.fecha_inicio.getMinutes() + element.fecha_inicio.getTimezoneOffset())
+          });
+        }
+
         if(result.success==true ){
-          result.response.forEach(function (value:Date) {
+          result.response.Fechas.forEach(function (value:Date) {
             days.push(value.toString().substring(0,10));
         });
         }

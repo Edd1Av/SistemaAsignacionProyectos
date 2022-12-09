@@ -23,6 +23,7 @@ export class ProyectosComponent implements OnInit {
   displayedColumns: string[] = [
     "titulo",
     "clave",
+    "colaboradores",
     "acciones"
   ];
 
@@ -58,7 +59,7 @@ export class ProyectosComponent implements OnInit {
           this.proyectos = result;
           this.dataSource = new MatTableDataSource<IProyecto>(this.proyectos);
           this.dataSource.paginator = this.paginator;
-          console.log(this.paginator);
+          console.log(this.proyectos);
         })
       )
       .subscribe();

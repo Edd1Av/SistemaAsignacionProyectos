@@ -17,6 +17,29 @@
     </div>
     </mat-menu>
   </div>
+  <div *ngIf="this.LstAsig!=null">
+    <h2 style="margin-left:2%; margin-top: 1%; font-size: 16px;" >
+      Proyectos asignados
+    </h2>
+    <div *ngFor="let item of this.LstAsig" class="proyecto">
+
+      <mat-accordion  >
+        <mat-expansion-panel style="background-color: rgba(158, 158, 158, 0.623);">
+          <mat-expansion-panel-header style="background-color: rgba(158, 158, 158, 0.623);">
+            <mat-panel-title>
+              <p><span style="font-weight: bold; font-size: 17px;">{{item.titulo}}</span></p>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <br>
+          <p><span style="font-weight: bold;">Clave Odoo: </span>{{item.clave}}</p>
+          <p><span style="font-weight: bold;">Desde: </span>{{item.fecha_inicio.toLocaleDateString('es-MX',{ weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}}</p>
+          <p><span style="font-weight: bold;">Hasta: </span>{{item.fecha_final.toLocaleDateString('es-MX',{ weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}}</p>
+        </mat-expansion-panel>
+        
+      </mat-accordion>
+    </div>
+  </div>
+
 
   <div >
     <br>

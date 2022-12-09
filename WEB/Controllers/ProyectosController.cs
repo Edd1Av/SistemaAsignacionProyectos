@@ -27,9 +27,36 @@ namespace WEB.Controllers
         // GET: api/Proyectos
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<Proyecto>>> GetProyectos()
+        public async Task<ActionResult<IEnumerable<ProyectosR>>> GetProyectos()
         {
-            return await _context.Proyectos.OrderBy(x=>x.Titulo).ToListAsync();
+            List<Proyecto> proyectos = await _context.Proyectos.OrderBy(x => x.Titulo).ToListAsync();
+            List<ProyectosR> result = new List<ProyectosR>();
+            foreach(var item in proyectos)
+            {
+                List<ColaboradoresAsignados> CA=new List<ColaboradoresAsignados>();
+                List<Distribucion> Dis=_context.Distribucion.Include(x=>x.Asignacion).ThenInclude(x=>x.Colaborador).
+                    Where(x=>x.Fecha_Final.Date>=DateTime.Now.Date&&x.Fecha_Inicio<=DateTime.Now.Date&&x.IdProyecto==item.Id).ToList();
+                foreach(var i in Dis)
+                {
+                    CA.Add(new ColaboradoresAsignados
+                    {
+                        Nombres=i.Asignacion.Colaborador.Nombres,
+                        Apellidos=i.Asignacion.Colaborador.Apellidos,
+                        ClaveOdoo=i.Asignacion.Colaborador.Id_Odoo
+                    }
+                    );
+                }
+                result.Add(new ProyectosR 
+                { 
+                    id=item.Id,
+                    titulo = item.Titulo,
+                    clave = item.Clave,
+                    ColaboradoresAsignados=CA.Count>0?CA:null
+                }
+                );
+
+            }
+            return result;
         }
 
         [HttpPost]

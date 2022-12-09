@@ -21,3 +21,15 @@
   align-items: center;
   background-color: rgba(92, 179, 66, 0.63);
 }
+
+.proyecto{
+  border-radius: 5px;
+  width: 31%;
+  vertical-align: top;
+  margin: 1%;
+  display: inline-block;
+}
+
+p{
+  margin: 1px !important;
+}

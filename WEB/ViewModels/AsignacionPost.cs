@@ -63,6 +63,15 @@
 
     }
 
+    public class AsignacionesResponse
+    {
+        public int id { get; set; }
+        public string titulo { get; set; }
+        public string clave { get; set; }
+        public DateTime fecha_inicio { get; set; }
+        public DateTime fecha_final { get; set; }
+    }
+
     public class rest
     {
         public double Sum(IEnumerable<double> source)

@@ -39,13 +39,19 @@
           <table mat-table [dataSource]="dataSource" class="cat-tbl-search">
   
             <ng-container matColumnDef="titulo">
-              <th class="columna" style="width: 60%;" mat-header-cell *matHeaderCellDef>Titulo</th>
+              <th class="columna" style="width: 55%;" mat-header-cell *matHeaderCellDef>Titulo</th>
               <td class='has_label_on_mobile' data-label='Titulo: '  mat-cell *matCellDef="let element"> {{element.titulo}} </td>
             </ng-container>
 
             <ng-container matColumnDef="clave">
-              <th class="columna" style="width: 28%;" mat-header-cell *matHeaderCellDef>Clave Odoo</th>
+              <th class="columna" style="width: 25%;" mat-header-cell *matHeaderCellDef>Clave Odoo</th>
               <td class='has_label_on_mobile' data-label='Clave: '  mat-cell *matCellDef="let element"> {{element.clave}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="colaboradores">
+              <th class="columna" style="width: 30%;" mat-header-cell *matHeaderCellDef>Colaboradores asignados</th>
+              <td class='has_label_on_mobile' data-label='Colaboradores: '  mat-cell *matCellDef="let element"> {{element.colaboradoresAsignados!=null? element.colaboradoresAsignados.length
+                :"0"}} </td>
             </ng-container>
   
             <ng-container  matColumnDef="acciones">

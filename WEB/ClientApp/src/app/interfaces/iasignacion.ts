@@ -35,4 +35,12 @@ export interface IAsignacionGetReal {
     fecha_final:Date;
 }
 
+export interface IAsignacion {
+    id:Number;
+    clave:string;
+    titulo:string;
+    fecha_inicio:Date;
+    fecha_final:Date;
+}
+
 
