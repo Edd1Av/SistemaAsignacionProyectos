@@ -99,9 +99,12 @@ export class AsignacionRealComponent implements OnInit {
         }
 
         if(result.success==true ){
-          result.response.Fechas.forEach(function (value:Date) {
-            days.push(value.toString().substring(0,10));
-        });
+          if(result.response.Fechas!=null){
+            result.response.Fechas.forEach(function (value:Date) {
+              days.push(value.toString().substring(0,10));
+          });
+          }
+
         }
         else{
           this.openSnackBar(result.response);

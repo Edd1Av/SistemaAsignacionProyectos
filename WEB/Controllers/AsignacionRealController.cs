@@ -380,9 +380,10 @@ namespace WEB.Controllers
             Response response = new Response();
             try
             {
+                dynamic datos = new System.Dynamic.ExpandoObject();
                 List<DateTime> Fechas = new List<DateTime>();
 
-                var Asignacion = _context.Asignacion.Include(x => x.Colaborador).Include(x => x.Distribuciones).Include(x => x.AsignacionReal).
+                var Asignacion = _context.Asignacion.Include(x => x.Colaborador).Include(x => x.Distribuciones).ThenInclude(x=>x.Proyecto).Include(x => x.AsignacionReal).
                     Where(x => x.IdColaborador == postModel.Id_Colaborador).FirstOrDefault();
 
                 if (Asignacion == null)
@@ -399,31 +400,33 @@ namespace WEB.Controllers
                 //DateTime Fecha_Final = DateTime.Now.ToLocalTime() > Asignacion.Distribuciones.Max(y => y.Fecha_Final).Date ?
                 //    Asignacion.Distribuciones.Max(y => y.Fecha_Inicio).Date : DateTime.Now.ToLocalTime().Date;
 
-                DateTime Fecha_Inicial = Asignacion.Distribuciones.Min(y => y.Fecha_Inicio).Date;
-                DateTime Fecha_Final = DateTime.Now.Date > Asignacion.Distribuciones.Max(y => y.Fecha_Final).Date ?
-                    Asignacion.Distribuciones.Max(y => y.Fecha_Final).Date : DateTime.Now.Date;
-
-                var asignacionesReales = _context.AsignacionReal.Include(x => x.Asignacion)
-                                                           .ThenInclude(z => z.Colaborador)
-                                                       .Include(i => i.DistribucionesReales)
-                                                           .ThenInclude(y => y.Proyecto).
-                                                           Where(x => x.Asignacion.IdColaborador == postModel.Id_Colaborador).
-                                                           Where(x=>x.Fecha_Inicio>Fecha_Inicial).ToList();
-                if (asignacionesReales.Count > 0)
+                if(Asignacion.Distribuciones.Where(x => x.Proyecto.is_active == true).ToList().Count>0)
                 {
-                    foreach (var item in asignacionesReales)
+                    DateTime Fecha_Inicial = Asignacion.Distribuciones.Where(x => x.Proyecto.is_active == true).Min(y => y.Fecha_Inicio).Date;
+                    DateTime Fecha_Final = DateTime.Now.Date > Asignacion.Distribuciones.Where(x => x.Proyecto.is_active == true).Max(y => y.Fecha_Final).Date ?
+                        Asignacion.Distribuciones.Where(x => x.Proyecto.is_active == true).Max(y => y.Fecha_Final).Date : DateTime.Now.Date;
+
+                    var asignacionesReales = _context.AsignacionReal.Include(x => x.Asignacion)
+                                                               .ThenInclude(z => z.Colaborador)
+                                                           .Include(i => i.DistribucionesReales)
+                                                               .ThenInclude(y => y.Proyecto).
+                                                               Where(x => x.Asignacion.IdColaborador == postModel.Id_Colaborador).
+                                                               Where(x => x.Fecha_Inicio > Fecha_Inicial).ToList();
+                    if (asignacionesReales.Count > 0)
                     {
-                        for (DateTime i = Fecha_Inicial.Date; i < Fecha_Final.Date.AddDays(1); i = i.AddDays(1))
+                        foreach (var item in asignacionesReales)
                         {
-                            if (i.DayOfWeek != DayOfWeek.Sunday && i.DayOfWeek != DayOfWeek.Saturday && !(i.Date <= item.Fecha_Final.Date && i.Date >= item.Fecha_Inicio.Date))
+                            for (DateTime i = Fecha_Inicial.Date; i < Fecha_Final.Date.AddDays(1); i = i.AddDays(1))
                             {
-                                Fechas.Add(i);
+                                if (i.DayOfWeek != DayOfWeek.Sunday && i.DayOfWeek != DayOfWeek.Saturday && !(i.Date <= item.Fecha_Final.Date && i.Date >= item.Fecha_Inicio.Date))
+                                {
+                                    Fechas.Add(i);
+                                }
                             }
                         }
                     }
-                }
-                else
-                {
+                    else
+                    {
                         for (DateTime i = Fecha_Inicial.Date; i < Fecha_Final.Date.AddDays(1); i = i.AddDays(1))
                         {
                             if (i.DayOfWeek != DayOfWeek.Sunday && i.DayOfWeek != DayOfWeek.Saturday)
@@ -431,8 +434,14 @@ namespace WEB.Controllers
                                 Fechas.Add(i);
                             }
                         }
+                    }
+                    datos.Fechas = asignacionesReales.Count > 0 ? Fechas.GroupBy(x => x)
+                    .Where(g => g.Count() == asignacionesReales.Count)
+                    .Select(x => x.Key)
+                    .ToList() : Fechas;
                 }
-                List<Distribucion> Dis = _context.Distribucion.Include(x => x.Asignacion).ThenInclude(x => x.Colaborador).Include(x => x.Proyecto).
+                
+                List<Distribucion> Dis = _context.Distribucion.Include(x => x.Asignacion).ThenInclude(x => x.Colaborador).Include(x => x.Proyecto).Where(x=>x.Proyecto.is_active==true).
                 Where(x => x.Fecha_Final.Date >= DateTime.Now.Date && x.Fecha_Inicio <= DateTime.Now.Date && x.Asignacion.IdColaborador == postModel.Id_Colaborador).ToList();
                 List<AsignacionesResponse> asignaciones = new List<AsignacionesResponse>();
                 foreach (Distribucion item in Dis)
@@ -447,11 +456,8 @@ namespace WEB.Controllers
                     }
                     );
                 }
-                dynamic datos = new System.Dynamic.ExpandoObject();
-                datos.Fechas= asignacionesReales.Count > 0 ? Fechas.GroupBy(x => x)
-                            .Where(g => g.Count() == asignacionesReales.Count)
-                            .Select(x => x.Key)
-                            .ToList() : Fechas;
+
+
                 datos.asignaciones = asignaciones;
                 response.success = true;
                 response.response = datos;

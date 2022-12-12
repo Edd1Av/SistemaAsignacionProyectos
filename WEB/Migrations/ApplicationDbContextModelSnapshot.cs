@@ -193,14 +193,14 @@ namespace WEB.Migrations
                         new
                         {
                             Id = "2c5e174e-3b0e-446f-86af-483d56fd7210",
-                            ConcurrencyStamp = "0cec78f0-f6d9-40e8-b62a-9c19b749319a",
+                            ConcurrencyStamp = "23b353fd-f904-4406-ac8a-f31317c2ccd2",
                             Name = "Administrador",
                             NormalizedName = "ADMINISTRADOR"
                         },
                         new
                         {
                             Id = "3c6e284e-4b1e-557f-97af-594d67fd8321",
-                            ConcurrencyStamp = "81988f3a-f47b-48d2-b381-229c647cd357",
+                            ConcurrencyStamp = "af38a97e-ee4a-4dd7-94a2-aab110d93811",
                             Name = "Desarrollador",
                             NormalizedName = "DESARROLLADOR"
                         });
@@ -395,15 +395,15 @@ namespace WEB.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7f7520ea-5fd4-4e59-b1cc-6d450abe9be2",
+                            ConcurrencyStamp = "62ed4e24-e35e-4bf2-9cfb-4e5bda29289a",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJ8YBLWpHSn/7YrtJa1tirBjzuL97+8lIAdsvyy0LFDE+TIs28/lvJAHj8ELHKH9Gw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDG4cabDlZ34AuEbqBig4qBhEdiKltnaPNMb7HVF55MTp7kdb3/pu2ZnPFZge8oSCg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a0511189-b2ea-4c0a-b7e2-65b4106dd737",
+                            SecurityStamp = "23e5db6b-580a-43e7-8354-48af9eb7fdff",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         });
@@ -596,6 +596,9 @@ namespace WEB.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("is_active")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

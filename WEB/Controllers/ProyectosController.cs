@@ -29,7 +29,7 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<ProyectosR>>> GetProyectos()
         {
-            List<Proyecto> proyectos = await _context.Proyectos.OrderBy(x => x.Titulo).ToListAsync();
+            List<Proyecto> proyectos = await _context.Proyectos.Where(x=>x.is_active==true).OrderBy(x => x.Titulo).ToListAsync();
             List<ProyectosR> result = new List<ProyectosR>();
             foreach(var item in proyectos)
             {
@@ -66,7 +66,7 @@ namespace WEB.Controllers
         {
             //var x = _context.Asignacion.Select(x => x.Distribuciones.Where(y => y.Asignacion.IdColaborador == id).Select(x=>x.Proyecto)).ToList();
 
-            var y = await _context.Distribucion.Where(x => x.Asignacion.IdColaborador == id &&
+            var y = await _context.Distribucion.Include(x => x.Proyecto).Where(x => x.Asignacion.IdColaborador == id &&x.Proyecto.is_active==true && 
             (((x.Fecha_Final.Date >= intervalo.FechaInicio.Date && x.Fecha_Final.Date <= intervalo.FechaFin.Date) ||
              (x.Fecha_Inicio.Date <= intervalo.FechaFin.Date && x.Fecha_Inicio.Date >= intervalo.FechaInicio.Date)) ||
              ((intervalo.FechaFin.Date >= x.Fecha_Inicio.Date && intervalo.FechaFin.Date <= x.Fecha_Final.Date) ||
@@ -122,7 +122,7 @@ namespace WEB.Controllers
                 addProyecto.Id = proyecto.Id;
                 addProyecto.Titulo = proyecto.Titulo.Trim();
                 addProyecto.Clave = proyecto.Clave.ToUpper().Trim();
-
+                addProyecto.is_active = true;
                 _context.Entry(addProyecto).State = EntityState.Modified;
 
                 _context.Logger.Add(new Log()
@@ -174,7 +174,7 @@ namespace WEB.Controllers
                 Proyecto addProyecto = new Proyecto();
                 addProyecto.Titulo = proyecto.Titulo.Trim();
                 addProyecto.Clave = proyecto.Clave.ToUpper().Trim();
-
+                addProyecto.is_active = true;
                 _context.Proyectos.Add(addProyecto);
 
                 _context.Logger.Add(new Log()
@@ -214,7 +214,11 @@ namespace WEB.Controllers
             }
             try
             {
-                _context.Proyectos.Remove(proyecto);
+                Proyecto delProyecto = await _context.Proyectos.FindAsync(id);
+                delProyecto.is_active = false;
+
+                _context.Entry(delProyecto).State = EntityState.Modified;
+                //_context.Proyectos.Remove(proyecto);
 
                 _context.Logger.Add(new Log()
                 {
