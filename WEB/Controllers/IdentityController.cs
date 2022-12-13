@@ -127,8 +127,9 @@ namespace WEB.Controllers
                     await _context.SaveChangesAsync();
                     transaction.Commit();
 
-                    var Link = Url.PageLink().Split('/');
-                    string url = Link[0] + "//" + Link[2];
+                    //var Link = Url.PageLink().Split('/');
+                    //string url = Link[0] + "//" + Link[2];
+                    string url = _options.Url;
                     string name = $"";
                     string message = "<p>Por este medio confirmamos su registro al sistema Plenumsoft y " +
                                $"compartimos con usted sus claves de acceso:</p><p>Usuario: <span>{user.Email}" +

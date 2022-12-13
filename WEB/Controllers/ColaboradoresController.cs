@@ -188,6 +188,7 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<IActionResult> PostColaborador(ColaboradorPost colaboradorPost)
         {
+
             Response response = new Response();
             if (_context.Colaboradores.Any(x => x.CURP.ToUpper().Trim() == colaboradorPost.CURP.ToUpper().Trim()))
             {
@@ -286,8 +287,9 @@ namespace WEB.Controllers
                     await _context.SaveChangesAsync();
                    
                     transaction.Commit();
-                    var Link = Url.PageLink().Split('/');
-                    string url = Link[0] + "//" + Link[2];
+                    //var Link = Url.PageLink().Split('/');
+                    //string url = Link[0] + "//" + Link[2];
+                    string url = _options.Url;
                     string name = $"{colaboradorPost.Nombres} {colaboradorPost.Apellidos}";
                     string message = "<p>Por este medio confirmamos su registro al sistema Plenumsoft y " +
                                $"compartimos con usted sus claves de acceso:</p><p>Usuario: <span>{user.Email}" +
