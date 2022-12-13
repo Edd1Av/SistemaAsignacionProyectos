@@ -15,7 +15,7 @@
             <div fxFlex="30%" fxFlex.sm="100%">
                 <mat-form-field appearance="fill">
                     <mat-label>Clave Odoo</mat-label>
-                    <input matInput maxlength="5" formControlName="clave"/>
+                    <input matInput maxlength="5" formControlName="clave" title="Formato: Hasta 3 digitos" pattern="[0-9]{1,3}"/>
                 </mat-form-field>
             </div>
         </div>
