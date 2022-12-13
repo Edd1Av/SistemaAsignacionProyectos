@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IAsignacionReal, IAsignacionGet, IAsignacion } from '../interfaces/iasignacion';
 import { IAsignacionPost, IAsignacionPostReal } from '../interfaces/iasignacion-post';
+import { IDelete } from '../interfaces/Icolaboradores';
 import { IntervaloFecha } from '../interfaces/IntervaloFechas';
 import { IResponse } from '../interfaces/IResponse';
 
@@ -37,12 +38,10 @@ export class AsignacionesService {
   }
 
   SetAsignacion(Asignacion:IAsignacionPost):Observable<IResponse>{
-    console.log(Asignacion);
       return this.http.post<IResponse>(this.urlBase + "api/Asignaciones",Asignacion);
     }
 
-  DeleteAsignacion(id: number,Asignacion:IAsignacionPost): Observable<IResponse> {
-    console.log(Asignacion);
+  DeleteAsignacion(Asignacion:IDelete): Observable<IResponse> {
       return this.http.post<IResponse>(this.urlBase + "api/Asignaciones/delete",Asignacion,);
   }
 

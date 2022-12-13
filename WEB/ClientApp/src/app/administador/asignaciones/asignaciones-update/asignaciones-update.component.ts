@@ -14,6 +14,7 @@ import { IColaborador } from 'src/app/interfaces/Icolaboradores';
 import { IProyectoAsignado } from 'src/app/interfaces/iproyecto-asignado';
 import { IProyecto } from 'src/app/interfaces/IProyectos';
 import { IResponse } from 'src/app/interfaces/IResponse';
+import { IUsuario } from 'src/app/interfaces/IUsuario';
 import { AsignacionesService } from 'src/app/services/asignaciones.service';
 import { ColaboradoresService } from 'src/app/services/colaboradores.service';
 import { ProyectosService } from 'src/app/services/proyectos.service';
@@ -67,19 +68,18 @@ export class AsignacionesUpdateComponent implements OnInit {
   Proyectos:IProyecto[]=[];
   ProyectoSeleccionado:IProyecto;
   ProyectoId:number=0;
-  User:string;
+  User:IUsuario;
   ngOnInit(): void {
 
   this.GetColaboradores();
   this.GetProyectos();
   this.buildForm();
   this.rellenarCampos();
-  this.authService.changeLoginStatus.subscribe((value)=>{
-    if(value){
-      this.User=value.correo;
-      
-    }
-  })
+
+  if(this.authService.usuarioData!=null){
+    this.User=this.authService.usuarioData;
+  }
+
   }
 
 
@@ -194,7 +194,7 @@ export class AsignacionesUpdateComponent implements OnInit {
         id_colaborador:this.formGroup.controls['colaborador'].value,
         // fecha_inicio:this.formGroup.controls['fecha_inicio'].value,
         // fecha_final:this.formGroup.controls['fecha_final'].value,
-        user:this.User,
+        user:this.User.correo,
         proyectos:this.ProyectosAsignados
       }
         this._asignacionService

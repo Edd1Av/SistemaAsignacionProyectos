@@ -159,7 +159,6 @@ namespace WEB.Controllers
                     {
                         Created = DateTime.Now,
                         User = postModel.User,
-                        Id_User = _context.Users.Where(x => x.Email == postModel.User).FirstOrDefault().Id,
                         Accion = ETipoAccionS.GetString(ETipoAccion.UPDATEASIGNACIONPLANEADA),
                         Description= ETipoAccionS.GetString(ETipoAccion.UPDATEASIGNACIONPLANEADA)+ " Con ID=" + asignacion.Id+ " De Colaborador con CURP " +asignacion.Colaborador.CURP,
                     });
@@ -257,7 +256,6 @@ namespace WEB.Controllers
                     {
                         Created = DateTime.Now,
                         User = postModel.User,
-                        Id_User = _context.Users.Where(x=>x.Email==postModel.User).FirstOrDefault().Id,
                         Accion = ETipoAccionS.GetString(ETipoAccion.ADDASIGNACIONPLANEADA),
                         Description= ETipoAccionS.GetString(ETipoAccion.ADDASIGNACIONPLANEADA) + " De Colaborador con CURP " + asignacion.Colaborador.CURP
                     });
@@ -283,13 +281,13 @@ namespace WEB.Controllers
         [HttpPost]
         [Route("delete")]
         [Authorize]
-        public async Task<ActionResult<Asignacion>> DeleteAsignacion(AsignacionPost postModel)
+        public async Task<ActionResult<Asignacion>> DeleteAsignacion(Delete postModel)
         {
             Response response = new Response();
             try
             {
 
-                var asignacion = _context.Asignacion.Include(x => x.Colaborador).Where(y => y.Id == postModel.idAsignacion).FirstOrDefault();
+                var asignacion = _context.Asignacion.Include(x => x.Colaborador).Where(y => y.Id == postModel.Id).FirstOrDefault();
                 if (asignacion == null)
                 {
                     response.success = false;
@@ -302,7 +300,6 @@ namespace WEB.Controllers
                 {
                     Created = DateTime.Now,
                     User = postModel.User,
-                    Id_User = _context.Users.Where(x => x.Email == postModel.User).FirstOrDefault().Id,
                     Accion = ETipoAccionS.GetString(ETipoAccion.DELETEASIGNACIONPLANEADA),
                     Description= ETipoAccionS.GetString(ETipoAccion.DELETEASIGNACIONPLANEADA) + " Con ID=" + asignacion.Id + " De Colaborador con CURP " + asignacion.Colaborador.CURP
                 });

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { IColaborador } from '../../interfaces/Icolaboradores';
+import { IColaborador, IDelete } from '../../interfaces/Icolaboradores';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -13,6 +13,7 @@ import { ColaboradorInsertComponent } from './colaborador-insert/colaborador-ins
 import { ColaboradorDetailsComponent } from './colaborador-details/colaborador-details.component';
 import { ChangePasswordComponent } from 'src/api-authorization/change-password/change-password.component';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
+import { IUsuario } from 'src/app/interfaces/IUsuario';
 
 @Component({
   selector: 'app-colaboradores',
@@ -40,7 +41,7 @@ export class ColaboradoresComponent implements OnInit {
     ) {
      
     }
-    User:string;
+    User:IUsuario;
     colaboradores: IColaborador[]=[];
     dataSource!: MatTableDataSource<IColaborador>;
     formGroup: any;
@@ -50,12 +51,9 @@ export class ColaboradoresComponent implements OnInit {
     this.actualizarHistorico();
     this.buildForm();
     this.initializeFormGroup();
-    this.authService.changeLoginStatus.subscribe((value)=>{
-      if(value){
-        this.User=value.correo;
-        
-      }
-    })
+    if(this.authService.usuarioData!=null){
+      this.User=this.authService.usuarioData;
+    }
   }
 
 
@@ -133,10 +131,10 @@ export class ColaboradoresComponent implements OnInit {
   }
 
   mostrarDialogo(id:number): void {
-    let POST:IColaborador={
+    let POST:IDelete={
       // fecha_inicio:this.formGroup.controls['fecha_inicio'].value,
       // fecha_final:this.formGroup.controls['fecha_final'].value,
-      user:this.User,
+      user:this.User.correo,
       id:id,
     }
     this.dialog

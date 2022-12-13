@@ -168,14 +168,6 @@ namespace WEB.Controllers
 
                     _context.AsignacionReal.Attach(asignacionReal);
                     _context.Entry(asignacionReal).State = EntityState.Modified;
-                    _context.Logger.Add(new Log()
-                    {
-                        Created = DateTime.Now,
-                        User = asignacionPlaneada.Colaborador.Nombres+" "+asignacionPlaneada.Colaborador.Apellidos,
-                        Id_User = asignacionPlaneada.IdColaborador.ToString(),
-                        Accion = ETipoAccionS.GetString(ETipoAccion.UPDATEASIGNACIONPLANEADA),
-                        Description= ETipoAccionS.GetString(ETipoAccion.UPDATEASIGNACIONPLANEADA) + " Con ID=" + asignacionReal.Id + " De Colaborador " + asignacionPlaneada.Colaborador.CURP,
-                    });
                     await _context.SaveChangesAsync();
                     transaction.Commit();
                 }
@@ -274,14 +266,6 @@ namespace WEB.Controllers
 
                     _context.Asignacion.Attach(asignacionPlaneada);
                     _context.Entry(asignacionPlaneada).State = EntityState.Modified;
-                    _context.Logger.Add(new Log()
-                    {
-                        Created = DateTime.Now,
-                        User = asignacionPlaneada.Colaborador.Nombres + " " + asignacionPlaneada.Colaborador.Apellidos,
-                        Id_User = asignacionPlaneada.IdColaborador.ToString(),
-                        Accion = ETipoAccionS.GetString(ETipoAccion.ADDASIGNACIONREAL),
-                        Description=ETipoAccionS.GetString(ETipoAccion.ADDASIGNACIONREAL) + " Con ID=" + asignacionReal.Id + " De Colaborador " + asignacionPlaneada.Colaborador.CURP,
-                    });
                     await _context.SaveChangesAsync();
                     transaction.Commit();
 
@@ -317,14 +301,6 @@ namespace WEB.Controllers
 
                 _context.AsignacionReal.Remove(asignacionReal);
 
-                _context.Logger.Add(new Log()
-                {
-                    Created = DateTime.Now,
-                    User = asignacionReal.Asignacion.Colaborador.Nombres + " " + asignacionReal.Asignacion.Colaborador.Apellidos,
-                    Id_User = asignacionReal.Asignacion.IdColaborador.ToString(),
-                    Accion = ETipoAccionS.GetString(ETipoAccion.DELETEASIGNACIONREAL) + " Con ID=" + asignacionReal.Id + " De Colaborador " + asignacionReal.Asignacion.Colaborador.CURP,
-                    Description = ""
-                }) ;
                 await _context.SaveChangesAsync();
                 response.success = true;
                 response.response = "Eliminado con éxito";
@@ -400,11 +376,11 @@ namespace WEB.Controllers
                 //DateTime Fecha_Final = DateTime.Now.ToLocalTime() > Asignacion.Distribuciones.Max(y => y.Fecha_Final).Date ?
                 //    Asignacion.Distribuciones.Max(y => y.Fecha_Inicio).Date : DateTime.Now.ToLocalTime().Date;
 
-                if(Asignacion.Distribuciones.Where(x => x.Proyecto.is_active == true).ToList().Count>0)
+                if(Asignacion.Distribuciones.Where(x => x.Proyecto.IsActive == true).ToList().Count>0)
                 {
-                    DateTime Fecha_Inicial = Asignacion.Distribuciones.Where(x => x.Proyecto.is_active == true).Min(y => y.Fecha_Inicio).Date;
-                    DateTime Fecha_Final = DateTime.Now.Date > Asignacion.Distribuciones.Where(x => x.Proyecto.is_active == true).Max(y => y.Fecha_Final).Date ?
-                        Asignacion.Distribuciones.Where(x => x.Proyecto.is_active == true).Max(y => y.Fecha_Final).Date : DateTime.Now.Date;
+                    DateTime Fecha_Inicial = Asignacion.Distribuciones.Where(x => x.Proyecto.IsActive == true).Min(y => y.Fecha_Inicio).Date;
+                    DateTime Fecha_Final = DateTime.Now.Date > Asignacion.Distribuciones.Where(x => x.Proyecto.IsActive == true).Max(y => y.Fecha_Final).Date ?
+                        Asignacion.Distribuciones.Where(x => x.Proyecto.IsActive == true).Max(y => y.Fecha_Final).Date : DateTime.Now.Date;
 
                     var asignacionesReales = _context.AsignacionReal.Include(x => x.Asignacion)
                                                                .ThenInclude(z => z.Colaborador)
@@ -441,7 +417,7 @@ namespace WEB.Controllers
                     .ToList() : Fechas;
                 }
                 
-                List<Distribucion> Dis = _context.Distribucion.Include(x => x.Asignacion).ThenInclude(x => x.Colaborador).Include(x => x.Proyecto).Where(x=>x.Proyecto.is_active==true).
+                List<Distribucion> Dis = _context.Distribucion.Include(x => x.Asignacion).ThenInclude(x => x.Colaborador).Include(x => x.Proyecto).Where(x=>x.Proyecto.IsActive==true).
                 Where(x => x.Fecha_Final.Date >= DateTime.Now.Date && x.Fecha_Inicio <= DateTime.Now.Date && x.Asignacion.IdColaborador == postModel.Id_Colaborador).ToList();
                 List<AsignacionesResponse> asignaciones = new List<AsignacionesResponse>();
                 foreach (Distribucion item in Dis)

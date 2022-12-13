@@ -155,7 +155,6 @@ namespace WEB.Controllers
                 {
                     Created = DateTime.Now,
                     User = colaboradorPost.User,
-                    Id_User = _context.Users.Where(x => x.Email == colaboradorPost.User).FirstOrDefault().Id,
                     Accion = ETipoAccionS.GetString(ETipoAccion.UPDATECOLABORADOR),
                     Description=ETipoAccionS.GetString(ETipoAccion.UPDATECOLABORADOR) + " Con CURP:" + updateColaborador.CURP+" Por ADMIN",
                 });
@@ -281,7 +280,6 @@ namespace WEB.Controllers
                     {
                         Created = DateTime.Now,
                         User = colaboradorPost.User,
-                        Id_User = _context.Users.Where(x => x.Email == colaboradorPost.User).FirstOrDefault().Id,
                         Accion = ETipoAccionS.GetString(ETipoAccion.ADDCOLABORADOR),
                         Description=ETipoAccionS.GetString(ETipoAccion.ADDCOLABORADOR) + " Con CURP:" + colaboradorPost.CURP+" Por ADMIN",
                     });
@@ -327,7 +325,7 @@ namespace WEB.Controllers
         [HttpPost]
         [Route("delete")]
         [Authorize]
-        public async Task<IActionResult> DeleteColaborador(ColaboradorPost postModel)
+        public async Task<IActionResult> DeleteColaborador(Delete postModel)
         {
             Response response = new Response();
             using (var transaction = _context.Database.BeginTransaction())
@@ -355,7 +353,6 @@ namespace WEB.Controllers
                         {
                             Created = DateTime.Now,
                             User = postModel.User,
-                            Id_User = _context.Users.Where(x => x.Email == postModel.User).FirstOrDefault().Id,
                             Accion = ETipoAccionS.GetString(ETipoAccion.DELETECOLABORADOR),
                             Description = ETipoAccionS.GetString(ETipoAccion.DELETECOLABORADOR) + " Con CURP:" + colaborador.CURP + " Por ADMIN",
                         });

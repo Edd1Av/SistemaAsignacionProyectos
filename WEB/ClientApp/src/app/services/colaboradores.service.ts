@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import {IColaborador} from 'src/app/interfaces/Icolaboradores';
+import {IColaborador, IDelete} from 'src/app/interfaces/Icolaboradores';
 import {IResponse} from 'src/app/interfaces/IResponse';
 @Injectable({
   providedIn: 'root'
@@ -40,7 +40,7 @@ export class ColaboradoresService {
       return this.http.post<IResponse>(this.urlBase + "api/Colaboradores",Colaborador);
     }
 
-  DeleteColaborador(ColaboradorPost:IColaborador): Observable<IResponse> {
+  DeleteColaborador(ColaboradorPost:IDelete): Observable<IResponse> {
       return this.http.post<IResponse>(this.urlBase + "api/Colaboradores/delete",ColaboradorPost);
   }
 }

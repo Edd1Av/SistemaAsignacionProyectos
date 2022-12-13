@@ -6,6 +6,7 @@ import { User } from 'oidc-client';
 import { tap } from 'rxjs/operators';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { IResponse } from 'src/app/interfaces/IResponse';
+import { IUsuario } from 'src/app/interfaces/IUsuario';
 import { ColaboradoresService } from 'src/app/services/colaboradores.service';
 
 @Component({
@@ -25,16 +26,13 @@ export class ColaboradorInsertComponent implements OnInit {
     private _colaboradorService: ColaboradoresService,
     private _snackBar: MatSnackBar
   ) { }
-  User:string;
+  User:IUsuario;
   ngOnInit(): void {
     
   this.buildForm();
-  this.authService.changeLoginStatus.subscribe((value)=>{
-    if(value){
-      this.User=value.correo;
-      
-    }
-  })
+  if(this.authService.usuarioData!=null){
+    this.User=this.authService.usuarioData;
+  }
   }
 
   private buildForm() {
@@ -56,7 +54,7 @@ export class ColaboradorInsertComponent implements OnInit {
   onSubmit() {
     if(this.formGroup.valid){
         this._colaboradorService
-          .SetColaborador(this.formGroup.value,this.User)
+          .SetColaborador(this.formGroup.value,this.User.correo)
           .pipe(
             tap((result: IResponse) => {
               this.openSnackBar(result.response);

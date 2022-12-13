@@ -12,7 +12,7 @@ using WEB.Data;
 namespace WEB.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221209182001_ModelosIniciales")]
+    [Migration("20221213172252_ModelosIniciales")]
     partial class ModelosIniciales
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -195,14 +195,14 @@ namespace WEB.Migrations
                         new
                         {
                             Id = "2c5e174e-3b0e-446f-86af-483d56fd7210",
-                            ConcurrencyStamp = "23b353fd-f904-4406-ac8a-f31317c2ccd2",
+                            ConcurrencyStamp = "ed4cbff1-e54b-4454-9b44-a7096cb2d852",
                             Name = "Administrador",
                             NormalizedName = "ADMINISTRADOR"
                         },
                         new
                         {
                             Id = "3c6e284e-4b1e-557f-97af-594d67fd8321",
-                            ConcurrencyStamp = "af38a97e-ee4a-4dd7-94a2-aab110d93811",
+                            ConcurrencyStamp = "2c1420e1-0d6a-4ba2-ab49-d260ce6bfe65",
                             Name = "Desarrollador",
                             NormalizedName = "DESARROLLADOR"
                         });
@@ -397,15 +397,15 @@ namespace WEB.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "62ed4e24-e35e-4bf2-9cfb-4e5bda29289a",
+                            ConcurrencyStamp = "7916073c-5f67-4a51-a579-ebb62db65e31",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDG4cabDlZ34AuEbqBig4qBhEdiKltnaPNMb7HVF55MTp7kdb3/pu2ZnPFZge8oSCg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAECb5SXnswx87aBJta9Vl0zX4s397LymoPh+ba8obXWPs/XvULmF77tFejN2mO1Miew==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "23e5db6b-580a-43e7-8354-48af9eb7fdff",
+                            SecurityStamp = "d412fbbf-0ed8-4785-b780-d3462097f2f8",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         });
@@ -568,10 +568,6 @@ namespace WEB.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Id_User")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("User")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -594,13 +590,13 @@ namespace WEB.Migrations
                         .HasMaxLength(5)
                         .HasColumnType("nvarchar(5)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Titulo")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
-
-                    b.Property<bool>("is_active")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

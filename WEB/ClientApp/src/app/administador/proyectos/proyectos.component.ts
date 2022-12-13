@@ -6,8 +6,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { tap } from 'rxjs/operators';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
+import { IDelete } from 'src/app/interfaces/Icolaboradores';
+import { IUsuario } from 'src/app/interfaces/IUsuario';
 import { DialogoConfirmacionComponent } from '../../dialogo-confirmacion/dialogo-confirmacion.component';
-import { IProyecto } from '../../interfaces/IProyectos';
+import { IProyecto} from '../../interfaces/IProyectos';
 import { ProyectosService } from '../../services/proyectos.service';
 import { ProyectosDetailsComponent } from './proyectos-details/proyectos-details.component';
 import { ProyectosInsertComponent } from './proyectos-insert/proyectos-insert.component';
@@ -43,18 +45,15 @@ export class ProyectosComponent implements OnInit {
     proyectos: IProyecto[]=[];
     dataSource!: MatTableDataSource<IProyecto>;
     formGroup: any;
-    User:string;
+    User:IUsuario;
 
   ngOnInit(): void {
     this.actualizarHistorico();
     this.buildForm();
     //this.initializeFormGroup();
-    this.authService.changeLoginStatus.subscribe((value)=>{
-      if(value){
-        this.User=value.correo;
-        
-      }
-    })
+    if(this.authService.usuarioData!=null){
+      this.User=this.authService.usuarioData;
+    }
   }
 
 
@@ -125,10 +124,10 @@ export class ProyectosComponent implements OnInit {
   }
 
   mostrarDialogo(id:number): void {
-    let POST:IProyecto={
+    let POST:IDelete={
       // fecha_inicio:this.formGroup.controls['fecha_inicio'].value,
       // fecha_final:this.formGroup.controls['fecha_final'].value,
-      user:this.User,
+      user:this.User.correo,
       id:id
     }
     this.dialog

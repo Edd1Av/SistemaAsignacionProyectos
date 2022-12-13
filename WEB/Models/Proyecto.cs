@@ -13,6 +13,6 @@ namespace WEB.Models
         [StringLength(200)]
         [Required]
         public string Titulo { get; set; }
-        public bool is_active { get; set; }
+        public bool IsActive { get; set; }
     }
 }

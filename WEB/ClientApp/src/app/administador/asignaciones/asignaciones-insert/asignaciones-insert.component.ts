@@ -12,6 +12,7 @@ import { IColaborador } from 'src/app/interfaces/Icolaboradores';
 import { IProyectoAsignado } from 'src/app/interfaces/iproyecto-asignado';
 import { IProyecto } from 'src/app/interfaces/IProyectos';
 import { IResponse } from 'src/app/interfaces/IResponse';
+import { IUsuario } from 'src/app/interfaces/IUsuario';
 import { AsignacionesService } from 'src/app/services/asignaciones.service';
 import { ColaboradoresService } from 'src/app/services/colaboradores.service';
 import { ProyectosService } from 'src/app/services/proyectos.service';
@@ -29,7 +30,7 @@ export class AsignacionesInsertComponent implements OnInit {
     // Prevent Saturday and Sunday from being selected.
     return day !== 0 && day !== 6;
   };
-  User:string;
+  User:IUsuario;
   fechaInicioMin:Date|null = null;
   fechaInicioMax:Date|null = null;
 
@@ -68,12 +69,11 @@ export class AsignacionesInsertComponent implements OnInit {
   this.GetColaboradores();
   this.GetProyectos();
   this.buildForm();
-  this.authService.changeLoginStatus.subscribe((value)=>{
-    if(value){
-      this.User=value.correo;
-      
-    }
-  })
+
+  if(this.authService.usuarioData!=null){
+    this.User=this.authService.usuarioData;
+  }
+
   }
 
   private GetColaboradores(){
@@ -154,7 +154,7 @@ export class AsignacionesInsertComponent implements OnInit {
     // }
     if(this.formGroup.valid){
       let POST:IAsignacionPost={
-        user:this.User,
+        user:this.User.correo,
         id_colaborador:this.formGroup.controls['colaborador'].value,
         // fecha_inicio:this.formGroup.controls['fecha_inicio'].value,
         // fecha_final:this.formGroup.controls['fecha_final'].value,

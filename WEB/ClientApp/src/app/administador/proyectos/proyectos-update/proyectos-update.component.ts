@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
+import { IUsuario } from 'src/app/interfaces/IUsuario';
 import { ProyectosService } from 'src/app/services/proyectos.service';
 
 @Component({
@@ -22,18 +23,15 @@ export class ProyectosUpdateComponent implements OnInit {
     private _proyectosService: ProyectosService,
     private _snackBar: MatSnackBar
   ) { }
-    User:string;
+    User:IUsuario;
   ngOnInit(): void {
   this.buildForm();
   this.formGroup.controls.id.setValue(this.data.proyecto.id);
   this.formGroup.controls.titulo.setValue(this.data.proyecto.titulo);
   this.formGroup.controls.clave.setValue(this.data.proyecto.clave);
-  this.authService.changeLoginStatus.subscribe((value)=>{
-    if(value){
-      this.User=value.correo;
-      
-    }
-  })
+  if(this.authService.usuarioData!=null){
+    this.User=this.authService.usuarioData;
+  }
   }
 
   private buildForm() {
@@ -53,7 +51,7 @@ export class ProyectosUpdateComponent implements OnInit {
   onSubmit() {
     if(this.formGroup.valid){
         
-        this._proyectosService.UpdateProyecto( this.data.proyecto.id, this.formGroup.value,this.User).subscribe((result) => {
+        this._proyectosService.UpdateProyecto( this.data.proyecto.id, this.formGroup.value,this.User.correo).subscribe((result) => {
           if (result.success) {
             //this.formGroup.reset();
             //this.initializeFormGroup();

@@ -2,9 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IResponse } from '../interfaces/IResponse';
-import { IProyecto } from '../interfaces/IProyectos';
+import { IProyecto} from '../interfaces/IProyectos';
 import { map } from 'rxjs/operators';
 import { IntervaloFecha } from '../interfaces/IntervaloFechas';
+import { IDelete } from '../interfaces/Icolaboradores';
 
 @Injectable({
   providedIn: 'root'
@@ -18,9 +19,9 @@ export class ProyectosService {
 }
 
 
-  getProyectoById(id: number): Observable<IProyecto> {
-    return this.http.get<IProyecto>(this.urlBase + "api/proyectos/" + id);
-  }
+  // getProyectoById(id: number): Observable<IProyecto> {
+  //   return this.http.get<IProyecto>(this.urlBase + "api/proyectos/" + id);
+  // }
 
   getProyectos(): Observable<IProyecto[]> {
     return this.http.get<IProyecto[]>(this.urlBase + "api/proyectos");
@@ -28,10 +29,6 @@ export class ProyectosService {
 
   getProyectosColaborador(id:number, intervaloFecha:IntervaloFecha): Observable<IProyecto[]> {
     return this.http.post<IProyecto[]>(this.urlBase + "api/proyectos/proyectosColaborador/"+id,intervaloFecha);
-  }
-
-  getProyectosColaboradorUp(id:number, intervaloFecha:IntervaloFecha): Observable<IProyecto[]> {
-    return this.http.post<IProyecto[]>(this.urlBase + "api/proyectos/proyectosColaboradorUp/"+id,intervaloFecha);
   }
 
   UpdateProyecto(id:number, Proyecto:IProyecto,User:string)  {
@@ -44,7 +41,7 @@ export class ProyectosService {
       return this.http.post<IResponse>(this.urlBase + "api/proyectos",Proyecto);
     }
 
-  DeleteProyecto(Proyecto:IProyecto): Observable<IResponse> {
+  DeleteProyecto(Proyecto:IDelete): Observable<IResponse> {
       return this.http.post<IResponse>(this.urlBase + "api/proyectos/delete",Proyecto);
   }
 }

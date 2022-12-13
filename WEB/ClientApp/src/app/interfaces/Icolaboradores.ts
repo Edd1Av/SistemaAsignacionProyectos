@@ -9,6 +9,11 @@ export interface IColaborador {
     user?:string;
 }
 
+export interface IDelete{
+    id:Number;
+    user:string;
+}
+
 export interface ProyectosPost {
     titulo:String;
     clave:String;

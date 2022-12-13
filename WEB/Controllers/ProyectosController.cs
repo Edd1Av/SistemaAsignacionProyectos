@@ -29,7 +29,7 @@ namespace WEB.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<ProyectosR>>> GetProyectos()
         {
-            List<Proyecto> proyectos = await _context.Proyectos.Where(x=>x.is_active==true).OrderBy(x => x.Titulo).ToListAsync();
+            List<Proyecto> proyectos = await _context.Proyectos.Where(x=>x.IsActive==true).OrderBy(x => x.Titulo).ToListAsync();
             List<ProyectosR> result = new List<ProyectosR>();
             foreach(var item in proyectos)
             {
@@ -66,7 +66,7 @@ namespace WEB.Controllers
         {
             //var x = _context.Asignacion.Select(x => x.Distribuciones.Where(y => y.Asignacion.IdColaborador == id).Select(x=>x.Proyecto)).ToList();
 
-            var y = await _context.Distribucion.Include(x => x.Proyecto).Where(x => x.Asignacion.IdColaborador == id &&x.Proyecto.is_active==true && 
+            var y = await _context.Distribucion.Include(x => x.Proyecto).Where(x => x.Asignacion.IdColaborador == id &&x.Proyecto.IsActive==true && 
             (((x.Fecha_Final.Date >= intervalo.FechaInicio.Date && x.Fecha_Final.Date <= intervalo.FechaFin.Date) ||
              (x.Fecha_Inicio.Date <= intervalo.FechaFin.Date && x.Fecha_Inicio.Date >= intervalo.FechaInicio.Date)) ||
              ((intervalo.FechaFin.Date >= x.Fecha_Inicio.Date && intervalo.FechaFin.Date <= x.Fecha_Final.Date) ||
@@ -122,14 +122,13 @@ namespace WEB.Controllers
                 addProyecto.Id = (int)proyecto.Id;
                 addProyecto.Titulo = proyecto.Titulo.Trim();
                 addProyecto.Clave = proyecto.Clave.ToUpper().Trim();
-                addProyecto.is_active = true;
+                addProyecto.IsActive = true;
                 _context.Entry(addProyecto).State = EntityState.Modified;
 
                 _context.Logger.Add(new Log()
                 {
                     Created = DateTime.Now,
                     User = proyecto.User,
-                    Id_User = _context.Users.Where(x => x.Email == proyecto.User).FirstOrDefault().Id,
                     Accion = ETipoAccionS.GetString(ETipoAccion.UPDATEPROYECTO),
                     Description = ETipoAccionS.GetString(ETipoAccion.UPDATEPROYECTO) + " " + proyecto.Titulo + " Por ADMIN",
                 });
@@ -174,14 +173,13 @@ namespace WEB.Controllers
                 Proyecto addProyecto = new Proyecto();
                 addProyecto.Titulo = proyecto.Titulo.Trim();
                 addProyecto.Clave = proyecto.Clave.ToUpper().Trim();
-                addProyecto.is_active = true;
+                addProyecto.IsActive = true;
                 _context.Proyectos.Add(addProyecto);
 
                 _context.Logger.Add(new Log()
                 {
                     Created = DateTime.Now,
                     User = proyecto.User,
-                    Id_User = _context.Users.Where(x => x.Email == proyecto.User).FirstOrDefault().Id,
                     Accion = ETipoAccionS.GetString(ETipoAccion.ADDPROYECTO),
                     Description= ETipoAccionS.GetString(ETipoAccion.ADDPROYECTO) + " " + proyecto.Titulo + " Por ADMIN",
                 });
@@ -203,33 +201,36 @@ namespace WEB.Controllers
         [HttpPost]
         [Route("delete")]
         [Authorize]
-        public async Task<IActionResult> DeleteProyecto(ProyectosPost postModel)
+        public async Task<IActionResult> DeleteProyecto(Delete postModel)
         {
             Response response = new Response();
-            var proyecto = await _context.Proyectos.FindAsync(postModel.Id);
-            if (proyecto == null)
-            {
-                response.success = false;
-                response.response = "El registro no existe";
-                return Ok(response);
-            }
+            
             try
             {
-                Proyecto delProyecto = await _context.Proyectos.FindAsync(postModel.Id);
-                delProyecto.is_active = false;
-
-                _context.Entry(delProyecto).State = EntityState.Modified;
-                //_context.Proyectos.Remove(proyecto);
-
-                _context.Logger.Add(new Log()
+                var proyecto = await _context.Proyectos.FindAsync(postModel.Id);
+                if (proyecto == null)
                 {
-                    Created = DateTime.Now,
-                    User = postModel.User,
-                    Id_User = _context.Users.Where(x => x.Email == postModel.User).FirstOrDefault().Id,
-                    Accion = ETipoAccionS.GetString(ETipoAccion.DELETEPROYECTO),
-                    Description = ETipoAccionS.GetString(ETipoAccion.DELETEPROYECTO) + " " + proyecto.Titulo+" Por ADMIN",
-                });
-                await _context.SaveChangesAsync();
+                    response.success = false;
+                    response.response = "El registro no existe";
+                    return Ok(response);
+                }
+                else
+                {
+                    proyecto.IsActive = false;
+
+                    _context.Entry(proyecto).State = EntityState.Modified;
+                    //_context.Proyectos.Remove(proyecto);
+
+                    _context.Logger.Add(new Log()
+                    {
+                        Created = DateTime.Now,
+                        User = postModel.User,
+                        Accion = ETipoAccionS.GetString(ETipoAccion.DELETEPROYECTO),
+                        Description = ETipoAccionS.GetString(ETipoAccion.DELETEPROYECTO) + " " + proyecto.Titulo + " Por ADMIN",
+                    });
+                    await _context.SaveChangesAsync();
+                }
+
             }
             catch(Exception)
             {
