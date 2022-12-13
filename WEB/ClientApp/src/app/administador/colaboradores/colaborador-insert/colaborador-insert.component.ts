@@ -2,7 +2,9 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { User } from 'oidc-client';
 import { tap } from 'rxjs/operators';
+import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { IResponse } from 'src/app/interfaces/IResponse';
 import { ColaboradoresService } from 'src/app/services/colaboradores.service';
 
@@ -19,13 +21,20 @@ export class ColaboradorInsertComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) private data:any,
     private matDialogref: MatDialogRef<ColaboradorInsertComponent>,
     private formBuilder: FormBuilder,
+    private authService: AuthorizeService,
     private _colaboradorService: ColaboradoresService,
     private _snackBar: MatSnackBar
   ) { }
-
+  User:string;
   ngOnInit(): void {
     
   this.buildForm();
+  this.authService.changeLoginStatus.subscribe((value)=>{
+    if(value){
+      this.User=value.correo;
+      
+    }
+  })
   }
 
   private buildForm() {
@@ -47,7 +56,7 @@ export class ColaboradorInsertComponent implements OnInit {
   onSubmit() {
     if(this.formGroup.valid){
         this._colaboradorService
-          .SetColaborador(this.formGroup.value)
+          .SetColaborador(this.formGroup.value,this.User)
           .pipe(
             tap((result: IResponse) => {
               this.openSnackBar(result.response);

@@ -148,7 +148,7 @@ export class AsignacionesRealInsertComponent implements OnInit {
     });
     
     if(this.ProyectosAsignados.length>=1){
-      this.ProyectosAsignados[0].porcentaje+=residuo;
+      this.ProyectosAsignados[0].porcentaje!+=residuo;
     }
     
     this.dataSource = new MatTableDataSource<IProyectoAsignadoReal>(
@@ -190,7 +190,7 @@ export class AsignacionesRealInsertComponent implements OnInit {
   onSubmit() {
     let total: number = 0;
     this.ProyectosAsignados.forEach((element) => {
-      total += element.porcentaje;
+      total += element.porcentaje!;
     });
     if (total != 100) {
       this.openSnackBar(

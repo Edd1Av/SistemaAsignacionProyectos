@@ -41,8 +41,9 @@ export class AsignacionesService {
       return this.http.post<IResponse>(this.urlBase + "api/Asignaciones",Asignacion);
     }
 
-  DeleteAsignacion(id: number): Observable<IResponse> {
-      return this.http.delete<IResponse>(this.urlBase + "api/Asignaciones/"+id);
+  DeleteAsignacion(id: number,Asignacion:IAsignacionPost): Observable<IResponse> {
+    console.log(Asignacion);
+      return this.http.post<IResponse>(this.urlBase + "api/Asignaciones/delete",Asignacion,);
   }
 
 

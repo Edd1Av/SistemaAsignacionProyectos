@@ -158,10 +158,10 @@ namespace WEB.Controllers
                     _context.Logger.Add(new Log()
                     {
                         Created = DateTime.Now,
-                        User = "ADMIN",
-                        Id_User = 1.ToString(),
+                        User = postModel.User,
+                        Id_User = _context.Users.Where(x => x.Email == postModel.User).FirstOrDefault().Id,
                         Accion = ETipoAccionS.GetString(ETipoAccion.UPDATEASIGNACIONPLANEADA),
-                        Description= ETipoAccionS.GetString(ETipoAccion.UPDATEASIGNACIONPLANEADA)+ " Con ID=" + asignacion.Id+ " De Colaborador " +asignacion.Colaborador.CURP,
+                        Description= ETipoAccionS.GetString(ETipoAccion.UPDATEASIGNACIONPLANEADA)+ " Con ID=" + asignacion.Id+ " De Colaborador con CURP " +asignacion.Colaborador.CURP,
                     });
                     await _context.SaveChangesAsync();
 
@@ -256,10 +256,10 @@ namespace WEB.Controllers
                     _context.Logger.Add(new Log()
                     {
                         Created = DateTime.Now,
-                        User = "ADMIN",
-                        Id_User = 1.ToString(),
+                        User = postModel.User,
+                        Id_User = _context.Users.Where(x=>x.Email==postModel.User).FirstOrDefault().Id,
                         Accion = ETipoAccionS.GetString(ETipoAccion.ADDASIGNACIONPLANEADA),
-                        Description= ETipoAccionS.GetString(ETipoAccion.ADDASIGNACIONPLANEADA) + " Con ID=" + asignacion.Id + " De Colaborador " + asignacion.Colaborador.CURP
+                        Description= ETipoAccionS.GetString(ETipoAccion.ADDASIGNACIONPLANEADA) + " De Colaborador con CURP " + asignacion.Colaborador.CURP
                     });
                     await _context.SaveChangesAsync();
                     transaction.Commit();
@@ -279,15 +279,17 @@ namespace WEB.Controllers
         }
 
         // DELETE: api/Asignaciones/5
-        [HttpDelete("{id}")]
+
+        [HttpPost]
+        [Route("delete")]
         [Authorize]
-        public async Task<IActionResult> DeleteAsignacion(int id)
+        public async Task<ActionResult<Asignacion>> DeleteAsignacion(AsignacionPost postModel)
         {
             Response response = new Response();
             try
             {
 
-                var asignacion = _context.Asignacion.Include(x=>x.Colaborador).Where(y=>y.Id==id).FirstOrDefault();
+                var asignacion = _context.Asignacion.Include(x => x.Colaborador).Where(y => y.Id == postModel.idAsignacion).FirstOrDefault();
                 if (asignacion == null)
                 {
                     response.success = false;
@@ -299,10 +301,10 @@ namespace WEB.Controllers
                 _context.Logger.Add(new Log()
                 {
                     Created = DateTime.Now,
-                    User = "ADMIN",
-                    Id_User = 1.ToString(),
+                    User = postModel.User,
+                    Id_User = _context.Users.Where(x => x.Email == postModel.User).FirstOrDefault().Id,
                     Accion = ETipoAccionS.GetString(ETipoAccion.DELETEASIGNACIONPLANEADA),
-                    Description= ETipoAccionS.GetString(ETipoAccion.DELETEASIGNACIONPLANEADA) + " Con ID=" + asignacion.Id + " De Colaborador " + asignacion.Colaborador.CURP
+                    Description= ETipoAccionS.GetString(ETipoAccion.DELETEASIGNACIONPLANEADA) + " Con ID=" + asignacion.Id + " De Colaborador con CURP " + asignacion.Colaborador.CURP
                 });
                 await _context.SaveChangesAsync();
                

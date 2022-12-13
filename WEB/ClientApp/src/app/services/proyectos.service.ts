@@ -34,15 +34,17 @@ export class ProyectosService {
     return this.http.post<IProyecto[]>(this.urlBase + "api/proyectos/proyectosColaboradorUp/"+id,intervaloFecha);
   }
 
-  UpdateProyecto(id:number, Proyecto:IProyecto)  {
+  UpdateProyecto(id:number, Proyecto:IProyecto,User:string)  {
+    Proyecto.user=User;
     return this.http.put<IResponse>(this.urlBase + "api/proyectos/"+id, Proyecto);
   }
 
-  SetProyecto(Proyecto:IProyecto)  {
+  SetProyecto(Proyecto:IProyecto,User:string)  {
+    Proyecto.user=User;
       return this.http.post<IResponse>(this.urlBase + "api/proyectos",Proyecto);
     }
 
-  DeleteProyecto(id: number): Observable<IResponse> {
-      return this.http.delete<IResponse>(this.urlBase + "api/proyectos/"+id);
+  DeleteProyecto(Proyecto:IProyecto): Observable<IResponse> {
+      return this.http.post<IResponse>(this.urlBase + "api/proyectos/delete",Proyecto);
   }
 }

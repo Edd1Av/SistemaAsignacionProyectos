@@ -5,6 +5,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { tap } from 'rxjs/operators';
+import { AuthorizeService } from 'src/api-authorization/authorize.service';
+import { IAsignacionPost } from 'src/app/interfaces/iasignacion-post';
 import { DialogoConfirmacionComponent } from '../../dialogo-confirmacion/dialogo-confirmacion.component';
 import { IAsignacion } from '../../interfaces/iasignacion';
 import { AsignacionesService } from '../../services/asignaciones.service';
@@ -28,9 +30,10 @@ export class AsignacionesComponent implements OnInit {
 
   constructor(private AsignacionService: AsignacionesService, private dialog: MatDialog,
     private formBuilder: FormBuilder,
+    private authService: AuthorizeService,
     private snackBar: MatSnackBar) 
     { }
-
+    User:string;
     Asignaciones: IAsignacion[]=[];
     dataSource!: MatTableDataSource<IAsignacion>;
     formGroup: any;
@@ -39,6 +42,12 @@ export class AsignacionesComponent implements OnInit {
     this.actualizarHistorico();
     this.buildForm();
     this.initializeFormGroup();
+    this.authService.changeLoginStatus.subscribe((value)=>{
+      if(value){
+        this.User=value.correo;
+        
+      }
+    })
   }
 
   actualizarHistorico() {
@@ -114,6 +123,12 @@ export class AsignacionesComponent implements OnInit {
   }
 
   mostrarDialogo(id:number): void {
+    let POST:IAsignacionPost={
+      // fecha_inicio:this.formGroup.controls['fecha_inicio'].value,
+      // fecha_final:this.formGroup.controls['fecha_final'].value,
+      user:this.User,
+      idasignacion:id,
+    }
     this.dialog
       .open(DialogoConfirmacionComponent, {
         data: `¿Está seguro de eliminar esta asignacion?`,
@@ -121,7 +136,7 @@ export class AsignacionesComponent implements OnInit {
       .afterClosed()
       .subscribe((confirmado: Boolean) => {
         if (confirmado) {
-          this.AsignacionService.DeleteAsignacion(id).subscribe(
+          this.AsignacionService.DeleteAsignacion(id,POST).subscribe(
             (rs) => {
               if (rs.success) {
                 this.actualizarHistorico();

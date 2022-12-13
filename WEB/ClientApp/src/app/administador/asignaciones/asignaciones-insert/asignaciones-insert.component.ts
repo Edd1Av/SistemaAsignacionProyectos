@@ -6,6 +6,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { tap } from 'rxjs/operators';
+import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { IAsignacionPost } from 'src/app/interfaces/iasignacion-post';
 import { IColaborador } from 'src/app/interfaces/Icolaboradores';
 import { IProyectoAsignado } from 'src/app/interfaces/iproyecto-asignado';
@@ -28,7 +29,7 @@ export class AsignacionesInsertComponent implements OnInit {
     // Prevent Saturday and Sunday from being selected.
     return day !== 0 && day !== 6;
   };
-
+  User:string;
   fechaInicioMin:Date|null = null;
   fechaInicioMax:Date|null = null;
 
@@ -52,6 +53,7 @@ export class AsignacionesInsertComponent implements OnInit {
     private formBuilder: FormBuilder,
     private _asignacionService: AsignacionesService,
     private _snackBar: MatSnackBar,
+    private authService: AuthorizeService,
     private _colaboradoresService:ColaboradoresService,
     private _proyectosService:ProyectosService
   ) { }
@@ -66,6 +68,12 @@ export class AsignacionesInsertComponent implements OnInit {
   this.GetColaboradores();
   this.GetProyectos();
   this.buildForm();
+  this.authService.changeLoginStatus.subscribe((value)=>{
+    if(value){
+      this.User=value.correo;
+      
+    }
+  })
   }
 
   private GetColaboradores(){
@@ -146,6 +154,7 @@ export class AsignacionesInsertComponent implements OnInit {
     // }
     if(this.formGroup.valid){
       let POST:IAsignacionPost={
+        user:this.User,
         id_colaborador:this.formGroup.controls['colaborador'].value,
         // fecha_inicio:this.formGroup.controls['fecha_inicio'].value,
         // fecha_final:this.formGroup.controls['fecha_final'].value,

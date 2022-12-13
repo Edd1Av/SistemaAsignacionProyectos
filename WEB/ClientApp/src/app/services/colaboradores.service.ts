@@ -29,17 +29,19 @@ export class ColaboradoresService {
     return this.http.get<IColaborador[]>(this.urlBase + "api/Colaboradores/Desarrolladores");
   }
 
-  UpdateColaborador(id:number, Colaborador:IColaborador)  {
+  UpdateColaborador(id:number, Colaborador:IColaborador,User:string)  {
+    Colaborador.user=User;
     return this.http.put<IResponse>(this.urlBase + "api/Colaboradores/"+id, Colaborador);
   }
 
-  SetColaborador(Colaborador:IColaborador)  {
+  SetColaborador(Colaborador:IColaborador,User:string)  {
+    Colaborador.user=User;
     console.log(Colaborador);
       return this.http.post<IResponse>(this.urlBase + "api/Colaboradores",Colaborador);
     }
 
-  DeleteColaborador(id: number): Observable<IResponse> {
-      return this.http.delete<IResponse>(this.urlBase + "api/Colaboradores/"+id);
+  DeleteColaborador(ColaboradorPost:IColaborador): Observable<IResponse> {
+      return this.http.post<IResponse>(this.urlBase + "api/Colaboradores/delete",ColaboradorPost);
   }
 }
 

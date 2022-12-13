@@ -12,6 +12,7 @@ import { ColaboradorUpdateComponent } from './colaborador-update/colaborador-upd
 import { ColaboradorInsertComponent } from './colaborador-insert/colaborador-insert.component';
 import { ColaboradorDetailsComponent } from './colaborador-details/colaborador-details.component';
 import { ChangePasswordComponent } from 'src/api-authorization/change-password/change-password.component';
+import { AuthorizeService } from 'src/api-authorization/authorize.service';
 
 @Component({
   selector: 'app-colaboradores',
@@ -34,11 +35,12 @@ export class ColaboradoresComponent implements OnInit {
   constructor(private colaboradorService: ColaboradoresService,
     private dialog: MatDialog,
     private formBuilder: FormBuilder,
+    private authService: AuthorizeService,
     private snackBar: MatSnackBar
     ) {
      
     }
-
+    User:string;
     colaboradores: IColaborador[]=[];
     dataSource!: MatTableDataSource<IColaborador>;
     formGroup: any;
@@ -48,7 +50,12 @@ export class ColaboradoresComponent implements OnInit {
     this.actualizarHistorico();
     this.buildForm();
     this.initializeFormGroup();
-
+    this.authService.changeLoginStatus.subscribe((value)=>{
+      if(value){
+        this.User=value.correo;
+        
+      }
+    })
   }
 
 
@@ -126,6 +133,12 @@ export class ColaboradoresComponent implements OnInit {
   }
 
   mostrarDialogo(id:number): void {
+    let POST:IColaborador={
+      // fecha_inicio:this.formGroup.controls['fecha_inicio'].value,
+      // fecha_final:this.formGroup.controls['fecha_final'].value,
+      user:this.User,
+      id:id,
+    }
     this.dialog
       .open(DialogoConfirmacionComponent, {
         data: `¿Está seguro de eliminar este colaborador?`,
@@ -133,7 +146,7 @@ export class ColaboradoresComponent implements OnInit {
       .afterClosed()
       .subscribe((confirmado: Boolean) => {
         if (confirmado) {
-          this.colaboradorService.DeleteColaborador(id).subscribe(
+          this.colaboradorService.DeleteColaborador(POST).subscribe(
             (rs) => {
               if (rs.success) {
                 this.actualizarHistorico();

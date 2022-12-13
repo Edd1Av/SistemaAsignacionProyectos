@@ -7,6 +7,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { tap } from 'rxjs/operators';
+import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { IAsignacion } from 'src/app/interfaces/iasignacion';
 import { IAsignacionPost } from 'src/app/interfaces/iasignacion-post';
 import { IColaborador } from 'src/app/interfaces/Icolaboradores';
@@ -54,6 +55,7 @@ export class AsignacionesUpdateComponent implements OnInit {
     private formBuilder: FormBuilder,
     private _asignacionService: AsignacionesService,
     private _snackBar: MatSnackBar,
+    private authService: AuthorizeService,
     private _colaboradoresService:ColaboradoresService,
     private _proyectosService:ProyectosService
   ) { 
@@ -65,13 +67,19 @@ export class AsignacionesUpdateComponent implements OnInit {
   Proyectos:IProyecto[]=[];
   ProyectoSeleccionado:IProyecto;
   ProyectoId:number=0;
-  
+  User:string;
   ngOnInit(): void {
 
   this.GetColaboradores();
   this.GetProyectos();
   this.buildForm();
   this.rellenarCampos();
+  this.authService.changeLoginStatus.subscribe((value)=>{
+    if(value){
+      this.User=value.correo;
+      
+    }
+  })
   }
 
 
@@ -186,7 +194,7 @@ export class AsignacionesUpdateComponent implements OnInit {
         id_colaborador:this.formGroup.controls['colaborador'].value,
         // fecha_inicio:this.formGroup.controls['fecha_inicio'].value,
         // fecha_final:this.formGroup.controls['fecha_final'].value,
-
+        user:this.User,
         proyectos:this.ProyectosAsignados
       }
         this._asignacionService

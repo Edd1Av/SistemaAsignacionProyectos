@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { tap } from 'rxjs/operators';
+import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { IResponse } from 'src/app/interfaces/IResponse';
 import { ProyectosService } from 'src/app/services/proyectos.service';
 
@@ -20,12 +21,19 @@ export class ProyectosInsertComponent implements OnInit {
     private matDialogref: MatDialogRef<ProyectosInsertComponent>,
     private formBuilder: FormBuilder,
     private _proyectosService: ProyectosService,
+    private authService: AuthorizeService,
     private _snackBar: MatSnackBar
   ) { }
-
+  User:string;
   ngOnInit(): void {
     
   this.buildForm();
+  this.authService.changeLoginStatus.subscribe((value)=>{
+    if(value){
+      this.User=value.correo;
+      
+    }
+  })
   }
 
   private buildForm() {
@@ -44,7 +52,7 @@ export class ProyectosInsertComponent implements OnInit {
   onSubmit() {
     if(this.formGroup.valid){
         this._proyectosService
-          .SetProyecto(this.formGroup.value)
+          .SetProyecto(this.formGroup.value,this.User)
           .pipe(
             tap((result: IResponse) => {
               console.log(result);

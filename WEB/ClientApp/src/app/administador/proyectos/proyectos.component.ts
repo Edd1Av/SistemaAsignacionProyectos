@@ -5,6 +5,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { tap } from 'rxjs/operators';
+import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { DialogoConfirmacionComponent } from '../../dialogo-confirmacion/dialogo-confirmacion.component';
 import { IProyecto } from '../../interfaces/IProyectos';
 import { ProyectosService } from '../../services/proyectos.service';
@@ -33,7 +34,8 @@ export class ProyectosComponent implements OnInit {
   constructor(private proyectosService: ProyectosService,
     private dialog: MatDialog,
     private formBuilder: FormBuilder,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private authService: AuthorizeService,
     ) {
      
     }
@@ -41,13 +43,18 @@ export class ProyectosComponent implements OnInit {
     proyectos: IProyecto[]=[];
     dataSource!: MatTableDataSource<IProyecto>;
     formGroup: any;
-    
+    User:string;
 
   ngOnInit(): void {
     this.actualizarHistorico();
     this.buildForm();
     //this.initializeFormGroup();
-
+    this.authService.changeLoginStatus.subscribe((value)=>{
+      if(value){
+        this.User=value.correo;
+        
+      }
+    })
   }
 
 
@@ -118,6 +125,12 @@ export class ProyectosComponent implements OnInit {
   }
 
   mostrarDialogo(id:number): void {
+    let POST:IProyecto={
+      // fecha_inicio:this.formGroup.controls['fecha_inicio'].value,
+      // fecha_final:this.formGroup.controls['fecha_final'].value,
+      user:this.User,
+      id:id
+    }
     this.dialog
       .open(DialogoConfirmacionComponent, {
         data: `¿Está seguro de eliminar este proyecto?`,
@@ -125,7 +138,7 @@ export class ProyectosComponent implements OnInit {
       .afterClosed()
       .subscribe((confirmado: Boolean) => {
         if (confirmado) {
-          this.proyectosService.DeleteProyecto(id).subscribe(
+          this.proyectosService.DeleteProyecto(POST).subscribe(
             (rs) => {
               if (rs.success) {
                 this.actualizarHistorico();

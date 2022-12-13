@@ -1,10 +1,12 @@
 import { IProyectoAsignado, IProyectoAsignadoReal } from "./iproyecto-asignado";
 
 export interface IAsignacionPost {
-    id_colaborador:number;
+    id_colaborador?:number;
+    user:string;
+    idasignacion?:number,
     // fecha_inicio:Date;
     // fecha_final:Date;
-    proyectos:IProyectoAsignado[];
+    proyectos?:IProyectoAsignado[];
 }
 
 export interface IAsignacionPostReal {

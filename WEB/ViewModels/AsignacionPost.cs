@@ -2,10 +2,12 @@
 {
     public class AsignacionPost
     {
-        public int Id_Colaborador { get; set; }
+        public int? Id_Colaborador { get; set; }
         //public DateTime Fecha_Inicio { get; set; }
         //public DateTime Fecha_Final { get; set; }
-        public List<ProyectosAsignados> Proyectos { get; set; }
+        public String? User { get; set; }
+        public int? idAsignacion { get; set; }
+        public List<ProyectosAsignados>? Proyectos { get; set; }
     }
 
     public class ProyectosAsignados

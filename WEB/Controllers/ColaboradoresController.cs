@@ -116,10 +116,10 @@ namespace WEB.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> PutColaborador(int id, ColaboradorPost colaborador)
+        public async Task<IActionResult> PutColaborador(int id, ColaboradorPost colaboradorPost)
         {
             Response response = new Response();
-            if (id != colaborador.Id)
+            if (id != colaboradorPost.Id)
             {
                 response.success = false;
                 response.response = "Los ID no coinciden";
@@ -128,13 +128,13 @@ namespace WEB.Controllers
 
             try
             {
-                if (_context.Colaboradores.Any(x => x.CURP.ToUpper().Trim() == colaborador.CURP.ToUpper().Trim() && x.Id != colaborador.Id))
+                if (_context.Colaboradores.Any(x => x.CURP.ToUpper().Trim() == colaboradorPost.CURP.ToUpper().Trim() && x.Id != colaboradorPost.Id))
                 {
                     response.success = false;
                     response.response = $"Ya existe un contacto con ese CURP";
                     return Ok(response);
                 }
-                if (_context.Colaboradores.Any(x => x.Id_Odoo.ToUpper().Trim() == colaborador.Id_Odoo.ToUpper().Trim() && x.Id != colaborador.Id))
+                if (_context.Colaboradores.Any(x => x.Id_Odoo.ToUpper().Trim() == colaboradorPost.Id_Odoo.ToUpper().Trim() && x.Id != colaboradorPost.Id))
                 {
                     response.success = false;
                     response.response = $"Ya existe un contacto con esa clave Odoo";
@@ -142,11 +142,11 @@ namespace WEB.Controllers
                 }
 
                 Colaborador updateColaborador = new Colaborador();
-                updateColaborador.Id = colaborador.Id;
-                updateColaborador.Nombres = colaborador.Nombres.Trim();
-                updateColaborador.Apellidos = colaborador.Apellidos.Trim();
-                updateColaborador.CURP = colaborador.CURP.ToUpper().Trim();
-                updateColaborador.Id_Odoo = colaborador.Id_Odoo.Trim();
+                updateColaborador.Id = (int)colaboradorPost.Id;
+                updateColaborador.Nombres = colaboradorPost.Nombres.Trim();
+                updateColaborador.Apellidos = colaboradorPost.Apellidos.Trim();
+                updateColaborador.CURP = colaboradorPost.CURP.ToUpper().Trim();
+                updateColaborador.Id_Odoo = colaboradorPost.Id_Odoo.Trim();
 
 
                 _context.Entry(updateColaborador).State = EntityState.Modified;
@@ -154,8 +154,8 @@ namespace WEB.Controllers
                 _context.Logger.Add(new Log()
                 {
                     Created = DateTime.Now,
-                    User = "ADMIN",
-                    Id_User = 1.ToString(),
+                    User = colaboradorPost.User,
+                    Id_User = _context.Users.Where(x => x.Email == colaboradorPost.User).FirstOrDefault().Id,
                     Accion = ETipoAccionS.GetString(ETipoAccion.UPDATECOLABORADOR),
                     Description=ETipoAccionS.GetString(ETipoAccion.UPDATECOLABORADOR) + " Con CURP:" + updateColaborador.CURP+" Por ADMIN",
                 });
@@ -187,23 +187,23 @@ namespace WEB.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> PostColaborador(ColaboradorPost colaborador)
+        public async Task<IActionResult> PostColaborador(ColaboradorPost colaboradorPost)
         {
             Response response = new Response();
-            if (_context.Colaboradores.Any(x => x.CURP.ToUpper().Trim() == colaborador.CURP.ToUpper().Trim()))
+            if (_context.Colaboradores.Any(x => x.CURP.ToUpper().Trim() == colaboradorPost.CURP.ToUpper().Trim()))
             {
                 response.success = false;
                 response.response = $"Ya existe un contacto con ese CURP";
                 return Ok(response);
             }
-            if (_context.Colaboradores.Any(x => x.Id_Odoo.ToUpper().Trim() == colaborador.Id_Odoo.ToUpper().Trim()))
+            if (_context.Colaboradores.Any(x => x.Id_Odoo.ToUpper().Trim() == colaboradorPost.Id_Odoo.ToUpper().Trim()))
             {
                 response.success = false;
                 response.response = $"Ya existe un contacto con esa clave Odoo";
                 return Ok(response);
             }
 
-            var c = await _userManager.FindByEmailAsync(colaborador.Email.Trim());
+            var c = await _userManager.FindByEmailAsync(colaboradorPost.Email.Trim());
 
             if (c!=null)
             {
@@ -219,19 +219,19 @@ namespace WEB.Controllers
                 {
                     
                     Colaborador addColaborador = new Colaborador();
-                    addColaborador.Nombres = colaborador.Nombres.Trim();
-                    addColaborador.Apellidos = colaborador.Apellidos.Trim();
-                    addColaborador.CURP = colaborador.CURP.ToUpper().Trim();
-                    addColaborador.Id_Odoo = colaborador.Id_Odoo.Trim();
+                    addColaborador.Nombres = colaboradorPost.Nombres.Trim();
+                    addColaborador.Apellidos = colaboradorPost.Apellidos.Trim();
+                    addColaborador.CURP = colaboradorPost.CURP.ToUpper().Trim();
+                    addColaborador.Id_Odoo = colaboradorPost.Id_Odoo.Trim();
                     _context.Colaboradores.Add(addColaborador);
 
 
                     ApplicationUser user = new ApplicationUser();
-                    user.Email = colaborador.Email.Trim();
+                    user.Email = colaboradorPost.Email.Trim();
                     //user.NormalizedEmail = colaborador.Email.Trim().ToUpper();
                     user.Colaborador = addColaborador;
                     user.EmailConfirmed = true;
-                    user.UserName = colaborador.Id_Odoo;
+                    user.UserName = colaboradorPost.Id_Odoo;
 
                     string password = "Pa$word1"; 
 
@@ -280,17 +280,17 @@ namespace WEB.Controllers
                     _context.Logger.Add(new Log()
                     {
                         Created = DateTime.Now,
-                        User = "ADMIN",
-                        Id_User = 1.ToString(),
+                        User = colaboradorPost.User,
+                        Id_User = _context.Users.Where(x => x.Email == colaboradorPost.User).FirstOrDefault().Id,
                         Accion = ETipoAccionS.GetString(ETipoAccion.ADDCOLABORADOR),
-                        Description=ETipoAccionS.GetString(ETipoAccion.ADDCOLABORADOR) + " Con CURP:" + colaborador.CURP+" Por ADMIN",
+                        Description=ETipoAccionS.GetString(ETipoAccion.ADDCOLABORADOR) + " Con CURP:" + colaboradorPost.CURP+" Por ADMIN",
                     });
                     await _context.SaveChangesAsync();
                    
                     transaction.Commit();
                     var Link = Url.PageLink().Split('/');
                     string url = Link[0] + "//" + Link[2];
-                    string name = $"{colaborador.Nombres} {colaborador.Apellidos}";
+                    string name = $"{colaboradorPost.Nombres} {colaboradorPost.Apellidos}";
                     string message = "<p>Por este medio confirmamos su registro al sistema Plenumsoft y " +
                                $"compartimos con usted sus claves de acceso:</p><p>Usuario: <span>{user.Email}" +
                                $"</span></p><p>Contraseña: <span>{password}</span></p><p>Para ingresar " +
@@ -324,14 +324,15 @@ namespace WEB.Controllers
         }
 
         // DELETE: api/Colaboradores/5
-        [HttpDelete("{id}")]
+        [HttpPost]
+        [Route("delete")]
         [Authorize]
-        public async Task<IActionResult> DeleteColaborador(int id)
+        public async Task<IActionResult> DeleteColaborador(ColaboradorPost postModel)
         {
             Response response = new Response();
             using (var transaction = _context.Database.BeginTransaction())
             {
-                var colaborador = await _context.Colaboradores.Include(x=>x.IdentityUser).Where(x=>x.Id == id).FirstOrDefaultAsync();
+                var colaborador = await _context.Colaboradores.Include(x=>x.IdentityUser).Where(x=>x.Id == postModel.Id).FirstOrDefaultAsync();
                 if (colaborador == null)
                 {
                     transaction.Rollback();
@@ -353,8 +354,8 @@ namespace WEB.Controllers
                         _context.Logger.Add(new Log()
                         {
                             Created = DateTime.Now,
-                            User = "ADMIN",
-                            Id_User = 1.ToString(),
+                            User = postModel.User,
+                            Id_User = _context.Users.Where(x => x.Email == postModel.User).FirstOrDefault().Id,
                             Accion = ETipoAccionS.GetString(ETipoAccion.DELETECOLABORADOR),
                             Description = ETipoAccionS.GetString(ETipoAccion.DELETECOLABORADOR) + " Con CURP:" + colaborador.CURP + " Por ADMIN",
                         });

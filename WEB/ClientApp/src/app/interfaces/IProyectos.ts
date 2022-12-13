@@ -1,8 +1,9 @@
 export interface IProyecto{
-    id:Number;
-    clave:String;
-    titulo:String;
-    colaboradoresasignados:ColaboradoresAsignados[];
+    id?:Number;
+    clave?:String;
+    titulo?:String;
+    colaboradoresasignados?:ColaboradoresAsignados[];
+    user?:string;
 }
 
 export interface ColaboradoresAsignados{

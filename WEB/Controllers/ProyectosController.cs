@@ -99,7 +99,7 @@ namespace WEB.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> PutProyecto(int id, Proyecto proyecto)
+        public async Task<IActionResult> PutProyecto(int id, ProyectosPost proyecto)
         {
             Response response = new Response();
             if (id != proyecto.Id)
@@ -119,7 +119,7 @@ namespace WEB.Controllers
                 }
 
                 Proyecto addProyecto = new Proyecto();
-                addProyecto.Id = proyecto.Id;
+                addProyecto.Id = (int)proyecto.Id;
                 addProyecto.Titulo = proyecto.Titulo.Trim();
                 addProyecto.Clave = proyecto.Clave.ToUpper().Trim();
                 addProyecto.is_active = true;
@@ -128,8 +128,8 @@ namespace WEB.Controllers
                 _context.Logger.Add(new Log()
                 {
                     Created = DateTime.Now,
-                    User = "ADMIN",
-                    Id_User = 1.ToString(),
+                    User = proyecto.User,
+                    Id_User = _context.Users.Where(x => x.Email == proyecto.User).FirstOrDefault().Id,
                     Accion = ETipoAccionS.GetString(ETipoAccion.UPDATEPROYECTO),
                     Description = ETipoAccionS.GetString(ETipoAccion.UPDATEPROYECTO) + " " + proyecto.Titulo + " Por ADMIN",
                 });
@@ -159,7 +159,7 @@ namespace WEB.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<Proyecto>> PostProyecto(Proyecto proyecto)
+        public async Task<ActionResult<Proyecto>> PostProyecto(ProyectosPost proyecto)
         {
             Response response = new Response();
             try
@@ -180,8 +180,8 @@ namespace WEB.Controllers
                 _context.Logger.Add(new Log()
                 {
                     Created = DateTime.Now,
-                    User = "ADMIN",
-                    Id_User = 1.ToString(),
+                    User = proyecto.User,
+                    Id_User = _context.Users.Where(x => x.Email == proyecto.User).FirstOrDefault().Id,
                     Accion = ETipoAccionS.GetString(ETipoAccion.ADDPROYECTO),
                     Description= ETipoAccionS.GetString(ETipoAccion.ADDPROYECTO) + " " + proyecto.Titulo + " Por ADMIN",
                 });
@@ -200,12 +200,13 @@ namespace WEB.Controllers
         }
 
         // DELETE: api/Proyectos/5
-        [HttpDelete("{id}")]
+        [HttpPost]
+        [Route("delete")]
         [Authorize]
-        public async Task<IActionResult> DeleteProyecto(int id)
+        public async Task<IActionResult> DeleteProyecto(ProyectosPost postModel)
         {
             Response response = new Response();
-            var proyecto = await _context.Proyectos.FindAsync(id);
+            var proyecto = await _context.Proyectos.FindAsync(postModel.Id);
             if (proyecto == null)
             {
                 response.success = false;
@@ -214,7 +215,7 @@ namespace WEB.Controllers
             }
             try
             {
-                Proyecto delProyecto = await _context.Proyectos.FindAsync(id);
+                Proyecto delProyecto = await _context.Proyectos.FindAsync(postModel.Id);
                 delProyecto.is_active = false;
 
                 _context.Entry(delProyecto).State = EntityState.Modified;
@@ -223,8 +224,8 @@ namespace WEB.Controllers
                 _context.Logger.Add(new Log()
                 {
                     Created = DateTime.Now,
-                    User = "ADMIN",
-                    Id_User = 1.ToString(),
+                    User = postModel.User,
+                    Id_User = _context.Users.Where(x => x.Email == postModel.User).FirstOrDefault().Id,
                     Accion = ETipoAccionS.GetString(ETipoAccion.DELETEPROYECTO),
                     Description = ETipoAccionS.GetString(ETipoAccion.DELETEPROYECTO) + " " + proyecto.Titulo+" Por ADMIN",
                 });
