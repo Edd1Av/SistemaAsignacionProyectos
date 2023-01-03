@@ -6,7 +6,7 @@ import { environment } from './environments/environment';
 
 export function getBaseUrl() {
   //return document.getElementsByTagName('base')[0].href;
-  return 'https://localhost:7232/'
+  return 'http://34.238.39.165:8083/'
 }
 
 const providers = [
