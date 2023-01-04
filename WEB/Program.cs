@@ -15,9 +15,7 @@ string MiCors = "MiCors";
 builder.Services.AddCors(options => {
     options.AddPolicy(name: MiCors, builder =>
     {
-        builder.AllowAnyHeader();
-        builder.AllowAnyOrigin();
-        builder.AllowAnyMethod();
+        builder.AllowAnyOrigin().SetIsOriginAllowed(origin => true).AllowAnyHeader().AllowAnyMethod();
     });
 });
 
