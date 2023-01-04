@@ -208,7 +208,7 @@ namespace WEB.Controllers
             if (c!=null)
             {
                 response.success = false;
-                response.response = $"Ya existe un contacto con ese Email";
+                response.response = $"Ya existe un usuario con ese Email";
                 return Ok(response);
             }
 
