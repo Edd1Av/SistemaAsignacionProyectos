@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Data.Entities.Enum;
 using WEB.Services.Mails;
 using Microsoft.Extensions.Options;
+using WEB.Services;
 
 namespace WEB.Controllers
 {
@@ -233,29 +234,12 @@ namespace WEB.Controllers
                     user.EmailConfirmed = true;
                     user.UserName = colaboradorPost.Id_Odoo;
 
-                    string password = "Pa$word1"; 
+                    string password = Password.GeneratePassword(_userManager); 
 
                     var x = await _userManager.CreateAsync(user,password);
                     await _context.SaveChangesAsync();
                     if (x.Succeeded)
                     {
-                        //if(colaborador.IsAdmin == true)
-                        //{
-                        //    var y = await _userManager.AddToRoleAsync(user, "Administrador");
-                        //    if (y.Succeeded)
-                        //    {
-                                
-                        //    }
-                        //    else
-                        //    {
-                        //        transaction.Rollback();
-                        //        response.success = false;
-                        //        response.response = $"No se pudo asignar el rol Administrador";
-                        //        return Ok(response);
-                        //    }
-                        //}
-                        //else
-                        //{
                             var y = await _userManager.AddToRoleAsync(user, "Desarrollador");
                             if (y.Succeeded)
                             {
@@ -268,7 +252,7 @@ namespace WEB.Controllers
                                 response.response = $"No se pudo asignar un rol";
                                 return Ok(response);
                             }
-                        //}
+                     
                     }
                     else
                     {

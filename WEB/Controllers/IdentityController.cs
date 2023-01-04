@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using WEB.Services.Mails;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authorization;
+using WEB.Services;
 
 namespace WEB.Controllers
 {
@@ -97,7 +98,7 @@ namespace WEB.Controllers
                     user.EmailConfirmed = true;
                     user.UserName = admin.Email.Trim();
 
-                    string password = "Pa$word1";
+                    string password = Password.GeneratePassword(_userManager);
 
                     var x = await _userManager.CreateAsync(user, password);
                     await _context.SaveChangesAsync();
@@ -228,7 +229,7 @@ namespace WEB.Controllers
                 var code = await _userManager.RemovePasswordAsync(user);
                 if (code.Succeeded)
                 {
-                    string password = "Pa$word2";
+                    string password = Password.GeneratePassword(_userManager);
                     var result = await _userManager.AddPasswordAsync(user, password);
 
                     if (result.Succeeded)
@@ -253,41 +254,6 @@ namespace WEB.Controllers
             {
                 return Ok(new Response { success = false, response = "Error al cambiar la contraseña." });
             }
-        }
-
-
-
-        private string GeneratePassword()
-        {
-            var options = _userManager.Options.Password;
-
-            int length = options.RequiredLength;
-
-            bool nonAlphanumeric = options.RequireNonAlphanumeric;
-            bool digit = options.RequireDigit;
-            bool lowercase = options.RequireLowercase;
-            bool uppercase = options.RequireUppercase;
-
-            StringBuilder password = new StringBuilder();
-            Random random = new Random();
-
-            if (nonAlphanumeric)
-                password.Append((char)random.Next(33, 48));
-            if (digit)
-                password.Append((char)random.Next(48, 58));
-            if (lowercase)
-                password.Append((char)random.Next(97, 123));
-            if (uppercase)
-                password.Append((char)random.Next(65, 91));
-
-            while (password.Length <= 9)
-            {
-                char c = (char)random.Next(65, 91);
-
-                password.Append(c);
-            }
-
-            return password.ToString();
         }
 
     }
