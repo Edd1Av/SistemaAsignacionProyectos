@@ -18,6 +18,7 @@ import { MatTableModule } from '@angular/material/table';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { AddAdministradorComponent } from './add-administrador/add-administrador.component';
+import { DeleteAdministradorComponent } from './delete-administrador/delete-administrador.component';
 
 @NgModule({
   imports: [
@@ -41,7 +42,7 @@ import { AddAdministradorComponent } from './add-administrador/add-administrador
       ]
     )
   ],
-  declarations: [LoginComponent, ResetPasswordComponent, ChangePasswordComponent, AddAdministradorComponent],
+  declarations: [LoginComponent, ResetPasswordComponent, ChangePasswordComponent, AddAdministradorComponent, DeleteAdministradorComponent],
   exports: [LoginComponent]
 })
 export class ApiAuthorizationModule { }

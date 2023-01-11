@@ -3,6 +3,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AddAdministradorComponent } from 'src/api-authorization/add-administrador/add-administrador.component';
 import { AuthorizeService } from 'src/api-authorization/authorize.service';
 import { ChangePasswordComponent } from 'src/api-authorization/change-password/change-password.component';
+import { DeleteAdministradorComponent } from 'src/api-authorization/delete-administrador/delete-administrador.component';
 import { IUsuario } from 'src/app/interfaces/IUsuario';
 import { LoaderService } from 'src/app/loader/loader.service';
 
@@ -18,36 +19,38 @@ export class LayoutComponent implements OnInit {
     private authService: AuthorizeService,
     public loaderService:LoaderService) { }
 
-  usuario:any;
+  usuario:IUsuario;
   
   email:string;
   usuarioLoggeado:Boolean;
   isAdmin:Boolean=false;
-  isDevelop:Boolean=false;;
+  isDevelop:Boolean=false;
+  isNotRoot:Boolean;
   ngOnInit(): void {
     this.usuarioLoggeado = this.authService.isLogged();
-    this.authService.changeLoginStatus.subscribe((value)=>{
-      if(value){
-        this.usuarioLoggeado=true;
-        this.email=value.correo;
-        if(value.rol=="Administrador"){
-          this.isAdmin=true;
-          this.isDevelop=false;
-          
-        }
-        if(value.rol=="Desarrollador"){
-          this.isAdmin=false;
-          this.isDevelop=true;
-        }
+    if(this.authService.usuarioData!=null){
+      this.usuario=this.authService.usuarioData;
+      this.email = this.usuario.correo;
+      if(this.usuario.rol=="Administrador"){
+        this.isAdmin=true;
+        this.isDevelop=false;
+      }
+      else if(this.usuario.rol=="Desarrollador"){
+        this.isAdmin=false;
+        this.isDevelop=true;
       }
       else{
-        this.usuarioLoggeado = false;
         this.isAdmin=false;
         this.isDevelop=false;
-
       }
-      
-    })
+    }
+
+    if(this.email == "admin@admin.com"){
+      this.isNotRoot = false;
+    }
+    else{
+      this.isNotRoot = true;
+    }
   }
 
 
@@ -67,6 +70,16 @@ export class LayoutComponent implements OnInit {
 
   openDialogAdmin(): void {
     let dialog = this.dialog.open(AddAdministradorComponent, {
+      width: "400px",
+      disableClose: true,
+    });
+    dialog.afterClosed().subscribe((result) => {
+      
+    });
+  }
+
+  openDialogDeleteAdmin(): void {
+    let dialog = this.dialog.open(DeleteAdministradorComponent, {
       width: "400px",
       disableClose: true,
     });

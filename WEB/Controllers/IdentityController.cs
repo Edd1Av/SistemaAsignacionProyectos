@@ -161,6 +161,76 @@ namespace WEB.Controllers
             return Ok(response);
         }
 
+        [HttpPost]
+        [Authorize]
+        [Route("DeleteAdmin")]
+        public async Task<IActionResult> DeleteAdministrador(LoginUsuario admin)
+        {
+            Response response = new Response();
+
+            var user = await _userManager.FindByEmailAsync(admin.Email.Trim());
+            
+            if (user == null || !await _userManager.IsInRoleAsync(user, "Administrador"))
+            {
+                response.success = false;
+                response.response = $"No existe un administrador con ese Email";
+                return Ok(response);
+            }
+
+            if (!await _userManager.CheckPasswordAsync(user, admin.Password))
+            {
+                response.success = false;
+                response.response = $"Contraseña incorrecta";
+                return Ok(response);
+            }
+
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var IUser = await _userManager.FindByEmailAsync(admin.Email.Trim());
+                    string emailU = IUser.Email;
+                    var Delete = await _userManager.DeleteAsync(IUser);
+                    if (Delete.Succeeded)
+                    {
+                    }
+                    else
+                    {
+                        transaction.Rollback();
+                        response.success = false;
+                        response.response = $"Error al eliminar el administrador";
+                        return Ok(response);
+                    }
+
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+
+                    string messageU = $"<p>Por este medio confirmamos la eliminación de su cuenta del sistema Plenumsoft</p>";
+
+                    try
+                    {
+                        await _emailSender.SendEmailAsync(emailU, "Baja de usuario - SAP Plenumsoft", "", messageU, "").ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Ok(new Response { success = true, response = "Error: Email" });
+                    }
+
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    response.success = false;
+                    response.response = $"Error al eliminar";
+                    return Ok(response);
+                }
+
+            }
+            response.success = true;
+            response.response = "Administrador eliminado";
+            return Ok(response);
+        }
+
 
         [HttpPost]
         [Route("ChangePassword")]

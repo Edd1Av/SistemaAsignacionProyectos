@@ -82,6 +82,10 @@ export class AuthorizeService {
     return this.http.post<IResponse>(this.urlBase + "api/Identity/AddAdmin", credenciales);
   }
 
+  public DeleteAdmin(credenciales: ILogin):Observable<IResponse>{
+    return this.http.post<IResponse>(this.urlBase + "api/Identity/DeleteAdmin", credenciales);
+  }
+
   public logout() {
     localStorage.removeItem("Sesion");
     this.changeLoginStatusSubject.next(null);
