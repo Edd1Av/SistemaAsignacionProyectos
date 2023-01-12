@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
+import { IExcel } from '../interfaces/IExcel';
 
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.xlsx';
@@ -12,7 +13,7 @@ export class ExcelService {
 
   constructor() { }
 
-  public exportAsExcelCustomHeaders(json: any[], header: string[][], excelFileName: string): void {
+  public exportAsExcelCustomHeaders(json: IExcel[], header: string[][], excelFileName: string): void {
     //Creacion de libro
     const workbook = XLSX.utils.book_new();
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet([]);

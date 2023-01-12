@@ -680,8 +680,8 @@ namespace WEB.Controllers
                 if (rest.Count > 0)
                 {
                     
-                    excel.Add(new Excel { A = "fecha_inicio", B = FechaToString(postModel.Fecha_Inicio), C = "", D = "", E = "" });
-                    excel.Add(new Excel { A = "fecha_final", B = FechaToString(postModel.Fecha_Final), C = "", D = "", E = "" });
+                    excel.Add(new Excel { A = "fecha_inicio", B = postModel.Fecha_Inicio.ToShortDateString(), C = "", D = "", E = "" });
+                    excel.Add(new Excel { A = "fecha_final", B = postModel.Fecha_Final.ToShortDateString(), C = "", D = "", E = "" });
                     excel.Add(new Excel { A = "", B = "", C = "", D = "", E = "" });
                     excel.Add(new Excel { A = "id_recurso", B = "recurso", C = "id_proyecto", D = "proyecto", E = "porcentaje" });
                     foreach (var item in rest)
@@ -690,7 +690,7 @@ namespace WEB.Controllers
                         {
                             if (item2.id == item.asignaciones.FirstOrDefault().id)
                             {
-                                excel.Add(new Excel { A = item.id_odoo, B = item.colaborador, C = item2.clave, D = item2.titulo, E = Truncate(item2.porcentaje, 2).ToString() });
+                                excel.Add(new Excel { A = int.Parse(item.id_odoo).ToString(), B = item.colaborador, C = item2.clave, D = item2.titulo, E = item2.porcentaje.ToString() });
                             }
                             else
                             {

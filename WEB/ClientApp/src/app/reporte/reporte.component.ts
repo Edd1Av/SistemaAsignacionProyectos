@@ -81,6 +81,7 @@ export class ReporteComponent implements OnInit {
       .subscribe((result) => {
         var headers = [[result.response.excel[0].a,result.response.excel[0].b,"","",""]];
         var temp=result.response.excel.shift();
+        console.log(result.response.excel);
         this.excelService.exportAsExcelCustomHeaders(
           result.response.excel,
           headers,
