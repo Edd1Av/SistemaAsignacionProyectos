@@ -26,16 +26,6 @@ namespace WEB.Data
 
             var hasher = new PasswordHasher<IdentityUser>();
 
-            //var userData = new Colaborador()
-            //{
-            //    Id = 1,
-            //    Apellidos = "admin",
-            //    Nombres = "admin",
-            //    CURP = "n/a",
-            //    Id_Odoo = "n/a",
-            //    IsAdmin = true,
-            //};
-
             var user = new ApplicationUser()
             {
                 Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
