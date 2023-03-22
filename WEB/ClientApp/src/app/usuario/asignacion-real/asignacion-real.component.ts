@@ -199,7 +199,7 @@ export class AsignacionRealComponent implements OnInit {
   mostrarDialogo(id:number): void {
     this.dialog
       .open(DialogoConfirmacionComponent, {
-        data: `¿Está seguro de eliminar esta asignacion?`,
+        data: `¿Está seguro de eliminar esta participación?`,
       })
       .afterClosed()
       .subscribe((confirmado: Boolean) => {
